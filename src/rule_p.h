@@ -9,9 +9,13 @@
 
 #include "interval.h"
 
+#include <QDebug>
+
 #include <memory>
 
 namespace KOpeningHours {
+
+// see https://wiki.openstreetmap.org/wiki/Key:opening_hours/specification
 
 /** Time */
 class Time
@@ -38,6 +42,24 @@ public:
     std::unique_ptr<Timespan> next;
 };
 
+/** Weekday range. */
+class WeekdayRange
+{
+public:
+    uint8_t beginDay = 0;
+    uint8_t endDay = 0;
+    uint8_t nthMask = 0;
+    int16_t offset = 0;
+    enum Holiday : uint8_t {
+        NoHoliday = 0,
+        PublicHoliday = 1,
+        SchoolHoliday = 2,
+    };
+    Holiday holiday = NoHoliday;
+    std::unique_ptr<WeekdayRange> next;
+    std::unique_ptr<WeekdayRange> next2;
+};
+
 /** Opening hours expression rule. */
 class Rule
 {
@@ -48,8 +70,11 @@ public:
     Interval::State m_state = Interval::Open;
 
     std::unique_ptr<Timespan> m_timeSelector;
+    std::unique_ptr<WeekdayRange> m_weekdaySelector;
 };
 
 }
+
+QDebug operator<<(QDebug debug, KOpeningHours::WeekdayRange *weekdayRange);
 
 #endif // KOPENINGHOURS_RULE_P_H

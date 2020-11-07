@@ -21,11 +21,13 @@ void yyerror(YYLTYPE *loc, OpeningHoursPrivate *parser, yyscan_t scanner, char c
 static void initSelectors(Selectors &sels)
 {
     sels.timeSelector = nullptr;
+    sels.weekdaySelector = nullptr;
 }
 
 static void applySelectors(const Selectors &sels, Rule *rule)
 {
     rule->m_timeSelector.reset(sels.timeSelector);
+    rule->m_weekdaySelector.reset(sels.weekdaySelector);
 }
 
 %}
@@ -44,6 +46,7 @@ struct StringRef {
 
 struct Selectors {
     Timespan *timeSelector;
+    WeekdayRange *weekdaySelector;
 };
 
 #ifndef YY_TYPEDEF_YY_SCANNER_T
@@ -63,12 +66,14 @@ typedef void* yyscan_t;
 
 %union {
     uint32_t num;
+    int32_t offset;
     StringRef strRef;
     Interval::State state;
     Rule *rule;
     Time time;
     Selectors selectors;
     Timespan *timespan;
+    WeekdayRange *weekdayRange;
 }
 
 %token T_NORMAL_RULE_SEPARATOR
@@ -120,6 +125,11 @@ typedef void* yyscan_t;
 %type <selectors> YearSelector
 %type <timespan> Timespan
 %type <time> Time
+%type <weekdayRange> WeekdaySequence
+%type <weekdayRange> WeekdayRange
+%type <weekdayRange> HolidySequence
+%type <weekdayRange> Holiday
+%type <offset> DayOffset
 
 %destructor { delete $$; } <rule>
 %destructor {
@@ -167,6 +177,7 @@ SelectorSequence:
 | WideRangeSelector[W] { $$ = $W; }
 | WideRangeSelector[W] SmallRangeSelector[S] {
     $$.timeSelector = $S.timeSelector;
+    $$.weekdaySelector = $S.weekdaySelector;
   }
 ;
 
@@ -186,6 +197,7 @@ SmallRangeSelector:
 | WeekdaySelector[W] { $$ = $W; }
 | WeekdaySelector[W] TimeSelector[T] {
     $$.timeSelector = $T.timeSelector;
+    $$.weekdaySelector = $W.weekdaySelector;
   }
 ;
 
@@ -231,48 +243,74 @@ VariableTime:
 
 // Weekday selector
 WeekdaySelector:
-  WeekdaySequence {
+  WeekdaySequence[W] {
     initSelectors($$);
+    $$.weekdaySelector = $W;
   }
-| HolidySequence {
+| HolidySequence[H] {
     initSelectors($$);
+    $$.weekdaySelector = $H;
   }
-| HolidySequence T_COMMA WeekdaySequence {
+| HolidySequence[H] T_COMMA WeekdaySequence[W] {
     initSelectors($$);
+    $$.weekdaySelector = $H;
+    $$.weekdaySelector->next.reset($W);
   }
-| WeekdaySequence T_COMMA HolidySequence {
+| WeekdaySequence[W] T_COMMA HolidySequence[H] {
     initSelectors($$);
+    $$.weekdaySelector = $W;
+    $$.weekdaySelector->next.reset($H);
   }
-| HolidySequence " " WeekdaySequence { // TODO
+| HolidySequence[H] " " WeekdaySequence[W] { // TODO
     initSelectors($$);
+    $$.weekdaySelector = new WeekdayRange;
+    $$.weekdaySelector->next.reset($H);
+    $$.weekdaySelector->next2.reset($W);
   }
 ;
 
 WeekdaySequence:
-  WeekdayRange
-| WeekdaySequence T_COMMA WeekdayRange
+  WeekdayRange[W] { $$ = $W; }
+| WeekdaySequence[S] T_COMMA WeekdayRange[W] { $$->next.reset($W); }
 ;
 
 WeekdayRange:
-  T_WEEKDAY
-| T_WEEKDAY T_MINUS T_WEEKDAY
+  T_WEEKDAY[D] {
+    $$ = new WeekdayRange;
+    $$->beginDay = $D;
+  }
+| T_WEEKDAY[D1] T_MINUS T_WEEKDAY[D2] {
+    $$ = new WeekdayRange;
+    $$->beginDay = $D1;
+    $$->endDay = $D2;
+  }
   // TODO
 ;
 
 HolidySequence:
-  Holiday
-| HolidySequence T_COMMA Holiday
+  Holiday[H] { $$ = $H; }
+| HolidySequence[S] T_COMMA Holiday[H] { $$ = $S; $$->next.reset($H); }
 ;
 
 Holiday:
-  T_PH
-| T_PH DayOffset
-| T_SH
+  T_PH {
+    $$ = new WeekdayRange;
+    $$->holiday = WeekdayRange::PublicHoliday;
+  }
+| T_PH DayOffset[O] {
+    $$ = new WeekdayRange;
+    $$->holiday = WeekdayRange::PublicHoliday;
+    $$->offset = $O;
+  }
+| T_SH {
+    $$ = new WeekdayRange;
+    $$->holiday = WeekdayRange::SchoolHoliday;
+  }
 ;
 
 DayOffset:
-  T_PLUS T_INTEGER T_KEYWORD_DAY
-| T_MINUS T_INTEGER T_KEYWORD_DAY
+  T_PLUS T_INTEGER[N] T_KEYWORD_DAY { $$ = $N; }
+| T_MINUS T_INTEGER[N] T_KEYWORD_DAY { $$ = -$N; }
 ;
 
 // Week selector
