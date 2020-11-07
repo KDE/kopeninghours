@@ -22,6 +22,7 @@ add_library(KOpeningHours
     ${FLEX_openinghoursscanner_OUTPUTS}
     interval.cpp
     openinghours.cpp
+    rule.cpp
 )
 generate_export_header(KOpeningHours BASE_NAME KOpeningHours)
 

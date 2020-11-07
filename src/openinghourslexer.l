@@ -29,11 +29,16 @@ EXTENDED_HOUR_MINUTE [0-4][0-9]:[0-5][0-9]
 
 {SPACE} {}
 
-{EXTENDED_HOUR_MINUTE} { return T_EXTENDED_HOUR_MINUTE; }
+{EXTENDED_HOUR_MINUTE} {
+    yylval->time.event = Time::NoEvent;
+    yylval->time.hour = strtol(yytext, nullptr, 10);
+    yylval->time.minute = strtol(yytext + 3, nullptr, 10);
+    return T_EXTENDED_HOUR_MINUTE;
+}
 
 "; " { return T_NORMAL_RULE_SEPARATOR; }
 ", " { return T_ADDITIONAL_RULE_SEPARATOR; }
-"||" { return T_FALLBACK_SEPARATOR; }
+" || " { return T_FALLBACK_SEPARATOR; }
 
 "open"    { yylval->state = Interval::Open;    return T_STATE; }
 "closed"  { yylval->state = Interval::Closed;  return T_STATE; }
@@ -48,10 +53,10 @@ EXTENDED_HOUR_MINUTE [0-4][0-9]:[0-5][0-9]
 ":" { return T_COLON; }
 "," { return T_COMMA; }
 
-"dawn" { return T_EVENT; }
-"sunrise" { return T_EVENT; }
-"sunset" { return T_EVENT; }
-"dusk" { return T_EVENT; }
+"dawn"    { yylval->time = { Time::Dawn,    0, 0 }; return T_EVENT; }
+"sunrise" { yylval->time = { Time::Sunrise, 0, 0 }; return T_EVENT; }
+"sunset"  { yylval->time = { Time::Sunset , 0, 0 }; return T_EVENT; }
+"dusk"    { yylval->time = { Time::Dusk,    0, 0 }; return T_EVENT; }
 
 "[" { return T_LBRACKET; }
 "]" { return T_RBRACKET; }
@@ -66,28 +71,28 @@ EXTENDED_HOUR_MINUTE [0-4][0-9]:[0-5][0-9]
 "week" { return T_KEYWORD_WEEK; }
 "easter" { return T_EASTER; }
 
-{INTEGER} { return T_INTEGER; }
+{INTEGER} { yylval->num = std::strtol(yytext, nullptr, 10); return T_INTEGER; }
 
-"Su" { return T_WEEKDAY; }
-"Mo" { return T_WEEKDAY; }
-"Tu" { return T_WEEKDAY; }
-"We" { return T_WEEKDAY; }
-"Th" { return T_WEEKDAY; }
-"Fr" { return T_WEEKDAY; }
-"Sa" { return T_WEEKDAY; }
+"Mo" { yylval->num = 1; return T_WEEKDAY; }
+"Tu" { yylval->num = 2; return T_WEEKDAY; }
+"We" { yylval->num = 3; return T_WEEKDAY; }
+"Th" { yylval->num = 4; return T_WEEKDAY; }
+"Fr" { yylval->num = 5; return T_WEEKDAY; }
+"Sa" { yylval->num = 6; return T_WEEKDAY; }
+"Su" { yylval->num = 7; return T_WEEKDAY; }
 
-"Jan" { return T_MONTH; }
-"Feb" { return T_MONTH; }
-"Mar" { return T_MONTH; }
-"Apr" { return T_MONTH; }
-"May" { return T_MONTH; }
-"Jun" { return T_MONTH; }
-"Jul" { return T_MONTH; }
-"Aug" { return T_MONTH; }
-"Sep" { return T_MONTH; }
-"Oct" { return T_MONTH; }
-"Nov" { return T_MONTH; }
-"Dec" { return T_MONTH; }
+"Jan" { yylval->num = 1; return T_MONTH; }
+"Feb" { yylval->num = 2; return T_MONTH; }
+"Mar" { yylval->num = 3; return T_MONTH; }
+"Apr" { yylval->num = 4; return T_MONTH; }
+"May" { yylval->num = 5; return T_MONTH; }
+"Jun" { yylval->num = 6; return T_MONTH; }
+"Jul" { yylval->num = 7; return T_MONTH; }
+"Aug" { yylval->num = 8; return T_MONTH; }
+"Sep" { yylval->num = 9; return T_MONTH; }
+"Oct" { yylval->num = 10; return T_MONTH; }
+"Nov" { yylval->num = 11; return T_MONTH; }
+"Dec" { yylval->num = 12; return T_MONTH; }
 
 {COMMENT} {
     yylval->strRef.str = yytext;

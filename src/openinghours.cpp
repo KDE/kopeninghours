@@ -14,6 +14,12 @@
 
 using namespace KOpeningHours;
 
+void OpeningHoursPrivate::addRule(Rule *rule)
+{
+    m_rules.push_back(std::unique_ptr<Rule>(rule));
+}
+
+
 OpeningHours::OpeningHours()
     : d(new OpeningHoursPrivate)
 {

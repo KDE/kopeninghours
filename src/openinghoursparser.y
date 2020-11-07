@@ -18,6 +18,16 @@ void yyerror(YYLTYPE *loc, OpeningHoursPrivate *parser, yyscan_t scanner, char c
     parser->m_error = OpeningHours::SyntaxError;
 }
 
+static void initSelectors(Selectors &sels)
+{
+    sels.timeSelector = nullptr;
+}
+
+static void applySelectors(const Selectors &sels, Rule *rule)
+{
+    rule->m_timeSelector.reset(sels.timeSelector);
+}
+
 %}
 
 %code requires {
@@ -30,6 +40,10 @@ using namespace KOpeningHours;
 struct StringRef {
     const char *str;
     int len;
+};
+
+struct Selectors {
+    Timespan *timeSelector;
 };
 
 #ifndef YY_TYPEDEF_YY_SCANNER_T
@@ -51,6 +65,10 @@ typedef void* yyscan_t;
     uint32_t num;
     StringRef strRef;
     Interval::State state;
+    Rule *rule;
+    Time time;
+    Selectors selectors;
+    Timespan *timespan;
 }
 
 %token T_NORMAL_RULE_SEPARATOR
@@ -60,7 +78,7 @@ typedef void* yyscan_t;
 %token <state> T_STATE
 
 %token T_24_7
-%token T_EXTENDED_HOUR_MINUTE
+%token <time> T_EXTENDED_HOUR_MINUTE
 
 %token T_PLUS
 %token T_MINUS
@@ -68,7 +86,7 @@ typedef void* yyscan_t;
 %token T_COLON
 %token T_COMMA
 
-%token T_EVENT
+%token <time> T_EVENT
 
 %token T_LBRACKET
 %token T_RBRACKET
@@ -83,17 +101,30 @@ typedef void* yyscan_t;
 
 %token T_EASTER
 
-%token T_WEEKDAY
-%token T_MONTH
+%token <num> T_WEEKDAY
+%token <num> T_MONTH
 %token <num> T_INTEGER
 
 %token <strRef> T_COMMENT
 
 %token T_INVALID
 
-%type Rule
+%type <rule> Rule
+%type <selectors> SelectorSequence
+%type <selectors> WideRangeSelector
+%type <selectors> SmallRangeSelector
+%type <selectors> TimeSelector
+%type <selectors> WeekdaySelector
+%type <selectors> WeekSelector
+%type <selectors> MonthdaySelector
+%type <selectors> YearSelector
+%type <timespan> Timespan
+%type <time> Time
 
-%destructor { free($$); } <str>
+%destructor { delete $$; } <rule>
+%destructor {
+    delete $$.timeSelector;
+} <selectors>
 
 %verbose
 
@@ -101,27 +132,42 @@ typedef void* yyscan_t;
 // see https://wiki.openstreetmap.org/wiki/Key:opening_hours/specification
 
 Ruleset:
-  Rule
-| Ruleset T_NORMAL_RULE_SEPARATOR Rule
-| Ruleset T_ADDITIONAL_RULE_SEPARATOR Rule
-| Ruleset T_FALLBACK_SEPARATOR T_COMMENT
+  Rule[R] { parser->addRule($R); }
+| Ruleset T_NORMAL_RULE_SEPARATOR Rule[R] { parser->addRule($R); }
+| Ruleset T_ADDITIONAL_RULE_SEPARATOR Rule[R] { parser->addRule($R); }
+| Ruleset T_FALLBACK_SEPARATOR T_COMMENT { /* TODO */ }
 ;
 
-Rule: SelectorSequence RuleModifier
-;
-
-RuleModifier:
-  %empty
-| T_COMMENT
-| T_STATE
-| T_STATE T_COMMENT
+Rule:
+  SelectorSequence[S] {
+    $$ = new Rule;
+    applySelectors($S, $$);
+  }
+| SelectorSequence[S] T_COMMENT[C] {
+    $$ = new Rule;
+    $$->setComment($C.str, $C.len);
+    applySelectors($S, $$);
+  }
+| SelectorSequence[S] T_STATE[T] {
+    $$ = new Rule;
+    $$->m_state = $T;
+    applySelectors($S, $$);
+  }
+| SelectorSequence[S] T_STATE[T] T_COMMENT[C] {
+    $$ = new Rule;
+    $$->setComment($C.str, $C.len);
+    $$->m_state = $T;
+    applySelectors($S, $$);
+  }
 ;
 
 SelectorSequence:
-  T_24_7
-| SmallRangeSelector
-| WideRangeSelector
-| WideRangeSelector SmallRangeSelector
+  T_24_7 { initSelectors($$); }
+| SmallRangeSelector[S] { $$ = $S; }
+| WideRangeSelector[W] { $$ = $W; }
+| WideRangeSelector[W] SmallRangeSelector[S] {
+    $$.timeSelector = $S.timeSelector;
+  }
 ;
 
 WideRangeSelector:
@@ -132,25 +178,43 @@ WideRangeSelector:
 | YearSelector WeekSelector
 | MonthdaySelector WeekSelector
 | YearSelector MonthdaySelector WeekSelector
-| T_COMMENT T_COLON
+| T_COMMENT T_COLON { initSelectors($$); }
 ;
 
 SmallRangeSelector:
-  TimeSelector
-| WeekdaySelector
-| WeekdaySelector TimeSelector
+  TimeSelector[T] { $$ = $T; }
+| WeekdaySelector[W] { $$ = $W; }
+| WeekdaySelector[W] TimeSelector[T] {
+    $$.timeSelector = $T.timeSelector;
+  }
 ;
 
 // Time selector
 TimeSelector:
-  Timespan
-| TimeSelector T_COMMA Timespan
+  Timespan[T] {
+    initSelectors($$);
+    $$.timeSelector = $T;
+  }
+| TimeSelector[T1] T_COMMA Timespan[T2] {
+    $$ = $T1;
+    $$.timeSelector->next.reset($T2);
+  }
 ;
 
 Timespan:
-  Time
-| Time T_PLUS
-| Time T_MINUS Time
+  Time[T] {
+    $$ = new Timespan;
+    $$->begin = $$->end = $T;
+  }
+| Time[T] T_PLUS {
+    $$ = new Timespan;
+    $$->begin = $T;
+  }
+| Time[T1] T_MINUS Time[T2] {
+    $$ = new Timespan;
+    $$->begin = $T1;
+    $$->end = $T2;
+  }
 // TODO
 ;
 
@@ -167,11 +231,21 @@ VariableTime:
 
 // Weekday selector
 WeekdaySelector:
-  WeekdaySequence
-| HolidySequence
-| HolidySequence T_COMMA WeekdaySequence
-| WeekdaySequence T_COMMA HolidySequence
-| HolidySequence " " WeekdaySequence // TODO
+  WeekdaySequence {
+    initSelectors($$);
+  }
+| HolidySequence {
+    initSelectors($$);
+  }
+| HolidySequence T_COMMA WeekdaySequence {
+    initSelectors($$);
+  }
+| WeekdaySequence T_COMMA HolidySequence {
+    initSelectors($$);
+  }
+| HolidySequence " " WeekdaySequence { // TODO
+    initSelectors($$);
+  }
 ;
 
 WeekdaySequence:
@@ -203,8 +277,12 @@ DayOffset:
 
 // Week selector
 WeekSelector:
-  T_KEYWORD_WEEK Week
-| WeekSelector T_COMMA Week
+  T_KEYWORD_WEEK Week {
+    initSelectors($$);
+  }
+| WeekSelector T_COMMA Week {
+    initSelectors($$);
+  }
 ;
 
 Week:
@@ -214,8 +292,12 @@ Week:
 
 // Month selector
 MonthdaySelector:
-  MonthdayRange
-| MonthdaySelector T_COMMA MonthdayRange
+  MonthdayRange {
+    initSelectors($$);
+  }
+| MonthdaySelector T_COMMA MonthdayRange {
+    initSelectors($$);
+  }
 ;
 
 MonthdayRange:
@@ -249,7 +331,9 @@ VariableDate:
 
 // Year selector
 YearSelector:
-  T_INTEGER // TODO
+  T_INTEGER {// TODO
+    initSelectors($$);
+  }
 ;
 
 %%
