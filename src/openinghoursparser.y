@@ -23,6 +23,7 @@ static void initSelectors(Selectors &sels)
     sels.timeSelector = nullptr;
     sels.weekdaySelector = nullptr;
     sels.weekSelector = nullptr;
+    sels.monthdaySelector = nullptr;
 }
 
 static void applySelectors(const Selectors &sels, Rule *rule)
@@ -30,6 +31,7 @@ static void applySelectors(const Selectors &sels, Rule *rule)
     rule->m_timeSelector.reset(sels.timeSelector);
     rule->m_weekdaySelector.reset(sels.weekdaySelector);
     rule->m_weekSelector.reset(sels.weekSelector);
+    rule->m_monthdaySelector.reset(sels.monthdaySelector);
 }
 
 %}
@@ -50,6 +52,7 @@ struct Selectors {
     Timespan *timeSelector;
     WeekdayRange *weekdaySelector;
     Week *weekSelector;
+    MonthdayRange *monthdaySelector;
 };
 
 #ifndef YY_TYPEDEF_YY_SCANNER_T
@@ -78,6 +81,8 @@ typedef void* yyscan_t;
     Timespan *timespan;
     WeekdayRange *weekdayRange;
     Week *week;
+    Date date;
+    MonthdayRange* monthdayRange;
 }
 
 %token T_NORMAL_RULE_SEPARATOR
@@ -135,10 +140,17 @@ typedef void* yyscan_t;
 %type <weekdayRange> Holiday
 %type <offset> DayOffset
 %type <week> Week
+%type <date> DateFrom
+%type <date> DateTo
+%type <date> VariableDate
+%type <monthdayRange> MonthdayRange
 
 %destructor { delete $$; } <rule>
 %destructor {
     delete $$.timeSelector;
+    delete $$.weekdaySelector;
+    delete $$.weekSelector;
+    delete $$.monthdaySelector;
 } <selectors>
 
 %verbose
@@ -191,14 +203,18 @@ WideRangeSelector:
   YearSelector[Y] { $$ = $Y; }
 | MonthdaySelector[M] { $$ = $M; }
 | WeekSelector[W] { $$ = $W; }
-| YearSelector[Y] MonthdaySelector[M] {}
+| YearSelector[Y] MonthdaySelector[M] {
+    $$.monthdaySelector = $M.monthdaySelector;
+}
 | YearSelector[Y] WeekSelector[W] {
     $$.weekSelector = $W.weekSelector;
   }
 | MonthdaySelector[M] WeekSelector[W] {
+    $$.monthdaySelector = $M.monthdaySelector;
     $$.weekSelector = $W.weekSelector;
   }
 | YearSelector[Y] MonthdaySelector[M] WeekSelector[W] {
+    $$.monthdaySelector = $M.monthdaySelector;
     $$.weekSelector = $W.weekSelector;
   }
 | T_COMMENT T_COLON { initSelectors($$); }
@@ -357,19 +373,35 @@ Week:
 
 // Month selector
 MonthdaySelector:
-  MonthdayRange {
+  MonthdayRange[M] {
     initSelectors($$);
+    $$.monthdaySelector = $M;
   }
-| MonthdaySelector T_COMMA MonthdayRange {
-    initSelectors($$);
+| MonthdaySelector[S] T_COMMA MonthdayRange[M] {
+    $$ = $S;
+    $$.monthdaySelector->next.reset($M);
   }
 ;
 
 MonthdayRange:
-  T_MONTH // TODO
-| DateFrom
-| DateFrom DateOffset
-| DateFrom T_MINUS DateTo
+  T_MONTH[M] {
+    $$ = new MonthdayRange;
+    $$->begin = { 0, $M, 0, Date::FixedDate };
+  }
+| DateFrom[D] {
+    $$ = new MonthdayRange;
+    $$->begin = $D;
+  }
+| DateFrom[D] DateOffset[O] {
+    $$ = new MonthdayRange;
+    $$->begin = $D;
+    // TODO offset
+  }
+| DateFrom[F] T_MINUS DateTo[T] {
+    $$ = new MonthdayRange;
+    $$->begin = $F;
+    $$->end = $T;
+  }
 ;
 
 DateOffset:
@@ -379,19 +411,22 @@ DateOffset:
 ;
 
 DateFrom:
-  T_MONTH T_INTEGER
-| T_INTEGER T_MONTH T_INTEGER
-| VariableDate
-| T_INTEGER VariableDate
+  T_MONTH[M] T_INTEGER[D] { $$ = { 0, $M, $D, Date::FixedDate }; }
+| T_INTEGER[Y] T_MONTH[M] T_INTEGER[D] { $$ = { $Y, $M, $D, Date::FixedDate }; }
+| VariableDate[D] { $$ = $D; }
+| T_INTEGER[Y] VariableDate[D] {
+    $$ = $D;
+    $$.year = $Y;
+  }
 ;
 
 DateTo:
-  DateFrom
-| T_INTEGER
+  DateFrom[D] { $$ = $D; }
+| T_INTEGER[N] { $$ = { 0, 0, $N, Date::FixedDate }; }
 ;
 
 VariableDate:
-  T_EASTER
+  T_EASTER { $$ = { 0, 0, 0, Date::Easter }; }
 ;
 
 // Year selector

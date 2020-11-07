@@ -70,6 +70,30 @@ public:
     std::unique_ptr<Week> next;
 };
 
+/** Date */
+class Date
+{
+public:
+    uint16_t year;
+    uint8_t month;
+    uint8_t day;
+    enum VariableDate : uint8_t {
+        FixedDate,
+        Easter
+    };
+    VariableDate variableDate;
+};
+
+/** Monthday range. */
+class MonthdayRange
+{
+public:
+    Date begin = { 0, 0, 0, Date::FixedDate };
+    Date end = { 0, 0, 0, Date::FixedDate };
+    // TODO offsets
+    std::unique_ptr<MonthdayRange> next;
+};
+
 /** Opening hours expression rule. */
 class Rule
 {
@@ -82,11 +106,14 @@ public:
     std::unique_ptr<Timespan> m_timeSelector;
     std::unique_ptr<WeekdayRange> m_weekdaySelector;
     std::unique_ptr<Week> m_weekSelector;
+    std::unique_ptr<MonthdayRange> m_monthdaySelector;
 };
 
 }
 
 QDebug operator<<(QDebug debug, KOpeningHours::WeekdayRange *weekdayRange);
 QDebug operator<<(QDebug debug, KOpeningHours::Week *week);
+QDebug operator<<(QDebug debug, const KOpeningHours::Date &date);
+QDebug operator<<(QDebug debug, KOpeningHours::MonthdayRange *monthdayRange);
 
 #endif // KOPENINGHOURS_RULE_P_H

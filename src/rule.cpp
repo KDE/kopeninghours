@@ -29,6 +29,28 @@ QDebug operator<<(QDebug debug, Week *week)
     return debug;
 }
 
+QDebug operator<<(QDebug debug, const Date &date)
+{
+    switch (date.variableDate) {
+        case Date::FixedDate:
+            debug.nospace() << date.year << '-' << date.month << '-' << date.day;
+            break;
+        case Date::Easter:
+            debug << "easter";
+            break;
+    }
+    return debug;
+}
+
+QDebug operator<<(QDebug debug, MonthdayRange *monthdayRange)
+{
+    debug.nospace() << "M " << monthdayRange->begin << '-' << monthdayRange->end;
+    if (monthdayRange->next) {
+        debug << ", " << monthdayRange->next.get();
+    }
+    return debug;
+}
+
 void Rule::setComment(const char *str, int len)
 {
     m_comment = QString::fromUtf8(str, len);
