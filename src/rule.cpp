@@ -10,12 +10,21 @@ using namespace KOpeningHours;
 
 QDebug operator<<(QDebug debug, WeekdayRange *weekdayRange)
 {
-    debug << weekdayRange->beginDay << weekdayRange->endDay << weekdayRange->nthMask << weekdayRange->offset << weekdayRange->holiday;
+    debug << "WD" << weekdayRange->beginDay << weekdayRange->endDay << weekdayRange->nthMask << weekdayRange->offset << weekdayRange->holiday;
     if (weekdayRange->next) {
         debug << "  " << weekdayRange->next.get();
     }
     if (weekdayRange->next2) {
         debug << "  " << weekdayRange->next2.get();
+    }
+    return debug;
+}
+
+QDebug operator<<(QDebug debug, Week *week)
+{
+    debug.nospace() << "W " << week->beginWeek << '-' << week->endWeek << '/' << week->interval;
+    if (week->next) {
+        debug << ", " << week->next.get();
     }
     return debug;
 }

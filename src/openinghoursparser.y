@@ -22,12 +22,14 @@ static void initSelectors(Selectors &sels)
 {
     sels.timeSelector = nullptr;
     sels.weekdaySelector = nullptr;
+    sels.weekSelector = nullptr;
 }
 
 static void applySelectors(const Selectors &sels, Rule *rule)
 {
     rule->m_timeSelector.reset(sels.timeSelector);
     rule->m_weekdaySelector.reset(sels.weekdaySelector);
+    rule->m_weekSelector.reset(sels.weekSelector);
 }
 
 %}
@@ -47,6 +49,7 @@ struct StringRef {
 struct Selectors {
     Timespan *timeSelector;
     WeekdayRange *weekdaySelector;
+    Week *weekSelector;
 };
 
 #ifndef YY_TYPEDEF_YY_SCANNER_T
@@ -74,6 +77,7 @@ typedef void* yyscan_t;
     Selectors selectors;
     Timespan *timespan;
     WeekdayRange *weekdayRange;
+    Week *week;
 }
 
 %token T_NORMAL_RULE_SEPARATOR
@@ -130,6 +134,7 @@ typedef void* yyscan_t;
 %type <weekdayRange> HolidySequence
 %type <weekdayRange> Holiday
 %type <offset> DayOffset
+%type <week> Week
 
 %destructor { delete $$; } <rule>
 %destructor {
@@ -178,17 +183,24 @@ SelectorSequence:
 | WideRangeSelector[W] SmallRangeSelector[S] {
     $$.timeSelector = $S.timeSelector;
     $$.weekdaySelector = $S.weekdaySelector;
+    $$.weekSelector = $W.weekSelector;
   }
 ;
 
 WideRangeSelector:
-  YearSelector
-| MonthdaySelector
-| WeekSelector
-| YearSelector MonthdaySelector
-| YearSelector WeekSelector
-| MonthdaySelector WeekSelector
-| YearSelector MonthdaySelector WeekSelector
+  YearSelector[Y] { $$ = $Y; }
+| MonthdaySelector[M] { $$ = $M; }
+| WeekSelector[W] { $$ = $W; }
+| YearSelector[Y] MonthdaySelector[M] {}
+| YearSelector[Y] WeekSelector[W] {
+    $$.weekSelector = $W.weekSelector;
+  }
+| MonthdaySelector[M] WeekSelector[W] {
+    $$.weekSelector = $W.weekSelector;
+  }
+| YearSelector[Y] MonthdaySelector[M] WeekSelector[W] {
+    $$.weekSelector = $W.weekSelector;
+  }
 | T_COMMENT T_COLON { initSelectors($$); }
 ;
 
@@ -315,18 +327,33 @@ DayOffset:
 
 // Week selector
 WeekSelector:
-  T_KEYWORD_WEEK Week {
+  T_KEYWORD_WEEK Week[W] {
     initSelectors($$);
+    $$.weekSelector = $W;
   }
-| WeekSelector T_COMMA Week {
-    initSelectors($$);
+| WeekSelector[W1] T_COMMA Week[W2] {
+    $$ = $W1;
+    $$.weekSelector->next.reset($W2);
   }
 ;
 
 Week:
-  T_INTEGER
-| T_INTEGER T_MINUS T_INTEGER
-| T_INTEGER T_MINUS T_INTEGER T_SLASH T_INTEGER
+  T_INTEGER[N] {
+    $$ = new Week;
+    $$->beginWeek = $N;
+  }
+| T_INTEGER[N1] T_MINUS T_INTEGER[N2] {
+    $$ = new Week;
+    $$->beginWeek = $N1;
+    $$->endWeek = $N2;
+  }
+| T_INTEGER[N1] T_MINUS T_INTEGER[N2] T_SLASH T_INTEGER[I] {
+    $$ = new Week;
+    $$->beginWeek = $N1;
+    $$->endWeek = $N2;
+    $$->interval = $I;
+  }
+;
 
 // Month selector
 MonthdaySelector:

@@ -60,6 +60,16 @@ public:
     std::unique_ptr<WeekdayRange> next2;
 };
 
+/** Week */
+class Week
+{
+public:
+    uint8_t beginWeek = 0;
+    uint8_t endWeek = 0;
+    uint8_t interval = 1;
+    std::unique_ptr<Week> next;
+};
+
 /** Opening hours expression rule. */
 class Rule
 {
@@ -71,10 +81,12 @@ public:
 
     std::unique_ptr<Timespan> m_timeSelector;
     std::unique_ptr<WeekdayRange> m_weekdaySelector;
+    std::unique_ptr<Week> m_weekSelector;
 };
 
 }
 
 QDebug operator<<(QDebug debug, KOpeningHours::WeekdayRange *weekdayRange);
+QDebug operator<<(QDebug debug, KOpeningHours::Week *week);
 
 #endif // KOPENINGHOURS_RULE_P_H
