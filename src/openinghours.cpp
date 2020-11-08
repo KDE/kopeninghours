@@ -8,6 +8,7 @@
 #include "openinghours_p.h"
 #include "openinghoursparser_p.h"
 #include "openinghoursscanner_p.h"
+#include "interval.h"
 #include "logging.h"
 
 #include <QScopeGuard>
@@ -84,4 +85,9 @@ OpeningHours& OpeningHours::operator=(OpeningHours&&) = default;
 OpeningHours::Error OpeningHours::error() const
 {
     return d->m_error;
+}
+
+Interval OpeningHours::interval(const QDateTime &dt) const
+{
+    return {};
 }

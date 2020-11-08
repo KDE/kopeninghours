@@ -65,7 +65,7 @@ public:
     // QString description() const
 
     // TODO
-    // interval(QDateTime) const
+    Interval interval(const QDateTime &dt) const;
     // nextInterval(Interval) const
 
     // TODO point-in-time mode iteration API?
