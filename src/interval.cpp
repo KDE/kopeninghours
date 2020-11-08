@@ -14,6 +14,7 @@ public:
     QDateTime begin;
     QDateTime end;
     Interval::State state = Interval::Invalid;
+    QString comment;
 };
 }
 
@@ -66,4 +67,15 @@ void Interval::setState(Interval::State state)
 {
     d.detach();
     d->state = state;
+}
+
+QString Interval::comment() const
+{
+    return d->comment;
+}
+
+void Interval::setComment(const QString &comment)
+{
+    d.detach();
+    d->comment = comment;
 }

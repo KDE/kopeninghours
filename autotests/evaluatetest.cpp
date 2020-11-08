@@ -35,6 +35,8 @@ private Q_SLOTS:
         //QTest::newRow("matching day range") << QByteArray("Sa-Su") << QDateTime({2020, 11, 7}, {0, 0}) << QDateTime({2020, 11, 8}, {23, 59});
 
         QTest::newRow("day and time") << QByteArray("Su 20:00-22:00") << QDateTime({2020, 11, 8}, {20, 0}) << QDateTime({2020, 11, 8}, {22, 0});
+
+        QTest::newRow("24/7") << QByteArray("24/7") << QDateTime() << QDateTime();
     }
 
     void testNext()

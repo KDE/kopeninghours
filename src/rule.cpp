@@ -133,6 +133,13 @@ int Rule::requiredCapabilities() const
 Interval Rule::nextInterval(const QDateTime &dt) const
 {
     Interval i;
+    i.setState(m_state);
+    i.setComment(m_comment);
+    if (!m_timeSelector && !m_weekdaySelector && !m_monthdaySelector && !m_weekSelector) {
+        // 24/7 has no selectors
+        return i;
+    }
+
     // ### temporary
     i.setBegin(QDateTime(dt.date(), {0, 0}));
     i.setEnd(QDateTime(dt.date(), {23, 59}));
@@ -149,6 +156,5 @@ Interval Rule::nextInterval(const QDateTime &dt) const
         }
     }
 
-    i.setState(m_state);
     return i;
 }

@@ -54,8 +54,9 @@ public:
     State state() const;
     void setState(State state);
 
-    // TODO
-    //QString comment() const;
+    /** Comment. */
+    QString comment() const;
+    void setComment(const QString &comment);
 
 private:
     QExplicitlySharedDataPointer<IntervalPrivate> d;
