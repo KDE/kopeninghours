@@ -13,7 +13,7 @@ class IntervalPrivate : public QSharedData {
 public:
     QDateTime begin;
     QDateTime end;
-    Interval::State state = Interval::Unknown;
+    Interval::State state = Interval::Invalid;
 };
 }
 
@@ -29,6 +29,11 @@ Interval::Interval(Interval&&) = default;
 Interval::~Interval() = default;
 Interval& Interval::operator=(const Interval&) = default;
 Interval& Interval::operator=(Interval&&) = default;
+
+bool Interval::isValid() const
+{
+    return d->state != Invalid;
+}
 
 QDateTime Interval::begin() const
 {

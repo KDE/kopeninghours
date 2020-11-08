@@ -48,7 +48,7 @@ class Timespan
 {
 public:
     int requiredCapabilities() const;
-    Interval nextInterval(const Interval &interval) const;
+    int nextInterval(Interval &interval, const QDateTime &dt) const;
 
     Time begin = { Time::NoEvent, -1, -1 };
     Time end = { Time::NoEvent, -1, -1 };
@@ -60,6 +60,7 @@ class WeekdayRange
 {
 public:
     int requiredCapabilities() const;
+    int nextInterval(Interval &interval, const QDateTime &dt) const;
 
     uint8_t beginDay = 0;
     uint8_t endDay = 0;
@@ -131,7 +132,7 @@ public:
 
 QDebug operator<<(QDebug debug, const KOpeningHours::Time &time);
 QDebug operator<<(QDebug debug, KOpeningHours::Timespan *timeSpan);
-QDebug operator<<(QDebug debug, KOpeningHours::WeekdayRange *weekdayRange);
+QDebug operator<<(QDebug debug, const KOpeningHours::WeekdayRange *weekdayRange);
 QDebug operator<<(QDebug debug, KOpeningHours::Week *week);
 QDebug operator<<(QDebug debug, const KOpeningHours::Date &date);
 QDebug operator<<(QDebug debug, KOpeningHours::MonthdayRange *monthdayRange);

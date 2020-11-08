@@ -28,12 +28,14 @@ int Timespan::requiredCapabilities() const
     return next ? next->requiredCapabilities() : Capability::None;
 }
 
-Interval Timespan::nextInterval(const Interval &interval) const
+int Timespan::nextInterval(Interval &interval, const QDateTime &dt) const
 {
-    auto i = interval;
-    i.setBegin(QDateTime(interval.begin().date(), {begin.hour, begin.minute}));
-    i.setEnd(QDateTime(interval.begin().date(), {end.hour, end.minute}));
-    return i;
+    if (dt.time().hour() > end.hour) { // TODO
+        return dt.secsTo(QDateTime(dt.date().addDays(1), {}));
+    }
+    interval.setBegin(QDateTime(interval.begin().date(), {begin.hour, begin.minute}));
+    interval.setEnd(QDateTime(interval.begin().date(), {end.hour, end.minute}));
+    return 0;
 }
 
 QDebug operator<<(QDebug debug, Timespan *timeSpan)
@@ -48,6 +50,10 @@ QDebug operator<<(QDebug debug, Timespan *timeSpan)
 
 int WeekdayRange::requiredCapabilities() const
 {
+    if (nthMask > 1 || offset > 0) { // TODO
+        return Capability::NotImplemented;
+    }
+
     switch (holiday) {
         case NoHoliday:
             return (next ? next->requiredCapabilities() : Capability::None) | (next2 ? next2->requiredCapabilities() : Capability::None);
@@ -59,7 +65,15 @@ int WeekdayRange::requiredCapabilities() const
     return Capability::NotImplemented;
 }
 
-QDebug operator<<(QDebug debug, WeekdayRange *weekdayRange)
+int WeekdayRange::nextInterval(Interval &interval, const QDateTime &dt) const
+{
+    if (interval.begin().date().dayOfWeek() <= beginDay && interval.end().date().dayOfWeek() >= endDay) {
+        return 0;
+    }
+    return dt.secsTo(QDateTime(dt.date().addDays(std::abs(beginDay - interval.begin().date().dayOfWeek())), {}));
+}
+
+QDebug operator<<(QDebug debug, const WeekdayRange *weekdayRange)
 {
     debug << "WD" << weekdayRange->beginDay << weekdayRange->endDay << weekdayRange->nthMask << weekdayRange->offset << weekdayRange->holiday;
     if (weekdayRange->next) {
@@ -120,11 +134,19 @@ Interval Rule::nextInterval(const QDateTime &dt) const
 {
     Interval i;
     // ### temporary
-    i.setBegin(QDateTime(dt.date(), {}));
-    i.setEnd(QDateTime(dt.date(), {}));
+    i.setBegin(QDateTime(dt.date(), {0, 0}));
+    i.setEnd(QDateTime(dt.date(), {23, 59}));
+
+    if (m_weekdaySelector) {
+        if (const auto offset = m_weekdaySelector->nextInterval(i, dt)) {
+            return nextInterval(dt.addSecs(offset));
+        }
+    }
 
     if (m_timeSelector) {
-        i = m_timeSelector->nextInterval(i);
+        if (const auto offset = m_timeSelector->nextInterval(i, dt)) {
+            return nextInterval(dt.addSecs(offset));
+        }
     }
 
     i.setState(m_state);

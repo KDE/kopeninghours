@@ -30,6 +30,9 @@ public:
     Interval& operator=(const Interval&);
     Interval& operator=(Interval&&);
 
+    /** Default constructed empty/invalid interval. */
+    bool isValid() const;
+
     /** Begin of the interval. */
     QDateTime begin() const;
     void setBegin(const QDateTime &begin);
@@ -40,6 +43,7 @@ public:
 
     /** Opening state during a time interval */
     enum State {
+        Invalid,
         Open,
         Closed,
         Unknown

@@ -306,6 +306,7 @@ WeekdayRange:
   T_WEEKDAY[D] {
     $$ = new WeekdayRange;
     $$->beginDay = $D;
+    $$->endDay = $D;
   }
 | T_WEEKDAY[D1] T_MINUS T_WEEKDAY[D2] {
     $$ = new WeekdayRange;
