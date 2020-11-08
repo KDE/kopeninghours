@@ -48,6 +48,7 @@ class Timespan
 {
 public:
     int requiredCapabilities() const;
+    Interval nextInterval(const Interval &interval) const;
 
     Time begin = { Time::NoEvent, -1, -1 };
     Time end = { Time::NoEvent, -1, -1 };
@@ -114,6 +115,8 @@ class Rule
 public:
     void setComment(const char *str, int len);
     int requiredCapabilities() const;
+
+    Interval nextInterval(const QDateTime &dt) const;
 
     QString m_comment;
     Interval::State m_state = Interval::Open;

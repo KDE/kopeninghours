@@ -11,6 +11,7 @@
 #include "interval.h"
 #include "logging.h"
 
+#include <QDateTime>
 #include <QScopeGuard>
 
 using namespace KOpeningHours;
@@ -89,5 +90,13 @@ OpeningHours::Error OpeningHours::error() const
 
 Interval OpeningHours::interval(const QDateTime &dt) const
 {
-    return {};
+    Interval i;
+    for (const auto &rule : d->m_rules) {
+        const auto j = rule->nextInterval(dt);
+        if (i.begin().isValid() && j.begin().isValid() && i.begin() < j.begin()) {
+            continue;
+        }
+        i = j;
+    }
+    return i;
 }

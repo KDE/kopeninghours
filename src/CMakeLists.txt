@@ -40,6 +40,7 @@ target_link_libraries(KOpeningHours
 
 ecm_generate_headers(KOpeningHours_FORWARDING_HEADERS
     HEADER_NAMES
+        Interval
         OpeningHours
     PREFIX KOpeningHours
     REQUIRED_HEADERS KOpeningHours_HEADERS

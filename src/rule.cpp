@@ -6,6 +6,8 @@
 
 #include "rule_p.h"
 
+#include <QDateTime>
+
 using namespace KOpeningHours;
 
 QDebug operator<<(QDebug debug, const Time &time)
@@ -24,6 +26,14 @@ int Timespan::requiredCapabilities() const
         return Capability::Location;
     }
     return next ? next->requiredCapabilities() : Capability::None;
+}
+
+Interval Timespan::nextInterval(const Interval &interval) const
+{
+    auto i = interval;
+    i.setBegin(QDateTime(interval.begin().date(), {begin.hour, begin.minute}));
+    i.setEnd(QDateTime(interval.begin().date(), {end.hour, end.minute}));
+    return i;
 }
 
 QDebug operator<<(QDebug debug, Timespan *timeSpan)
@@ -104,4 +114,19 @@ int Rule::requiredCapabilities() const
     c |= m_weekdaySelector ? m_weekdaySelector->requiredCapabilities() : Capability::None;
 
     return c;
+}
+
+Interval Rule::nextInterval(const QDateTime &dt) const
+{
+    Interval i;
+    // ### temporary
+    i.setBegin(QDateTime(dt.date(), {}));
+    i.setEnd(QDateTime(dt.date(), {}));
+
+    if (m_timeSelector) {
+        i = m_timeSelector->nextInterval(i);
+    }
+
+    i.setState(m_state);
+    return i;
 }
