@@ -8,6 +8,47 @@
 
 using namespace KOpeningHours;
 
+QDebug operator<<(QDebug debug, const Time &time)
+{
+    QDebugStateSaver saver(debug);
+    debug.nospace() << time.hour << ':' << time.minute;
+    if (time.event != Time::NoEvent) {
+        debug.nospace() << "[Event" << time.event << ']';
+    }
+    return debug;
+}
+
+int Timespan::requiredCapabilities() const
+{
+    if (begin.event != Time::NoEvent || end.event != Time::NoEvent) {
+        return Capability::Location;
+    }
+    return next ? next->requiredCapabilities() : Capability::None;
+}
+
+QDebug operator<<(QDebug debug, Timespan *timeSpan)
+{
+    QDebugStateSaver saver(debug);
+    debug.nospace() << "T " << timeSpan->begin << '-' << timeSpan->end;
+    if (timeSpan->next) {
+        debug.nospace() << ", " << timeSpan->next.get();
+    }
+    return debug;
+}
+
+int WeekdayRange::requiredCapabilities() const
+{
+    switch (holiday) {
+        case NoHoliday:
+            return (next ? next->requiredCapabilities() : Capability::None) | (next2 ? next2->requiredCapabilities() : Capability::None);
+        case PublicHoliday:
+            return Capability::PublicHoliday;
+        case SchoolHoliday:
+            return Capability::SchoolHoliday;
+    }
+    return Capability::NotImplemented;
+}
+
 QDebug operator<<(QDebug debug, WeekdayRange *weekdayRange)
 {
     debug << "WD" << weekdayRange->beginDay << weekdayRange->endDay << weekdayRange->nthMask << weekdayRange->offset << weekdayRange->holiday;
@@ -54,4 +95,13 @@ QDebug operator<<(QDebug debug, MonthdayRange *monthdayRange)
 void Rule::setComment(const char *str, int len)
 {
     m_comment = QString::fromUtf8(str, len);
+}
+
+int Rule::requiredCapabilities() const
+{
+    int c = Capability::None;
+    c |= m_timeSelector ? m_timeSelector->requiredCapabilities() : Capability::None;
+    c |= m_weekdaySelector ? m_weekdaySelector->requiredCapabilities() : Capability::None;
+
+    return c;
 }

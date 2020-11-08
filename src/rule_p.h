@@ -17,6 +17,16 @@ namespace KOpeningHours {
 
 // see https://wiki.openstreetmap.org/wiki/Key:opening_hours/specification
 
+namespace  Capability {
+    enum RequiredCapabilities {
+        None = 0,
+        PublicHoliday = 1,
+        SchoolHoliday = 2,
+        Location = 4,
+        NotImplemented = 8,
+    };
+}
+
 /** Time */
 class Time
 {
@@ -37,6 +47,8 @@ public:
 class Timespan
 {
 public:
+    int requiredCapabilities() const;
+
     Time begin = { Time::NoEvent, -1, -1 };
     Time end = { Time::NoEvent, -1, -1 };
     std::unique_ptr<Timespan> next;
@@ -46,6 +58,8 @@ public:
 class WeekdayRange
 {
 public:
+    int requiredCapabilities() const;
+
     uint8_t beginDay = 0;
     uint8_t endDay = 0;
     uint8_t nthMask = 0;
@@ -99,6 +113,7 @@ class Rule
 {
 public:
     void setComment(const char *str, int len);
+    int requiredCapabilities() const;
 
     QString m_comment;
     Interval::State m_state = Interval::Open;
@@ -111,6 +126,8 @@ public:
 
 }
 
+QDebug operator<<(QDebug debug, const KOpeningHours::Time &time);
+QDebug operator<<(QDebug debug, KOpeningHours::Timespan *timeSpan);
 QDebug operator<<(QDebug debug, KOpeningHours::WeekdayRange *weekdayRange);
 QDebug operator<<(QDebug debug, KOpeningHours::Week *week);
 QDebug operator<<(QDebug debug, const KOpeningHours::Date &date);

@@ -12,16 +12,21 @@
 
 #include <QSharedData>
 
+#include <cmath>
 #include <memory>
 #include <vector>
 
 namespace KOpeningHours {
 class OpeningHoursPrivate : public QSharedData {
 public:
+    void validate();
     void addRule(Rule *rule);
 
     std::vector<std::unique_ptr<Rule>> m_rules;
     OpeningHours::Error m_error = OpeningHours::NoError;
+
+    float m_latitude = NAN;
+    float m_longitude = NAN;
 };
 
 }

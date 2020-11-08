@@ -59,7 +59,7 @@ private Q_SLOTS:
     {
         QFETCH(QByteArray, input);
         OpeningHours oh(input);
-        QCOMPARE(oh.error(), OpeningHours::NoError);
+        QVERIFY(oh.error() != OpeningHours::SyntaxError);
     }
 
     void testFail_data()
@@ -92,6 +92,20 @@ private Q_SLOTS:
         QFETCH(OpeningHours::Error, error);
         OpeningHours oh(input);
         QCOMPARE(oh.error(), error);
+    }
+
+    void testValidation()
+    {
+        {
+            OpeningHours oh("dusk-dawn");
+            QCOMPARE(oh.error(), OpeningHours::MissingLocation);
+        } {
+            OpeningHours oh("PH off");
+            QCOMPARE(oh.error(), OpeningHours::MissingRegion);
+        } {
+            OpeningHours oh("SH off");
+            QCOMPARE(oh.error(), OpeningHours::UnsupportedFeature);
+        }
     }
 };
 

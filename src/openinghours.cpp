@@ -14,6 +14,33 @@
 
 using namespace KOpeningHours;
 
+void OpeningHoursPrivate::validate()
+{
+    if (m_error == OpeningHours::SyntaxError) {
+        return;
+    }
+
+    int c = Capability::None;
+    for (const auto &rule : m_rules) {
+        c |= rule->requiredCapabilities();
+    }
+
+    if ((c & Capability::Location) && (std::isnan(m_latitude) || std::isnan(m_longitude))) {
+        m_error = OpeningHours::MissingLocation;
+        return;
+    }
+    if (c & Capability::PublicHoliday /* TODO */) {
+        m_error = OpeningHours::MissingRegion;
+        return;
+    }
+    if (c & (Capability::SchoolHoliday | Capability::NotImplemented)) {
+        m_error = OpeningHours::UnsupportedFeature;
+        return;
+    }
+
+    m_error = OpeningHours::NoError;
+}
+
 void OpeningHoursPrivate::addRule(Rule *rule)
 {
     m_rules.push_back(std::unique_ptr<Rule>(rule));
@@ -44,6 +71,7 @@ OpeningHours::OpeningHours(const QByteArray &openingHours)
     }
 
     yy_delete_buffer(state, scanner);
+    d->validate();
 }
 
 OpeningHours::OpeningHours(const OpeningHours&) = default;

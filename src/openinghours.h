@@ -52,6 +52,7 @@ public:
         SyntaxError, ///< syntax error in the opening hours expression
         MissingRegion, ///< expression refers to public or school holidays, but that information is not available
         MissingLocation, ///< evaluation requires location information and those aren't set
+        UnsupportedFeature, ///< expression uses a feature that isn't implemented/supported (yet)
     };
     Q_ENUM(Error)
 
