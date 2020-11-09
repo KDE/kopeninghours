@@ -36,6 +36,14 @@ static void applySelectors(const Selectors &sels, Rule *rule)
     rule->m_yearSelector.reset(sels.yearSelector);
 }
 
+template <typename T> void appendSelector(T* firstSelector, T* selector)
+{
+    while(firstSelector->next) {
+        firstSelector = firstSelector->next.get();
+    }
+    firstSelector->next.reset(selector);
+}
+
 %}
 
 %code requires {
@@ -249,7 +257,7 @@ TimeSelector:
   }
 | TimeSelector[T1] T_COMMA Timespan[T2] {
     $$ = $T1;
-    $$.timeSelector->next.reset($T2);
+    appendSelector($$.timeSelector, $T2);
   }
 ;
 
@@ -306,12 +314,12 @@ WeekdaySelector:
 | HolidySequence[H] T_COMMA WeekdaySequence[W] {
     initSelectors($$);
     $$.weekdaySelector = $H;
-    $$.weekdaySelector->next.reset($W);
+    appendSelector($$.weekdaySelector, $W);
   }
 | WeekdaySequence[W] T_COMMA HolidySequence[H] {
     initSelectors($$);
     $$.weekdaySelector = $W;
-    $$.weekdaySelector->next.reset($H);
+    appendSelector($$.weekdaySelector, $H);
   }
 | HolidySequence[H] " " WeekdaySequence[W] { // TODO
     initSelectors($$);
@@ -323,7 +331,7 @@ WeekdaySelector:
 
 WeekdaySequence:
   WeekdayRange[W] { $$ = $W; }
-| WeekdaySequence[S] T_COMMA WeekdayRange[W] { $$->next.reset($W); }
+| WeekdaySequence[S] T_COMMA WeekdayRange[W] { appendSelector($$, $W); }
 ;
 
 WeekdayRange:
@@ -352,7 +360,7 @@ WeekdayRange:
 
 HolidySequence:
   Holiday[H] { $$ = $H; }
-| HolidySequence[S] T_COMMA Holiday[H] { $$ = $S; $$->next.reset($H); }
+| HolidySequence[S] T_COMMA Holiday[H] { $$ = $S; appendSelector($$, $H); }
 ;
 
 Holiday:
@@ -401,7 +409,7 @@ WeekSelector:
   }
 | WeekSelector[W1] T_COMMA Week[W2] {
     $$ = $W1;
-    $$.weekSelector->next.reset($W2);
+    appendSelector($$.weekSelector, $W2);
   }
 ;
 
@@ -431,7 +439,7 @@ MonthdaySelector:
   }
 | MonthdaySelector[S] T_COMMA MonthdayRange[M] {
     $$ = $S;
-    $$.monthdaySelector->next.reset($M);
+    appendSelector($$.monthdaySelector, $M);
   }
 ;
 
@@ -489,7 +497,7 @@ YearSelector:
   }
 | YearSelector[S] T_COMMA YearRange[Y] {
     $$ = $S;
-    $$.yearSelector->next.reset($Y);
+    appendSelector($$.yearSelector, $Y);
   }
 ;
 
