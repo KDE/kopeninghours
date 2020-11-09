@@ -69,10 +69,10 @@ int WeekdayRange::requiredCapabilities() const
     return Capability::NotImplemented;
 }
 
-int WeekdayRange::nextInterval(Interval &interval, const QDateTime &dt) const
+SelectorResult WeekdayRange::nextInterval(const Interval &interval, const QDateTime &dt) const
 {
     if (interval.begin().date().dayOfWeek() <= beginDay && interval.end().date().dayOfWeek() >= endDay) {
-        return 0;
+        return interval;
     }
     return dt.secsTo(QDateTime(dt.date().addDays(std::abs(beginDay - interval.begin().date().dayOfWeek())), {}));
 }
@@ -211,9 +211,17 @@ Interval Rule::nextInterval(const QDateTime &dt) const
     }
 
     if (m_weekdaySelector) {
-        if (const auto offset = m_weekdaySelector->nextInterval(i, dt)) {
-            return nextInterval(dt.addSecs(offset));
+        SelectorResult r;
+        for (auto s = m_weekdaySelector.get(); s; s = s->next.get()) {
+            r = std::min(r, s->nextInterval(i, dt));
         }
+        if (!r.canMatch()) {
+            return {};
+        }
+        if (r.matchOffset() > 0) {
+            return nextInterval(dt.addSecs(r.matchOffset()));
+        }
+        i = r.interval();
     }
 
     if (m_timeSelector) {

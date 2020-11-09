@@ -94,7 +94,7 @@ class WeekdayRange
 {
 public:
     int requiredCapabilities() const;
-    int nextInterval(Interval &interval, const QDateTime &dt) const;
+    SelectorResult nextInterval(const Interval &interval, const QDateTime &dt) const;
 
     uint8_t beginDay = 0;
     uint8_t endDay = 0;
