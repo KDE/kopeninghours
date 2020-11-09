@@ -31,14 +31,15 @@ int Timespan::requiredCapabilities() const
     return next ? next->requiredCapabilities() : Capability::None;
 }
 
-int Timespan::nextInterval(Interval &interval, const QDateTime &dt) const
+SelectorResult Timespan::nextInterval(const Interval &interval, const QDateTime &dt) const
 {
     if (dt.time().hour() > end.hour) { // TODO
         return dt.secsTo(QDateTime(dt.date().addDays(1), {}));
     }
-    interval.setBegin(QDateTime(interval.begin().date(), {begin.hour, begin.minute}));
-    interval.setEnd(QDateTime(interval.begin().date(), {end.hour, end.minute}));
-    return 0;
+    auto i = interval;
+    i.setBegin(QDateTime(interval.begin().date(), {begin.hour, begin.minute}));
+    i.setEnd(QDateTime(interval.begin().date(), {end.hour, end.minute}));
+    return i;
 }
 
 QDebug operator<<(QDebug debug, const Timespan *timeSpan)
@@ -216,9 +217,17 @@ Interval Rule::nextInterval(const QDateTime &dt) const
     }
 
     if (m_timeSelector) {
-        if (const auto offset = m_timeSelector->nextInterval(i, dt)) {
-            return nextInterval(dt.addSecs(offset));
+        SelectorResult r;
+        for (auto s = m_timeSelector.get(); s; s = s->next.get()) {
+            r = std::min(r, s->nextInterval(i, dt));
         }
+        if (!r.canMatch()) {
+            return {};
+        }
+        if (r.matchOffset() > 0) {
+            return nextInterval(dt.addSecs(r.matchOffset()));
+        }
+        i = r.interval();
     }
 
     return i;

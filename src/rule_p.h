@@ -81,7 +81,7 @@ class Timespan
 {
 public:
     int requiredCapabilities() const;
-    int nextInterval(Interval &interval, const QDateTime &dt) const;
+    SelectorResult nextInterval(const Interval &interval, const QDateTime &dt) const;
 
     Time begin = { Time::NoEvent, -1, -1 };
     Time end = { Time::NoEvent, -1, -1 };
