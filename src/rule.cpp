@@ -107,11 +107,26 @@ QDebug operator<<(QDebug debug, const Date &date)
     return debug;
 }
 
-QDebug operator<<(QDebug debug, MonthdayRange *monthdayRange)
+QDebug operator<<(QDebug debug, const MonthdayRange *monthdayRange)
 {
     debug.nospace() << "M " << monthdayRange->begin << '-' << monthdayRange->end;
     if (monthdayRange->next) {
         debug << ", " << monthdayRange->next.get();
+    }
+    return debug;
+}
+
+int YearRange::requiredCapabilities() const
+{
+    return Capability::NotImplemented;
+}
+
+QDebug operator<<(QDebug debug, const YearRange *yearRange)
+{
+    QDebugStateSaver saver(debug);
+    debug.nospace() << "Y " << yearRange->begin << '-' << yearRange->end << '/' << yearRange->interval;
+    if (yearRange->next) {
+        debug << ", " << yearRange->next.get();
     }
     return debug;
 }
@@ -126,6 +141,7 @@ int Rule::requiredCapabilities() const
     int c = Capability::None;
     c |= m_timeSelector ? m_timeSelector->requiredCapabilities() : Capability::None;
     c |= m_weekdaySelector ? m_weekdaySelector->requiredCapabilities() : Capability::None;
+    c |= m_yearSelector ? m_yearSelector->requiredCapabilities() : Capability::None;
 
     return c;
 }

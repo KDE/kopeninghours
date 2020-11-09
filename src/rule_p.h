@@ -110,6 +110,18 @@ public:
     std::unique_ptr<MonthdayRange> next;
 };
 
+/** Year range. */
+class YearRange
+{
+public:
+    int requiredCapabilities() const;
+
+    int begin = 0;
+    int end = 0;
+    int interval = 1;
+    std::unique_ptr<YearRange> next;
+};
+
 /** Opening hours expression rule. */
 class Rule
 {
@@ -126,6 +138,7 @@ public:
     std::unique_ptr<WeekdayRange> m_weekdaySelector;
     std::unique_ptr<Week> m_weekSelector;
     std::unique_ptr<MonthdayRange> m_monthdaySelector;
+    std::unique_ptr<YearRange> m_yearSelector;
 };
 
 }
@@ -135,6 +148,7 @@ QDebug operator<<(QDebug debug, KOpeningHours::Timespan *timeSpan);
 QDebug operator<<(QDebug debug, const KOpeningHours::WeekdayRange *weekdayRange);
 QDebug operator<<(QDebug debug, KOpeningHours::Week *week);
 QDebug operator<<(QDebug debug, const KOpeningHours::Date &date);
-QDebug operator<<(QDebug debug, KOpeningHours::MonthdayRange *monthdayRange);
+QDebug operator<<(QDebug debug, const KOpeningHours::MonthdayRange *monthdayRange);
+QDebug operator<<(QDebug debug, const KOpeningHours::YearRange *yearRange);
 
 #endif // KOPENINGHOURS_RULE_P_H

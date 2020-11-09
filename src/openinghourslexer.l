@@ -24,6 +24,7 @@ INTEGER     [0-9]+
 COMMENT     ["][^"]*["]
 
 EXTENDED_HOUR_MINUTE [0-4][0-9]:[0-5][0-9]
+YEAR        [1-2][019][0-9][0-9]
 
 %%
 
@@ -35,6 +36,7 @@ EXTENDED_HOUR_MINUTE [0-4][0-9]:[0-5][0-9]
     yylval->time.minute = strtol(yytext + 3, nullptr, 10);
     return T_EXTENDED_HOUR_MINUTE;
 }
+{YEAR} { yylval->num = std::strtol(yytext, nullptr, 10); return T_YEAR; }
 
 "; " { return T_NORMAL_RULE_SEPARATOR; }
 ", " { return T_ADDITIONAL_RULE_SEPARATOR; }

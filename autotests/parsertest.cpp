@@ -31,6 +31,10 @@ private Q_SLOTS:
         T("easter off");
         T("easter +1 day off");
         T("easter -2 days off");
+        T("2020");
+        T("2020-2021");
+        T("1970-2022/2");
+        T("2020+");
 
         // from https://wiki.openstreetmap.org/wiki/Key:opening_hours#Simple_examples
         T("Mo-Fr 08:00-17:30");
@@ -94,18 +98,24 @@ private Q_SLOTS:
         QCOMPARE(oh.error(), error);
     }
 
+    void testValidation_data()
+    {
+        QTest::addColumn<QByteArray>("expression");
+        QTest::addColumn<OpeningHours::Error>("error");
+
+        QTest::newRow("location") << QByteArray("dusk-dawn") << OpeningHours::MissingLocation;
+        QTest::newRow("PH") << QByteArray("PH off") << OpeningHours::MissingRegion;
+        QTest::newRow("SH") << QByteArray("SH off") << OpeningHours::UnsupportedFeature;
+        QTest::newRow("year interval") << QByteArray("1980-2030/4") << OpeningHours::UnsupportedFeature;
+    }
+
     void testValidation()
     {
-        {
-            OpeningHours oh("dusk-dawn");
-            QCOMPARE(oh.error(), OpeningHours::MissingLocation);
-        } {
-            OpeningHours oh("PH off");
-            QCOMPARE(oh.error(), OpeningHours::MissingRegion);
-        } {
-            OpeningHours oh("SH off");
-            QCOMPARE(oh.error(), OpeningHours::UnsupportedFeature);
-        }
+        QFETCH(QByteArray, expression);
+        QFETCH(OpeningHours::Error, error);
+
+        OpeningHours oh(expression);
+        QCOMPARE(oh.error(), error);
     }
 };
 
