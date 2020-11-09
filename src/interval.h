@@ -9,6 +9,7 @@
 
 #include "kopeninghours_export.h"
 
+#include <QDebug>
 #include <QExplicitlySharedDataPointer>
 #include <QMetaType>
 
@@ -29,6 +30,8 @@ public:
     ~Interval();
     Interval& operator=(const Interval&);
     Interval& operator=(Interval&&);
+
+    bool operator<(const Interval &other) const;
 
     /** Default constructed empty/invalid interval. */
     bool isValid() const;
@@ -63,5 +66,7 @@ private:
 };
 
 }
+
+KOPENINGHOURS_EXPORT QDebug operator<<(QDebug debug, const KOpeningHours::Interval &interval);
 
 #endif // KOPENINGHOURS_INTERVAL_H

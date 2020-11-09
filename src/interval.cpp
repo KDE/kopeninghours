@@ -31,6 +31,15 @@ Interval::~Interval() = default;
 Interval& Interval::operator=(const Interval&) = default;
 Interval& Interval::operator=(Interval&&) = default;
 
+bool Interval::operator<(const Interval &other) const
+{
+    // TODO handle open intervals correctly
+    if (d->begin == other.d->begin) {
+        return d->end < other.d->end;
+    }
+    return d->begin < other.d->begin;
+}
+
 bool Interval::isValid() const
 {
     return d->state != Invalid;
@@ -78,4 +87,11 @@ void Interval::setComment(const QString &comment)
 {
     d.detach();
     d->comment = comment;
+}
+
+QDebug operator<<(QDebug debug, const Interval &interval)
+{
+    QDebugStateSaver saver(debug);
+    debug.nospace() << '[' << interval.begin() << '-' << interval.end() << ' ' << interval.state() << ':' << interval.comment() << ']';
+    return debug;
 }

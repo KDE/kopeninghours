@@ -27,6 +27,39 @@ namespace  Capability {
     };
 }
 
+/** Result from selector evaluation. */
+class SelectorResult {
+public:
+    /** Selector will never match. */
+    inline SelectorResult(bool = false) : m_matching(false) {}
+    /** Selector will match in @p offset seconds. */
+    inline SelectorResult(qint64 offset)
+        : m_offset(offset)
+        , m_matching(offset >= 0)
+        {}
+    /** Selector matches for @p interval. */
+    inline SelectorResult(const Interval &interval) : m_interval(interval) {}
+
+    inline bool operator<(const SelectorResult &other) const {
+        if (m_matching == other.m_matching) {
+            if (m_offset == other.m_offset) {
+                return m_interval < other.m_interval;
+            }
+            return m_offset < other.m_offset;
+        }
+        return m_matching && !other.m_matching;
+    }
+
+    inline bool canMatch() const { return m_matching; }
+    inline int64_t matchOffset() const { return m_offset; }
+    inline Interval interval() const { return m_interval; }
+
+private:
+    Interval m_interval;
+    int64_t m_offset = 0;
+    bool m_matching = true;
+};
+
 /** Time */
 class Time
 {
@@ -120,6 +153,7 @@ class YearRange
 {
 public:
     int requiredCapabilities() const;
+    SelectorResult nextInterval(const Interval &interval, const QDateTime &dt) const;
 
     int begin = 0;
     int end = 0;

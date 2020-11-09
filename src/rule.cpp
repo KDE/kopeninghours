@@ -131,7 +131,26 @@ QDebug operator<<(QDebug debug, const MonthdayRange *monthdayRange)
 
 int YearRange::requiredCapabilities() const
 {
-    return Capability::NotImplemented;
+    if (interval != 1 || end == 0) {
+        return Capability::NotImplemented;
+    }
+    return next ? next->requiredCapabilities() : Capability::None;
+}
+
+SelectorResult YearRange::nextInterval(const Interval &interval, const QDateTime &dt) const
+{
+    const auto y = dt.date().year();
+    if (begin > dt.date().year()) {
+        return dt.secsTo(QDateTime({begin, 1, 1}, {0, 0}));
+    }
+    if (end > 0 && end < y) {
+        return false;
+    }
+
+    auto i = interval;
+    i.setBegin(QDateTime({begin, 1, 1}, {0, 0}));
+    i.setEnd(QDateTime({end, 12, 31}, {23, 59}));
+    return i;
 }
 
 QDebug operator<<(QDebug debug, const YearRange *yearRange)
@@ -166,14 +185,29 @@ Interval Rule::nextInterval(const QDateTime &dt) const
     Interval i;
     i.setState(m_state);
     i.setComment(m_comment);
-    if (!m_timeSelector && !m_weekdaySelector && !m_monthdaySelector && !m_weekSelector) {
+    if (!m_timeSelector && !m_weekdaySelector && !m_monthdaySelector && !m_weekSelector && !m_yearSelector) {
         // 24/7 has no selectors
         return i;
     }
 
+    if (m_yearSelector) {
+        SelectorResult r;
+        for (auto s = m_yearSelector.get(); s; s = s->next.get()) {
+            r = std::min(r, s->nextInterval(i, dt));
+        }
+        if (!r.canMatch()) {
+            return {};
+        }
+        if (r.matchOffset() > 0) {
+            return nextInterval(dt.addSecs(r.matchOffset()));
+        }
+        i = r.interval();
+    }
     // ### temporary
+    else {
     i.setBegin(QDateTime(dt.date(), {0, 0}));
     i.setEnd(QDateTime(dt.date(), {23, 59}));
+    }
 
     if (m_weekdaySelector) {
         if (const auto offset = m_weekdaySelector->nextInterval(i, dt)) {
