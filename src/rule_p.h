@@ -52,6 +52,7 @@ public:
 
     Time begin = { Time::NoEvent, -1, -1 };
     Time end = { Time::NoEvent, -1, -1 };
+    int interval = 0;
     std::unique_ptr<Timespan> next;
 };
 
@@ -144,7 +145,7 @@ public:
 }
 
 QDebug operator<<(QDebug debug, const KOpeningHours::Time &time);
-QDebug operator<<(QDebug debug, KOpeningHours::Timespan *timeSpan);
+QDebug operator<<(QDebug debug, const KOpeningHours::Timespan *timeSpan);
 QDebug operator<<(QDebug debug, const KOpeningHours::WeekdayRange *weekdayRange);
 QDebug operator<<(QDebug debug, KOpeningHours::Week *week);
 QDebug operator<<(QDebug debug, const KOpeningHours::Date &date);

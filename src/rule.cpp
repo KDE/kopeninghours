@@ -25,6 +25,9 @@ int Timespan::requiredCapabilities() const
     if (begin.event != Time::NoEvent || end.event != Time::NoEvent) {
         return Capability::Location;
     }
+    if (interval > 0) {
+        return Capability::NotImplemented;
+    }
     return next ? next->requiredCapabilities() : Capability::None;
 }
 
@@ -38,10 +41,10 @@ int Timespan::nextInterval(Interval &interval, const QDateTime &dt) const
     return 0;
 }
 
-QDebug operator<<(QDebug debug, Timespan *timeSpan)
+QDebug operator<<(QDebug debug, const Timespan *timeSpan)
 {
     QDebugStateSaver saver(debug);
-    debug.nospace() << "T " << timeSpan->begin << '-' << timeSpan->end;
+    debug.nospace() << "T " << timeSpan->begin << '-' << timeSpan->end << '/' << timeSpan->interval;
     if (timeSpan->next) {
         debug.nospace() << ", " << timeSpan->next.get();
     }

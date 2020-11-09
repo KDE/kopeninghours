@@ -143,6 +143,8 @@ typedef void* yyscan_t;
 %type <weekdayRange> WeekdayRange
 %type <weekdayRange> HolidySequence
 %type <weekdayRange> Holiday
+%type <num> NthSequence
+%type <num> NthEntry
 %type <offset> DayOffset
 %type <week> Week
 %type <date> DateFrom
@@ -265,7 +267,19 @@ Timespan:
     $$->begin = $T1;
     $$->end = $T2;
   }
-// TODO
+| Time[T1] T_MINUS Time[T2] T_PLUS {
+    $$ = new Timespan;
+    $$->begin = $T1;
+    $$->end = $T2;
+    // TODO open end flag
+  }
+| Time[T1] T_MINUS Time[T2] T_SLASH T_INTEGER[I] {
+    $$ = new Timespan;
+    $$->begin = $T1;
+    $$->end = $T2;
+    $$->interval = $I;
+  }
+// TODO interval in hour:min format
 ;
 
 Time:
@@ -323,7 +337,17 @@ WeekdayRange:
     $$->beginDay = $D1;
     $$->endDay = $D2;
   }
-  // TODO
+| T_WEEKDAY[D] T_LBRACKET NthSequence[N] T_RBRACKET {
+    $$ = new WeekdayRange;
+    $$->beginDay = $$->endDay = $D;
+    $$->nthMask = $N;
+  }
+| T_WEEKDAY[D] T_LBRACKET NthSequence[N] T_RBRACKET DayOffset[O] {
+    $$ = new WeekdayRange;
+    $$->beginDay = $$->endDay = $D;
+    $$->nthMask = $N;
+    $$->offset = $O;
+  }
 ;
 
 HolidySequence:
@@ -344,6 +368,23 @@ Holiday:
 | T_SH {
     $$ = new WeekdayRange;
     $$->holiday = WeekdayRange::SchoolHoliday;
+  }
+;
+
+NthSequence:
+  NthEntry[N] { $$ = $N; }
+| NthSequence[N1] T_COMMA NthEntry[N2] { $$ = $N1 | $N2; }
+
+NthEntry:
+  T_INTEGER[N] { $$ = (1 << ($N - 1)); }
+| T_INTEGER[N1] T_MINUS T_INTEGER[N2] {
+    $$ = 0;
+    for (int i = $N1; i < $N2; ++i) {
+        $$ |= (1 << (i - 1));
+    }
+  }
+| T_MINUS T_INTEGER[N] {
+    $$ = (1 << ($N - 1)) | (1 << 7);
   }
 ;
 
@@ -423,7 +464,7 @@ DateOffset:
 
 DateFrom:
   T_MONTH[M] T_INTEGER[D] { $$ = { 0, $M, $D, Date::FixedDate }; }
-| T_INTEGER[Y] T_MONTH[M] T_INTEGER[D] { $$ = { $Y, $M, $D, Date::FixedDate }; }
+| T_YEAR[Y] T_MONTH[M] T_INTEGER[D] { $$ = { $Y, $M, $D, Date::FixedDate }; }
 | VariableDate[D] { $$ = $D; }
 | T_INTEGER[Y] VariableDate[D] {
     $$ = $D;
