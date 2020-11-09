@@ -81,6 +81,8 @@ public:
 class Week
 {
 public:
+    int requiredCapabilities() const;
+
     uint8_t beginWeek = 0;
     uint8_t endWeek = 0;
     uint8_t interval = 1;
@@ -105,6 +107,8 @@ public:
 class MonthdayRange
 {
 public:
+    int requiredCapabilities() const;
+
     Date begin = { 0, 0, 0, Date::FixedDate };
     Date end = { 0, 0, 0, Date::FixedDate };
     // TODO offsets
@@ -147,7 +151,7 @@ public:
 QDebug operator<<(QDebug debug, const KOpeningHours::Time &time);
 QDebug operator<<(QDebug debug, const KOpeningHours::Timespan *timeSpan);
 QDebug operator<<(QDebug debug, const KOpeningHours::WeekdayRange *weekdayRange);
-QDebug operator<<(QDebug debug, KOpeningHours::Week *week);
+QDebug operator<<(QDebug debug, const KOpeningHours::Week *week);
 QDebug operator<<(QDebug debug, const KOpeningHours::Date &date);
 QDebug operator<<(QDebug debug, const KOpeningHours::MonthdayRange *monthdayRange);
 QDebug operator<<(QDebug debug, const KOpeningHours::YearRange *yearRange);

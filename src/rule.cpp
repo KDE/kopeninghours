@@ -88,7 +88,12 @@ QDebug operator<<(QDebug debug, const WeekdayRange *weekdayRange)
     return debug;
 }
 
-QDebug operator<<(QDebug debug, Week *week)
+int Week::requiredCapabilities() const
+{
+    return Capability::NotImplemented;
+}
+
+QDebug operator<<(QDebug debug, const Week *week)
 {
     debug.nospace() << "W " << week->beginWeek << '-' << week->endWeek << '/' << week->interval;
     if (week->next) {
@@ -108,6 +113,11 @@ QDebug operator<<(QDebug debug, const Date &date)
             break;
     }
     return debug;
+}
+
+int MonthdayRange::requiredCapabilities() const
+{
+    return Capability::NotImplemented;
 }
 
 QDebug operator<<(QDebug debug, const MonthdayRange *monthdayRange)
@@ -144,6 +154,8 @@ int Rule::requiredCapabilities() const
     int c = Capability::None;
     c |= m_timeSelector ? m_timeSelector->requiredCapabilities() : Capability::None;
     c |= m_weekdaySelector ? m_weekdaySelector->requiredCapabilities() : Capability::None;
+    c |= m_weekSelector ? m_weekSelector->requiredCapabilities() : Capability::None;
+    c |= m_monthdaySelector ? m_monthdaySelector->requiredCapabilities() : Capability::None;
     c |= m_yearSelector ? m_yearSelector->requiredCapabilities() : Capability::None;
 
     return c;
