@@ -17,8 +17,18 @@ using namespace KOpeningHours;
 
 void printInterval(const Interval &i)
 {
-    std::cout << qPrintable(i.begin().toString(QLatin1String("ddd yyyy-MM-dd hh:mm"))) << " - "
-              << qPrintable(i.end().toString(QLatin1String("ddd yyyy-MM-dd hh:mm"))) << ": ";
+    if (i.begin().isValid()) {
+        std::cout << qPrintable(i.begin().toString(QLatin1String("ddd yyyy-MM-dd hh:mm")));
+    } else {
+        std::cout << "since ever";
+    }
+    std::cout << " - ";
+    if (i.end().isValid()) {
+        std::cout << qPrintable(i.end().toString(QLatin1String("ddd yyyy-MM-dd hh:mm")));
+    } else {
+        std::cout << "until all eternity";
+    }
+    std::cout << ": ";
     switch (i.state()) {
         case Interval::Open:
             std::cout << "open";
@@ -66,8 +76,10 @@ int main(int argc, char **argv)
     auto interval = oh.interval(QDateTime::currentDateTime());
     printInterval(interval);
     for (int i = 0; interval.isValid() && i < 20; ++i) {
-        interval = oh.interval(interval.end().addSecs(60));
-        printInterval(interval);
+        interval = oh.nextInterval(interval);
+        if (interval.isValid()) {
+            printInterval(interval);
+        }
     }
 
     return 0;

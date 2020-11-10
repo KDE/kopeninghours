@@ -94,10 +94,18 @@ Interval OpeningHours::interval(const QDateTime &dt) const
     Interval i;
     for (const auto &rule : d->m_rules) {
         const auto j = rule->nextInterval(alignedTime);
-        if (i.begin().isValid() && j.begin().isValid() && i.begin() < j.begin()) {
+        if (!j.isValid()) {
             continue;
         }
-        i = j;
+        i = i.isValid() ? std::min(i, j) : j;
     }
     return i;
+}
+
+Interval OpeningHours::nextInterval(const Interval &interval) const
+{
+    if (interval.end().isValid()) {
+        return this->interval(interval.end().addSecs(60));
+    }
+    return {};
 }

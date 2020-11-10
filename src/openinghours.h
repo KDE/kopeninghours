@@ -64,9 +64,10 @@ public:
     // TODO human readable, translated description of the opening hours
     // QString description() const
 
-    // TODO
+    /** Returns the interval containing @p dt. */
     Interval interval(const QDateTime &dt) const;
-    // nextInterval(Interval) const
+    /** Returns the interval immediately following @p interval. */
+    Interval nextInterval(const Interval &interval) const;
 
     // TODO point-in-time mode iteration API?
     // nextPointInTime(QDateTime) const
