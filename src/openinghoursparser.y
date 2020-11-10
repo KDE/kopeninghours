@@ -417,7 +417,7 @@ WeekSelector:
 Week:
   T_INTEGER[N] {
     $$ = new Week;
-    $$->beginWeek = $N;
+    $$->beginWeek = $$->endWeek = $N;
   }
 | T_INTEGER[N1] T_MINUS T_INTEGER[N2] {
     $$ = new Week;

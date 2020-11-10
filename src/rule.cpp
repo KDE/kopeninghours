@@ -93,12 +93,33 @@ QDebug operator<<(QDebug debug, const WeekdayRange *weekdayRange)
 
 int Week::requiredCapabilities() const
 {
-    return Capability::NotImplemented;
+    if (interval > 1) {
+        return Capability::NotImplemented;
+    }
+    return next ? next->requiredCapabilities() : Capability::None;
 }
 
 SelectorResult Week::nextInterval(const Interval &interval, const QDateTime &dt) const
 {
-    return false;
+    // TODO is endWeek < beginWeek for year wrap-around allowed?
+    if (dt.date().weekNumber() < beginWeek) {
+        const auto days = (7 - dt.date().dayOfWeek()) + 7 * (beginWeek - dt.date().weekNumber() - 1) + 1;
+        return dt.secsTo(QDateTime(dt.date().addDays(days), {0, 0}));
+    }
+    if (dt.date().weekNumber() > endWeek) {
+        // "In accordance with ISO 8601, weeks start on Monday and the first Thursday of a year is always in week 1 of that year."
+        auto d = QDateTime({dt.date().year() + 1, 1, 1}, {0, 0});
+        while (d.date().weekNumber() != 1) {
+            d = d.addDays(1);
+        }
+        return dt.secsTo(d);
+    }
+
+    auto i = interval;
+    i.setBegin(QDateTime(dt.date().addDays(1 - dt.date().dayOfWeek() - 7 * (dt.date().weekNumber() - beginWeek)), {0, 0}));
+    // TODO year wrap around
+    i.setEnd(QDateTime(i.begin().date().addDays(((endWeek-beginWeek) * 7) + 6), {23, 59}));
+    return i;
 }
 
 QDebug operator<<(QDebug debug, const Week *week)

@@ -65,6 +65,12 @@ private Q_SLOTS:
         QTest::newRow("full date") << QByteArray("2020 Nov 7") << QDateTime({2020, 11, 7}, {0, 0}) << QDateTime({2020, 11, 7}, {23, 59});
         QTest::newRow("full date next year") << QByteArray("2021 Nov 7") << QDateTime({2021, 11, 7}, {0, 0}) << QDateTime({2021, 11, 7}, {23, 59});
         QTest::newRow("full date range") << QByteArray("2020 Nov 6-2020 Dec 13") << QDateTime({2020, 11, 6}, {0, 0}) << QDateTime({2020, 12, 13}, {23, 59});
+
+        QTest::newRow("week") << QByteArray("week 45") << QDateTime({2020, 11, 2}, {0, 0}) << QDateTime({2020, 11, 8}, {23, 59});
+        QTest::newRow("next week") << QByteArray("week 46") << QDateTime({2020, 11, 9}, {0, 0}) << QDateTime({2020, 11, 15}, {23, 59});
+        QTest::newRow("prev week") << QByteArray("week 44") << QDateTime({2021, 11, 1}, {0, 0}) << QDateTime({2021, 11, 7}, {23, 59});
+        QTest::newRow("week range") << QByteArray("week 44-46") << QDateTime({2020, 10, 26}, {0, 0}) << QDateTime({2020, 11, 15}, {23, 59});
+        QTest::newRow("week set") << QByteArray("week 42,45,46") << QDateTime({2020, 11, 2}, {0, 0}) << QDateTime({2020, 11, 8}, {23, 59});
     }
 
     void testNext()
