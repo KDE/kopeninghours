@@ -35,12 +35,15 @@ int Timespan::requiredCapabilities() const
 
 SelectorResult Timespan::nextInterval(const Interval &interval, const QDateTime &dt) const
 {
-    if (dt.time().hour() > end.hour) { // TODO
-        return dt.secsTo(QDateTime(dt.date().addDays(1), {}));
+    if (dt.time() < QTime(begin.hour, begin.minute)) {
+        return dt.secsTo(QDateTime(dt.date(), {begin.hour, begin.minute}));
+    }
+    if (dt.time() > QTime(end.hour, end.minute)) {
+        return dt.secsTo(QDateTime(dt.date().addDays(1), {begin.hour, begin.minute}));
     }
     auto i = interval;
-    i.setBegin(QDateTime(interval.begin().date(), {begin.hour, begin.minute}));
-    i.setEnd(QDateTime(interval.begin().date(), {end.hour, end.minute}));
+    i.setBegin(QDateTime(dt.date(), {begin.hour, begin.minute}));
+    i.setEnd(QDateTime(dt.date(), {end.hour, end.minute}));
     return i;
 }
 
@@ -190,10 +193,10 @@ SelectorResult MonthdayRange::nextInterval(const Interval &interval, const QDate
     }
 
     auto i = interval;
-    i.setBegin(QDateTime({begin.year ? begin.year : std::max(i.begin().date().year(), 1970), begin.month, begin.day ? begin.day : 1}, {0, 0}));
+    i.setBegin(QDateTime({begin.year ? begin.year : dt.date().year(), begin.month, begin.day ? begin.day : 1}, {0, 0}));
     // TODO this does not handle year wrapping
     // TODO this does not handle open ended intervals
-    i.setEnd(QDateTime({end.year ? end.year : std::min(i.end().date().year(), 2100), end.month, end.day ? end.day : daysInMonth(end.month)}, {23, 59}));
+    i.setEnd(QDateTime({end.year ? end.year : dt.date().year(), end.month, end.day ? end.day : daysInMonth(end.month)}, {23, 59}));
     return i;
 }
 
@@ -281,11 +284,6 @@ Interval Rule::nextInterval(const QDateTime &dt) const
             return nextInterval(dt.addSecs(r.matchOffset()));
         }
         i = r.interval();
-    }
-    // ### temporary
-    else {
-    i.setBegin(QDateTime(dt.date(), {0, 0}));
-    i.setEnd(QDateTime(dt.date(), {23, 59}));
     }
 
     if (m_monthdaySelector) {
