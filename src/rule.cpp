@@ -211,7 +211,7 @@ QDebug operator<<(QDebug debug, const MonthdayRange *monthdayRange)
 
 int YearRange::requiredCapabilities() const
 {
-    if (interval != 1 || end == 0) {
+    if (interval != 1) {
         return Capability::NotImplemented;
     }
     return next ? next->requiredCapabilities() : Capability::None;
@@ -229,7 +229,7 @@ SelectorResult YearRange::nextInterval(const Interval &interval, const QDateTime
 
     auto i = interval;
     i.setBegin(QDateTime({begin, 1, 1}, {0, 0}));
-    i.setEnd(QDateTime({end, 12, 31}, {23, 59}));
+    i.setEnd(end > 0 ? QDateTime({end, 12, 31}, {23, 59}) : QDateTime());
     return i;
 }
 
