@@ -34,7 +34,9 @@ private Q_SLOTS:
         QTest::newRow("previous day") << QByteArray("Fr") << QDateTime({2020, 11, 13}, {0, 0}) << QDateTime({2020, 11, 13}, {23, 59});
         QTest::newRow("day set") << QByteArray("Fr,Sa,Su") << QDateTime({2020, 11, 7}, {0, 0}) << QDateTime({2020, 11, 7}, {23, 59});
 
-        //QTest::newRow("matching day range") << QByteArray("Sa-Su") << QDateTime({2020, 11, 7}, {0, 0}) << QDateTime({2020, 11, 8}, {23, 59});
+        QTest::newRow("matching day range1") << QByteArray("Sa-Su") << QDateTime({2020, 11, 7}, {0, 0}) << QDateTime({2020, 11, 8}, {23, 59});
+        QTest::newRow("matching day range2") << QByteArray("Fr-Su") << QDateTime({2020, 11, 6}, {0, 0}) << QDateTime({2020, 11, 8}, {23, 59});
+        QTest::newRow("matching day range2") << QByteArray("Mo-Tu,Th-Fr") << QDateTime({2020, 11, 9}, {0, 0}) << QDateTime({2020, 11, 10}, {23, 59});
 
         QTest::newRow("day and time") << QByteArray("Su 20:00-22:00") << QDateTime({2020, 11, 8}, {20, 0}) << QDateTime({2020, 11, 8}, {22, 0});
 

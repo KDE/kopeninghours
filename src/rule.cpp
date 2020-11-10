@@ -73,10 +73,21 @@ int WeekdayRange::requiredCapabilities() const
 
 SelectorResult WeekdayRange::nextInterval(const Interval &interval, const QDateTime &dt) const
 {
-    if (interval.begin().date().dayOfWeek() <= beginDay && interval.end().date().dayOfWeek() >= endDay) {
-        return interval;
+    // TODO wrap around?
+    if (dt.date().dayOfWeek() < beginDay) {
+        const auto d = beginDay - dt.date().dayOfWeek();
+        return dt.secsTo(QDateTime(dt.date().addDays(d), {0, 0}));
     }
-    return dt.secsTo(QDateTime(dt.date().addDays(std::abs(beginDay - interval.begin().date().dayOfWeek())), {}));
+    if (dt.date().dayOfWeek() > endDay) {
+        const auto d = 7 + beginDay - dt.date().dayOfWeek();
+        return dt.secsTo(QDateTime(dt.date().addDays(d), {0, 0}));
+    }
+
+    auto i = interval;
+    const auto d = beginDay - dt.date().dayOfWeek();
+    i.setBegin(QDateTime(dt.date().addDays(d), {0, 0}));
+    i.setEnd(QDateTime(i.begin().date().addDays(endDay - beginDay), {23, 59}));
+    return i;
 }
 
 QDebug operator<<(QDebug debug, const WeekdayRange *weekdayRange)
