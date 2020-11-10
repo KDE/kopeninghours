@@ -5,6 +5,7 @@
 */
 
 #include "rule_p.h"
+#include "logging.h"
 
 #include <QCalendar>
 #include <QDateTime>
@@ -140,6 +141,9 @@ SelectorResult MonthdayRange::nextInterval(const Interval &interval, const QDate
     if (begin.year > 0 && begin.year > dt.date().year()) {
         return dt.secsTo(QDateTime({begin.year, begin.month, std::max<int>(begin.day, 1)}, {0, 0}));
     }
+    if (end.year > 0 && end.year < dt.date().year()) {
+        return false;
+    }
     if (begin.month > dt.date().month()) {
         return dt.secsTo(QDateTime({dt.date().year(), begin.month, std::max<int>(begin.day, 1)}, {0, 0}));
     }
@@ -149,7 +153,9 @@ SelectorResult MonthdayRange::nextInterval(const Interval &interval, const QDate
     if (begin.day > 0 && begin.day > dt.date().day()) {
         return dt.secsTo(QDateTime({dt.date().year(), dt.date().month(), begin.day}, {0, 0}));
     }
-    // TODO check end
+    if (end.day > 0 && end.day < dt.date().day()) {
+        return dt.secsTo(QDateTime({dt.date().year(), dt.date().month(), dt.date().daysInMonth()}, {23, 59})) + 60;
+    }
 
     auto i = interval;
     i.setBegin(QDateTime({begin.year ? begin.year : std::max(i.begin().date().year(), 1970), begin.month, begin.day ? begin.day : 1}, {0, 0}));
@@ -221,6 +227,8 @@ int Rule::requiredCapabilities() const
 
 Interval Rule::nextInterval(const QDateTime &dt) const
 {
+    qCDebug(Log) << dt;
+
     Interval i;
     i.setState(m_state);
     i.setComment(m_comment);
