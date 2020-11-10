@@ -6,6 +6,7 @@
 
 #include "rule_p.h"
 
+#include <QCalendar>
 #include <QDateTime>
 
 using namespace KOpeningHours;
@@ -94,6 +95,11 @@ int Week::requiredCapabilities() const
     return Capability::NotImplemented;
 }
 
+SelectorResult Week::nextInterval(const Interval &interval, const QDateTime &dt) const
+{
+    return false;
+}
+
 QDebug operator<<(QDebug debug, const Week *week)
 {
     debug.nospace() << "W " << week->beginWeek << '-' << week->endWeek << '/' << week->interval;
@@ -118,7 +124,39 @@ QDebug operator<<(QDebug debug, const Date &date)
 
 int MonthdayRange::requiredCapabilities() const
 {
-    return Capability::NotImplemented;
+    if (offset != 0 || begin.variableDate != Date::FixedDate || end.variableDate != Date::FixedDate) {
+        return Capability::NotImplemented;
+    }
+    return next ? next->requiredCapabilities() : Capability::None;
+}
+
+static int daysInMonth(int month)
+{
+    return QCalendar(QCalendar::System::Gregorian).daysInMonth(month);
+}
+
+SelectorResult MonthdayRange::nextInterval(const Interval &interval, const QDateTime &dt) const
+{
+    if (begin.year > 0 && begin.year > dt.date().year()) {
+        return dt.secsTo(QDateTime({begin.year, begin.month, std::max<int>(begin.day, 1)}, {0, 0}));
+    }
+    if (begin.month > dt.date().month()) {
+        return dt.secsTo(QDateTime({dt.date().year(), begin.month, std::max<int>(begin.day, 1)}, {0, 0}));
+    }
+    if (end.month && end.month < dt.date().month()) {
+        return dt.secsTo(QDateTime({dt.date().year() + 1, begin.month, std::max<int>(begin.day, 1)}, {0, 0}));
+    }
+    if (begin.day > 0 && begin.day > dt.date().day()) {
+        return dt.secsTo(QDateTime({dt.date().year(), dt.date().month(), begin.day}, {0, 0}));
+    }
+    // TODO check end
+
+    auto i = interval;
+    i.setBegin(QDateTime({begin.year ? begin.year : std::max(i.begin().date().year(), 1970), begin.month, begin.day ? begin.day : 1}, {0, 0}));
+    // TODO this does not handle year wrapping
+    // TODO this does not handle open ended intervals
+    i.setEnd(QDateTime({end.year ? end.year : std::min(i.end().date().year(), 2100), end.month, end.day ? end.day : daysInMonth(end.month)}, {23, 59}));
+    return i;
 }
 
 QDebug operator<<(QDebug debug, const MonthdayRange *monthdayRange)
@@ -208,6 +246,34 @@ Interval Rule::nextInterval(const QDateTime &dt) const
     else {
     i.setBegin(QDateTime(dt.date(), {0, 0}));
     i.setEnd(QDateTime(dt.date(), {23, 59}));
+    }
+
+    if (m_monthdaySelector) {
+        SelectorResult r;
+        for (auto s = m_monthdaySelector.get(); s; s = s->next.get()) {
+            r = std::min(r, s->nextInterval(i, dt));
+        }
+        if (!r.canMatch()) {
+            return {};
+        }
+        if (r.matchOffset() > 0) {
+            return nextInterval(dt.addSecs(r.matchOffset()));
+        }
+        i = r.interval();
+    }
+
+    if (m_weekSelector) {
+        SelectorResult r;
+        for (auto s = m_weekSelector.get(); s; s = s->next.get()) {
+            r = std::min(r, s->nextInterval(i, dt));
+        }
+        if (!r.canMatch()) {
+            return {};
+        }
+        if (r.matchOffset() > 0) {
+            return nextInterval(dt.addSecs(r.matchOffset()));
+        }
+        i = r.interval();
     }
 
     if (m_weekdaySelector) {

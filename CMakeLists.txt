@@ -32,11 +32,11 @@ ecm_setup_version(PROJECT VARIABLE_PREFIX KOPENINGHOURS
     PACKAGE_VERSION_FILE "${CMAKE_CURRENT_BINARY_DIR}/KOpeningHoursConfigVersion.cmake"
 )
 
-find_package(Qt5 5.12 REQUIRED COMPONENTS Core)
+find_package(Qt5 5.14 REQUIRED COMPONENTS Core) # 5.14 for QCalendar
 find_package(KF5 REQUIRED COMPONENTS Holidays)
 
 if (BUILD_TESTING)
-    find_package(Qt5 5.12 REQUIRED COMPONENTS Test)
+    find_package(Qt5 5.14 REQUIRED COMPONENTS Test)
 endif()
 
 find_package(FLEX REQUIRED)

@@ -115,6 +115,7 @@ class Week
 {
 public:
     int requiredCapabilities() const;
+    SelectorResult nextInterval(const Interval &interval, const QDateTime &dt) const;
 
     uint8_t beginWeek = 0;
     uint8_t endWeek = 0;
@@ -141,6 +142,7 @@ class MonthdayRange
 {
 public:
     int requiredCapabilities() const;
+    SelectorResult nextInterval(const Interval &interval, const QDateTime &dt) const;
 
     Date begin = { 0, 0, 0, Date::FixedDate };
     Date end = { 0, 0, 0, Date::FixedDate };
