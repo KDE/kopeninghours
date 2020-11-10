@@ -107,6 +107,16 @@ private Q_SLOTS:
         const auto i = oh.interval(QDateTime({2020, 11, 7}, {18, 0}));
         QVERIFY(!i.isValid());
     }
+
+    void testFractions()
+    {
+        OpeningHours oh("14:00-15:00");
+        QCOMPARE(oh.error(), OpeningHours::NoError);
+        const auto i = oh.interval(QDateTime({2020, 11, 7}, {15, 55, 34, 123}));
+        QVERIFY(i.isValid());
+        QCOMPARE(i.begin(), QDateTime({2020, 11, 8}, {14, 0}));
+        QCOMPARE(i.end(), QDateTime({2020, 11, 8}, {15, 0}));
+    }
 };
 
 QTEST_GUILESS_MAIN(EvaluateTest)
