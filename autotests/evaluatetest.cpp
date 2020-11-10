@@ -56,7 +56,15 @@ private Q_SLOTS:
         QTest::newRow("prev month/day") << QByteArray("Nov 6") << QDateTime({2021, 11, 6}, {0, 0}) << QDateTime({2021, 11, 6}, {23, 59});
         QTest::newRow("month/day set")  << QByteArray("Oct 6,Nov 8,Dec 10") << QDateTime({2020, 11, 8}, {0, 0}) << QDateTime({2020, 11, 8}, {23, 59});
         QTest::newRow("month/day range")  << QByteArray("Oct 6-Dec 10") << QDateTime({2020, 10, 6}, {0, 0}) << QDateTime({2020, 12, 10}, {23, 59});
+        // TODO infinite eval loop
 //         QTest::newRow("month/day range year wrap")  << QByteArray("Oct 6-Mar 10") << QDateTime({2020, 10, 6}, {0, 0}) << QDateTime({2021, 3, 10}, {23, 59});
+
+        // TODO parser error
+//         QTest::newRow("year/month") << QByteArray("2020 Nov") << QDateTime({2020, 11, 1}, {0, 0}) << QDateTime({2020, 11, 30}, {23, 59});
+
+        QTest::newRow("full date") << QByteArray("2020 Nov 7") << QDateTime({2020, 11, 7}, {0, 0}) << QDateTime({2020, 11, 7}, {23, 59});
+        QTest::newRow("full date next year") << QByteArray("2021 Nov 7") << QDateTime({2021, 11, 7}, {0, 0}) << QDateTime({2021, 11, 7}, {23, 59});
+        QTest::newRow("full date range") << QByteArray("2020 Nov 6-2020 Dec 13") << QDateTime({2020, 11, 6}, {0, 0}) << QDateTime({2020, 12, 13}, {23, 59});
     }
 
     void testNext()
@@ -74,9 +82,18 @@ private Q_SLOTS:
         QCOMPARE(i.state(), Interval::Open);
     }
 
+    void testNoMatch_data()
+    {
+        QTest::addColumn<QByteArray>("expression");
+        QTest::newRow("year range") << QByteArray("1980-2000");
+        QTest::newRow("full date") << QByteArray("2020 Nov 6");
+        QTest::newRow("date range") << QByteArray("1980 Jan 1-2020 Nov 6");
+    }
+
     void testNoMatch()
     {
-        OpeningHours oh("1980-2000");
+        QFETCH(QByteArray, expression);
+        OpeningHours oh(expression);
         QCOMPARE(oh.error(), OpeningHours::NoError);
         const auto i = oh.interval(QDateTime({2020, 11, 7}, {18, 0}));
         QVERIFY(!i.isValid());
