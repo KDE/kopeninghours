@@ -38,7 +38,7 @@ SelectorResult Timespan::nextInterval(const Interval &interval, const QDateTime 
     if (dt.time() < QTime(begin.hour, begin.minute)) {
         return dt.secsTo(QDateTime(dt.date(), {begin.hour, begin.minute}));
     }
-    if (dt.time() > QTime(end.hour, end.minute)) {
+    if (dt.time() >= QTime(end.hour, end.minute)) {
         return dt.secsTo(QDateTime(dt.date().addDays(1), {begin.hour, begin.minute}));
     }
     auto i = interval;

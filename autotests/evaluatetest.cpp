@@ -30,6 +30,9 @@ private Q_SLOTS:
         QTest::newRow("two time ranges") << QByteArray("08:00-10:00,20:00-22:00") << QDateTime({2020, 11, 7}, {20, 0}) << QDateTime({2020, 11, 7}, {22, 0});
         QTest::newRow("time ranges next day") << QByteArray("08:30-10:45,12:00-13:30,14:00-15:00") << QDateTime({2020, 11, 8}, {8, 30}) << QDateTime({2020, 11, 8}, {10, 45});
 
+        QTest::newRow("time start match") << QByteArray("18:00-22:00") << QDateTime({2020, 11, 7}, {18, 0}) << QDateTime({2020, 11, 7}, {22, 0});
+        QTest::newRow("time end match") << QByteArray("16:00-18:00") << QDateTime({2020, 11, 8}, {16, 0}) << QDateTime({2020, 11, 8}, {18, 0});
+
         QTest::newRow("matching day") << QByteArray("Sa") << QDateTime({2020, 11, 7}, {0, 0}) << QDateTime({2020, 11, 7}, {23, 59});
         QTest::newRow("next day") << QByteArray("Su") << QDateTime({2020, 11, 8}, {0, 0}) << QDateTime({2020, 11, 8}, {23, 59});
         QTest::newRow("previous day") << QByteArray("Fr") << QDateTime({2020, 11, 13}, {0, 0}) << QDateTime({2020, 11, 13}, {23, 59});
@@ -85,7 +88,14 @@ private Q_SLOTS:
 
         OpeningHours oh(expression);
         QCOMPARE(oh.error(), OpeningHours::NoError);
-        const auto i = oh.interval(QDateTime({2020, 11, 7}, {18, 0}));
+        auto i = oh.interval(QDateTime({2020, 11, 7}, {18, 0}));
+        qDebug() << i;
+        QVERIFY(i.isValid());
+        if (i.state() == Interval::Closed) { // skip synthetic closed intervals
+            i = oh.nextInterval(i);
+            qDebug() << i;
+        }
+
         QVERIFY(i.isValid());
         QCOMPARE(i.begin(), begin);
         QCOMPARE(i.end(), end);
@@ -113,7 +123,8 @@ private Q_SLOTS:
     {
         OpeningHours oh("14:00-15:00");
         QCOMPARE(oh.error(), OpeningHours::NoError);
-        const auto i = oh.interval(QDateTime({2020, 11, 7}, {15, 55, 34, 123}));
+        auto i = oh.interval(QDateTime({2020, 11, 7}, {15, 55, 34, 123}));
+        i = oh.nextInterval(i);
         QVERIFY(i.isValid());
         QCOMPARE(i.begin(), QDateTime({2020, 11, 8}, {14, 0}));
         QCOMPARE(i.end(), QDateTime({2020, 11, 8}, {15, 0}));

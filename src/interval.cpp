@@ -67,6 +67,11 @@ void Interval::setEnd(const QDateTime &end)
     d->end = end;
 }
 
+bool Interval::contains(const QDateTime &dt) const
+{
+    return (d->begin.isValid() ? d->begin <= dt : true) && (d->end.isValid() ? dt <= d->end : true);
+}
+
 Interval::State Interval::state() const
 {
     return d->state;

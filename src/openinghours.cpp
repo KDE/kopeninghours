@@ -99,13 +99,24 @@ Interval OpeningHours::interval(const QDateTime &dt) const
         }
         i = i.isValid() ? std::min(i, j) : j;
     }
-    return i;
+
+    // check if the resulting interval contains dt, otherwise create a synthetic closed interval
+    if (!i.isValid() || i.contains(dt)) {
+        return i;
+    }
+
+    Interval i2;
+    i2.setState(Interval::Closed);
+    i2.setBegin(dt);
+    i2.setEnd(i.begin());
+    qDebug() << i << dt << i2;
+    return i2;
 }
 
 Interval OpeningHours::nextInterval(const Interval &interval) const
 {
     if (interval.end().isValid()) {
-        return this->interval(interval.end().addSecs(60));
+        return this->interval(interval.end());
     }
     return {};
 }

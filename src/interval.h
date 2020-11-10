@@ -44,6 +44,9 @@ public:
     QDateTime end() const;
     void setEnd(const QDateTime &end);
 
+    /** Check if this interval contains @p dt. */
+    bool contains(const QDateTime &dt) const;
+
     /** Opening state during a time interval */
     enum State {
         Invalid,
