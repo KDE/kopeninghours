@@ -144,7 +144,7 @@ public:
 
     Date begin = { 0, 0, 0, Date::FixedDate };
     Date end = { 0, 0, 0, Date::FixedDate };
-    // TODO offsets
+    int32_t offset = 0;
     std::unique_ptr<MonthdayRange> next;
 };
 

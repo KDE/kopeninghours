@@ -154,6 +154,7 @@ typedef void* yyscan_t;
 %type <num> NthSequence
 %type <num> NthEntry
 %type <offset> DayOffset
+%type <offset> DateOffset
 %type <week> Week
 %type <date> DateFrom
 %type <date> DateTo
@@ -460,7 +461,7 @@ MonthdayRange:
 | DateFrom[D] DateOffset[O] {
     $$ = new MonthdayRange;
     $$->begin = $D;
-    // TODO offset
+    $$->offset = $O;
   }
 | DateFrom[F] T_MINUS DateTo[T] {
     $$ = new MonthdayRange;
@@ -470,9 +471,9 @@ MonthdayRange:
 ;
 
 DateOffset:
-  T_PLUS T_WEEKDAY
-| T_MINUS T_WEEKDAY
-| DayOffset
+  T_PLUS T_WEEKDAY[D] { $$ = $D; }
+| T_MINUS T_WEEKDAY[D] { $$ = -$D; }
+| DayOffset[O] { $$ = $O; }
 ;
 
 DateFrom:
