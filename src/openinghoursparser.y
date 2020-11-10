@@ -446,11 +446,16 @@ MonthdaySelector:
 MonthdayRange:
   T_MONTH[M] {
     $$ = new MonthdayRange;
-    $$->begin = { 0, $M, 0, Date::FixedDate };
+    $$->begin = $$->end = { 0, $M, 0, Date::FixedDate };
+  }
+| T_MONTH[M1] T_MINUS T_MONTH[M2] {
+    $$ = new MonthdayRange;
+    $$->begin = { 0, $M1, 0, Date::FixedDate };
+    $$->end = { 0, $M2, 0, Date::FixedDate };
   }
 | DateFrom[D] {
     $$ = new MonthdayRange;
-    $$->begin = $D;
+    $$->begin = $$->end = $D;
   }
 | DateFrom[D] DateOffset[O] {
     $$ = new MonthdayRange;
