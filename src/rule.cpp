@@ -182,7 +182,7 @@ SelectorResult MonthdayRange::nextInterval(const Interval &interval, const QDate
     if (begin.month > dt.date().month()) {
         return dt.secsTo(QDateTime({dt.date().year(), begin.month, std::max<int>(begin.day, 1)}, {0, 0}));
     }
-    if (end.month && end.month < dt.date().month()) {
+    if (end.month && end.month >= begin.month && end.month < dt.date().month()) {
         return dt.secsTo(QDateTime({dt.date().year() + 1, begin.month, std::max<int>(begin.day, 1)}, {0, 0}));
     }
     if (begin.day > 0 && begin.day > dt.date().day()) {
@@ -196,7 +196,7 @@ SelectorResult MonthdayRange::nextInterval(const Interval &interval, const QDate
     i.setBegin(QDateTime({begin.year ? begin.year : dt.date().year(), begin.month, begin.day ? begin.day : 1}, {0, 0}));
     // TODO this does not handle year wrapping
     // TODO this does not handle open ended intervals
-    i.setEnd(QDateTime({end.year ? end.year : dt.date().year(), end.month, end.day ? end.day : daysInMonth(end.month)}, {23, 59}));
+    i.setEnd(QDateTime({end.year ? end.year : dt.date().year() + (end.month < begin.month ? 1 : 0), end.month, end.day ? end.day : daysInMonth(end.month)}, {23, 59}));
     return i;
 }
 
