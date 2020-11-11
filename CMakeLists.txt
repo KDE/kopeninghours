@@ -33,6 +33,7 @@ ecm_setup_version(PROJECT VARIABLE_PREFIX KOPENINGHOURS
 )
 
 find_package(Qt5 5.14 REQUIRED COMPONENTS Core) # 5.14 for QCalendar
+find_package(Qt5 CONFIG QUIET OPTIONAL_COMPONENTS Qml)
 find_package(KF5 REQUIRED COMPONENTS Holidays)
 
 if (BUILD_TESTING)

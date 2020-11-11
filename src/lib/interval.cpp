@@ -6,8 +6,6 @@
 
 #include "interval.h"
 
-#include <QDateTime>
-
 namespace KOpeningHours {
 class IntervalPrivate : public QSharedData {
 public:

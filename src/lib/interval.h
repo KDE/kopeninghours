@@ -9,6 +9,7 @@
 
 #include "kopeninghours_export.h"
 
+#include <QDateTime>
 #include <QDebug>
 #include <QExplicitlySharedDataPointer>
 #include <QMetaType>
@@ -23,6 +24,10 @@ class IntervalPrivate;
 class KOPENINGHOURS_EXPORT Interval
 {
     Q_GADGET
+    Q_PROPERTY(State state READ state)
+    Q_PROPERTY(QDateTime begin READ begin)
+    Q_PROPERTY(QDateTime end READ end)
+    Q_PROPERTY(QString comment READ comment)
 public:
     Interval();
     Interval(const Interval&);
@@ -69,6 +74,8 @@ private:
 };
 
 }
+
+Q_DECLARE_METATYPE(KOpeningHours::Interval)
 
 KOPENINGHOURS_EXPORT QDebug operator<<(QDebug debug, const KOpeningHours::Interval &interval);
 

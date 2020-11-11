@@ -30,6 +30,7 @@ class OpeningHoursPrivate;
 class KOPENINGHOURS_EXPORT OpeningHours
 {
     Q_GADGET
+    Q_PROPERTY(Error error READ error)
 public:
     explicit OpeningHours();
     /** Parse OSM opening hours expression @p openingHours. */
@@ -65,9 +66,9 @@ public:
     // QString description() const
 
     /** Returns the interval containing @p dt. */
-    Interval interval(const QDateTime &dt) const;
+    Q_INVOKABLE KOpeningHours::Interval interval(const QDateTime &dt) const;
     /** Returns the interval immediately following @p interval. */
-    Interval nextInterval(const Interval &interval) const;
+    Q_INVOKABLE Interval nextInterval(const KOpeningHours::Interval &interval) const;
 
     // TODO point-in-time mode iteration API?
     // nextPointInTime(QDateTime) const
@@ -77,5 +78,7 @@ private:
 };
 
 }
+
+Q_DECLARE_METATYPE(KOpeningHours::OpeningHours)
 
 #endif // KOPENINGHOURS_OPENINGHOURS_H
