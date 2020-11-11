@@ -129,6 +129,58 @@ private Q_SLOTS:
         QCOMPARE(i.begin(), QDateTime({2020, 11, 8}, {14, 0}));
         QCOMPARE(i.end(), QDateTime({2020, 11, 8}, {15, 0}));
     }
+
+    void testBoundaries_data()
+    {
+        QTest::addColumn<QByteArray>("expression");
+        QTest::addColumn<QDateTime>("begin");
+        QTest::addColumn<QDateTime>("end");
+
+        QTest::newRow("year") << QByteArray("2020") << QDateTime({2020, 1, 1}, {0, 0}) << QDateTime({2020, 12, 31}, {23, 59});
+        QTest::newRow("month") << QByteArray("Nov") << QDateTime({2020, 11, 1}, {0, 0}) << QDateTime({2020, 11, 30}, {23, 59});
+        QTest::newRow("week") << QByteArray("week 45") << QDateTime({2020, 11, 2}, {0, 0}) << QDateTime({2020, 11, 8}, {23, 59});
+        QTest::newRow("day") << QByteArray("Nov 07") << QDateTime({2020, 11, 7}, {0, 0}) << QDateTime({2020, 11, 7}, {23, 59});
+    }
+
+    void testBoundaries()
+    {
+        QFETCH(QByteArray, expression);
+        QFETCH(QDateTime, begin);
+        QFETCH(QDateTime, end);
+
+        OpeningHours oh(expression);
+        QCOMPARE(oh.error(), OpeningHours::NoError);
+
+        const auto beginInterval = oh.interval(begin);
+        QVERIFY(beginInterval.isValid());
+        QCOMPARE(beginInterval.begin(), begin);
+        QCOMPARE(beginInterval.end(), end);
+        QVERIFY(beginInterval.contains(begin));
+        QVERIFY(beginInterval.contains(end));
+
+        const auto endInterval = oh.interval(end);
+        QVERIFY(endInterval.isValid());
+        QCOMPARE(endInterval.begin(), begin);
+        QCOMPARE(endInterval.end(), end);
+        QVERIFY(endInterval.contains(begin));
+        QVERIFY(endInterval.contains(end));
+
+        QCOMPARE(beginInterval < endInterval, false);
+        QCOMPARE(endInterval < beginInterval, false);
+
+        const auto nextInterval = oh.interval(end.addSecs(60));
+        if (nextInterval.isValid()) {
+            QVERIFY(endInterval < nextInterval);
+            QVERIFY(nextInterval.begin() > end);
+        }
+
+        const auto prevInterval = oh.interval(begin.addSecs(-60));
+        if (prevInterval.isValid()) {
+            QVERIFY(prevInterval < beginInterval);
+            QVERIFY(prevInterval.end() <= beginInterval.begin());
+            QVERIFY(prevInterval.begin() < beginInterval.begin());
+        }
+    }
 };
 
 QTEST_GUILESS_MAIN(EvaluateTest)
