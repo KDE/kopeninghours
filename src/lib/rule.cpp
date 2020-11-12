@@ -76,20 +76,26 @@ int WeekdayRange::requiredCapabilities() const
 
 SelectorResult WeekdayRange::nextInterval(const Interval &interval, const QDateTime &dt) const
 {
-    // TODO wrap around?
-    if (dt.date().dayOfWeek() < beginDay) {
-        const auto d = beginDay - dt.date().dayOfWeek();
-        return dt.secsTo(QDateTime(dt.date().addDays(d), {0, 0}));
-    }
-    if (dt.date().dayOfWeek() > endDay) {
-        const auto d = 7 + beginDay - dt.date().dayOfWeek();
-        return dt.secsTo(QDateTime(dt.date().addDays(d), {0, 0}));
+    if (beginDay <= endDay) {
+        if (dt.date().dayOfWeek() < beginDay) {
+            const auto d = beginDay - dt.date().dayOfWeek();
+            return dt.secsTo(QDateTime(dt.date().addDays(d), {0, 0}));
+        }
+        if (dt.date().dayOfWeek() > endDay) {
+            const auto d = 7 + beginDay - dt.date().dayOfWeek();
+            return dt.secsTo(QDateTime(dt.date().addDays(d), {0, 0}));
+        }
+    } else {
+        if (dt.date().dayOfWeek() < beginDay && dt.date().dayOfWeek() > endDay) {
+            const auto d = beginDay - dt.date().dayOfWeek();
+            return dt.secsTo(QDateTime(dt.date().addDays(d), {0, 0}));
+        }
     }
 
     auto i = interval;
     const auto d = beginDay - dt.date().dayOfWeek();
     i.setBegin(QDateTime(dt.date().addDays(d), {0, 0}));
-    i.setEnd(QDateTime(i.begin().date().addDays(endDay - beginDay), {23, 59}));
+    i.setEnd(QDateTime(i.begin().date().addDays(beginDay <= endDay ? endDay - beginDay : 7 - (beginDay - endDay)), {23, 59}));
     return i;
 }
 
