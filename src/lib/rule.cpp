@@ -8,6 +8,8 @@
 #include "logging.h"
 #include "openinghours_p.h"
 
+#include <KHolidays/SunRiseSet>
+
 #include <QCalendar>
 #include <QDateTime>
 
@@ -25,26 +27,48 @@ QDebug operator<<(QDebug debug, const Time &time)
 
 int Timespan::requiredCapabilities() const
 {
+    if (interval > 0 || begin.event == Time::Dusk || begin.event == Time::Dawn || end.event == Time::Dusk || end.event == Time::Dawn) {
+        return Capability::NotImplemented;
+    }
     if (begin.event != Time::NoEvent || end.event != Time::NoEvent) {
         return Capability::Location;
-    }
-    if (interval > 0) {
-        return Capability::NotImplemented;
     }
     return next ? next->requiredCapabilities() : Capability::None;
 }
 
+static QTime resolveTime(const Time &t, const QDate &date, OpeningHoursPrivate *context)
+{
+    switch (t.event) {
+        case Time::NoEvent:
+            return {t.hour, t.minute};
+        case Time::Dawn:
+            // TODO
+        case Time::Sunrise:
+            // TODO we probably want an explicit timezone selection as well, for evaluating this in other locations
+            return QDateTime(date, KHolidays::SunRiseSet::utcSunrise(date, context->m_latitude, context->m_longitude), Qt::UTC).toLocalTime().time();
+        case Time::Dusk:
+            // TODO
+        case Time::Sunset:
+            return QDateTime(date, KHolidays::SunRiseSet::utcSunset(date, context->m_latitude, context->m_longitude), Qt::UTC).toLocalTime().time();
+            break;
+    }
+    return {};
+}
+
 SelectorResult Timespan::nextInterval(const Interval &interval, const QDateTime &dt, OpeningHoursPrivate *context) const
 {
-    if (dt.time() < QTime(begin.hour, begin.minute)) {
-        return dt.secsTo(QDateTime(dt.date(), {begin.hour, begin.minute}));
+    const auto beginTime = resolveTime(begin, dt.date(), context);
+    const auto endTime = resolveTime(end, dt.date(), context);
+
+    if (dt.time() < beginTime) {
+        return dt.secsTo(QDateTime(dt.date(), beginTime));
     }
-    if (dt.time() >= QTime(end.hour, end.minute)) {
-        return dt.secsTo(QDateTime(dt.date().addDays(1), {begin.hour, begin.minute}));
+    if (dt.time() >= endTime) {
+        return dt.secsTo(QDateTime(dt.date().addDays(1), beginTime));
     }
     auto i = interval;
-    i.setBegin(QDateTime(dt.date(), {begin.hour, begin.minute}));
-    i.setEnd(QDateTime(dt.date(), {end.hour, end.minute}));
+    i.setBegin(QDateTime(dt.date(), beginTime));
+    i.setEnd(QDateTime(dt.date(), endTime));
     return i;
 }
 

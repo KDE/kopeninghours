@@ -72,6 +72,7 @@ private Q_SLOTS:
 
         const auto expr = inFile.readLine();
         OpeningHours oh(expr);
+        oh.setLocation(52.5, 13.0);
         QCOMPARE(oh.error(), OpeningHours::NoError);
 
         const auto iterationCount = inFile.readLine().toInt();

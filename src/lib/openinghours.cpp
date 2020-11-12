@@ -119,6 +119,10 @@ OpeningHours::Error OpeningHours::error() const
 
 Interval OpeningHours::interval(const QDateTime &dt) const
 {
+    if (d->m_error != NoError) {
+        return {};
+    }
+
     const auto alignedTime = QDateTime(dt.date(), {dt.time().hour(), dt.time().minute()});
     Interval i;
     for (const auto &rule : d->m_rules) {

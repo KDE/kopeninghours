@@ -78,6 +78,8 @@ private Q_SLOTS:
         QTest::newRow("prev week") << QByteArray("week 44") << QDateTime({2021, 11, 1}, {0, 0}) << QDateTime({2021, 11, 7}, {23, 59});
         QTest::newRow("week range") << QByteArray("week 44-46") << QDateTime({2020, 10, 26}, {0, 0}) << QDateTime({2020, 11, 15}, {23, 59});
         QTest::newRow("week set") << QByteArray("week 42,45,46") << QDateTime({2020, 11, 2}, {0, 0}) << QDateTime({2020, 11, 8}, {23, 59});
+
+        QTest::newRow("variable time") << QByteArray("sunrise-sunset") << QDateTime({2020, 11, 8}, {7, 18}) << QDateTime({2020, 11, 8}, {16, 25});
     }
 
     void testNext()
@@ -87,6 +89,7 @@ private Q_SLOTS:
         QFETCH(QDateTime, end);
 
         OpeningHours oh(expression);
+        oh.setLocation(52.5, 13.0);
         QCOMPARE(oh.error(), OpeningHours::NoError);
         auto i = oh.interval(QDateTime({2020, 11, 7}, {18, 0}));
         qDebug() << i;

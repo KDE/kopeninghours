@@ -24,7 +24,11 @@ Kirigami.ApplicationWindow {
         Kirigami.Page {
             id: page
             title: "OSM Opening Hours Expression Evaluator"
-            property var oh: OpeningHoursParser.parse(expression.text);
+            property var oh: {
+                var v = OpeningHoursParser.parse(expression.text);
+                v.setLocation(52.5, 13.0);
+                return v;
+            }
 
             function evaluateCurrentState() {
                 if (oh.error != OpeningHours.NoError) {
@@ -67,8 +71,31 @@ Kirigami.ApplicationWindow {
                     Layout.fillWidth: true
                     text: "Mo-Fr 08:00-12:00,13:00-17:30; Sa 08:00-12:00"
                     onTextChanged: {
-                        page.oh = OpeningHoursParser.parse(text)
+                        var oh = OpeningHoursParser.parse(text);
+                        oh.setLocation(latitude.text, longitude.text);
+                        page.oh = oh;
                         evaluateCurrentState();
+                    }
+                }
+
+                RowLayout {
+                    QQC2.Label { text: "Latitude:" }
+                    QQC2.TextField {
+                        id: latitude
+                        text: "52.5"
+                        onTextChanged: {
+                            oh.latitude = text;
+                            evaluateCurrentState();
+                        }
+                    }
+                    QQC2.Label { text: "Longitude:" }
+                    QQC2.TextField {
+                        id: longitude
+                        text: "13.0"
+                        onTextChanged: {
+                            oh.longitude = text;
+                            evaluateCurrentState();
+                        }
                     }
                 }
 

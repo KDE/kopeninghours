@@ -103,7 +103,7 @@ private Q_SLOTS:
         QTest::addColumn<QByteArray>("expression");
         QTest::addColumn<OpeningHours::Error>("error");
 
-        QTest::newRow("location") << QByteArray("dusk-dawn") << OpeningHours::MissingLocation;
+        QTest::newRow("location") << QByteArray("sunrise-sunset") << OpeningHours::MissingLocation;
         QTest::newRow("PH") << QByteArray("PH off") << OpeningHours::MissingRegion;
         QTest::newRow("SH") << QByteArray("SH off") << OpeningHours::UnsupportedFeature;
         QTest::newRow("year interval") << QByteArray("1980-2030/4") << OpeningHours::UnsupportedFeature;
