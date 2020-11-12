@@ -101,27 +101,54 @@ int WeekdayRange::requiredCapabilities() const
 
 SelectorResult WeekdayRange::nextInterval(const Interval &interval, const QDateTime &dt, OpeningHoursPrivate *context) const
 {
-    if (beginDay <= endDay) {
-        if (dt.date().dayOfWeek() < beginDay) {
-            const auto d = beginDay - dt.date().dayOfWeek();
-            return dt.secsTo(QDateTime(dt.date().addDays(d), {0, 0}));
-        }
-        if (dt.date().dayOfWeek() > endDay) {
-            const auto d = 7 + beginDay - dt.date().dayOfWeek();
-            return dt.secsTo(QDateTime(dt.date().addDays(d), {0, 0}));
-        }
-    } else {
-        if (dt.date().dayOfWeek() < beginDay && dt.date().dayOfWeek() > endDay) {
-            const auto d = beginDay - dt.date().dayOfWeek();
-            return dt.secsTo(QDateTime(dt.date().addDays(d), {0, 0}));
-        }
-    }
+    switch (holiday) {
+        case NoHoliday:
+        {
+            if (beginDay <= endDay) {
+                if (dt.date().dayOfWeek() < beginDay) {
+                    const auto d = beginDay - dt.date().dayOfWeek();
+                    return dt.secsTo(QDateTime(dt.date().addDays(d), {0, 0}));
+                }
+                if (dt.date().dayOfWeek() > endDay) {
+                    const auto d = 7 + beginDay - dt.date().dayOfWeek();
+                    return dt.secsTo(QDateTime(dt.date().addDays(d), {0, 0}));
+                }
+            } else {
+                if (dt.date().dayOfWeek() < beginDay && dt.date().dayOfWeek() > endDay) {
+                    const auto d = beginDay - dt.date().dayOfWeek();
+                    return dt.secsTo(QDateTime(dt.date().addDays(d), {0, 0}));
+                }
+            }
 
-    auto i = interval;
-    const auto d = beginDay - dt.date().dayOfWeek();
-    i.setBegin(QDateTime(dt.date().addDays(d), {0, 0}));
-    i.setEnd(QDateTime(i.begin().date().addDays(beginDay <= endDay ? endDay - beginDay : 7 - (beginDay - endDay)), {23, 59}));
-    return i;
+            auto i = interval;
+            const auto d = beginDay - dt.date().dayOfWeek();
+            i.setBegin(QDateTime(dt.date().addDays(d), {0, 0}));
+            i.setEnd(QDateTime(i.begin().date().addDays(beginDay <= endDay ? endDay - beginDay : 7 - (beginDay - endDay)), {23, 59}));
+            return i;
+        }
+        case PublicHoliday:
+        {
+            auto holidays = context->m_region.holidays(dt.date(), dt.date().addYears(1));
+            holidays.erase(std::remove_if(holidays.begin(), holidays.end(), [](const auto &h) { return h.dayType() != KHolidays::Holiday::NonWorkday; }), holidays.end());
+            std::sort(holidays.begin(), holidays.end(), [](const auto &lhs, const auto &rhs) { return lhs.observedStartDate() < rhs.observedStartDate(); });
+            if (holidays.empty()) {
+                return false;
+            }
+
+            const auto h = holidays.at(0);
+            if (dt.date() < h.observedStartDate()) {
+                return dt.secsTo(QDateTime(h.observedStartDate(), {0, 0}));
+            }
+
+            auto i = interval;
+            i.setBegin(QDateTime(h.observedStartDate(), {0, 0}));
+            i.setEnd(QDateTime(h.observedEndDate().addDays(1), {0, 0}));
+            return i;
+        }
+        case SchoolHoliday:
+            Q_UNREACHABLE();
+    }
+    return {};
 }
 
 QDebug operator<<(QDebug debug, const WeekdayRange *weekdayRange)

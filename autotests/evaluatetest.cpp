@@ -80,6 +80,8 @@ private Q_SLOTS:
         QTest::newRow("week set") << QByteArray("week 42,45,46") << QDateTime({2020, 11, 2}, {0, 0}) << QDateTime({2020, 11, 8}, {23, 59});
 
         QTest::newRow("variable time") << QByteArray("sunrise-sunset") << QDateTime({2020, 11, 8}, {7, 18}) << QDateTime({2020, 11, 8}, {16, 25});
+
+        QTest::newRow("public holiday") << QByteArray("PH") << QDateTime({2020, 12, 25}, {0, 0}) << QDateTime({2020, 12, 26}, {0, 0});
     }
 
     void testNext()
@@ -90,6 +92,7 @@ private Q_SLOTS:
 
         OpeningHours oh(expression);
         oh.setLocation(52.5, 13.0);
+        oh.setRegion(QStringLiteral("de-be_de"));
         QCOMPARE(oh.error(), OpeningHours::NoError);
         auto i = oh.interval(QDateTime({2020, 11, 7}, {18, 0}));
         qDebug() << i;
