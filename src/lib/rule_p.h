@@ -15,6 +15,8 @@
 
 namespace KOpeningHours {
 
+class OpeningHoursPrivate;
+
 // see https://wiki.openstreetmap.org/wiki/Key:opening_hours/specification
 
 namespace  Capability {
@@ -81,7 +83,7 @@ class Timespan
 {
 public:
     int requiredCapabilities() const;
-    SelectorResult nextInterval(const Interval &interval, const QDateTime &dt) const;
+    SelectorResult nextInterval(const Interval &interval, const QDateTime &dt, OpeningHoursPrivate *context) const;
 
     Time begin = { Time::NoEvent, -1, -1 };
     Time end = { Time::NoEvent, -1, -1 };
@@ -94,7 +96,7 @@ class WeekdayRange
 {
 public:
     int requiredCapabilities() const;
-    SelectorResult nextInterval(const Interval &interval, const QDateTime &dt) const;
+    SelectorResult nextInterval(const Interval &interval, const QDateTime &dt, OpeningHoursPrivate *context) const;
 
     uint8_t beginDay = 0;
     uint8_t endDay = 0;
@@ -115,7 +117,7 @@ class Week
 {
 public:
     int requiredCapabilities() const;
-    SelectorResult nextInterval(const Interval &interval, const QDateTime &dt) const;
+    SelectorResult nextInterval(const Interval &interval, const QDateTime &dt, OpeningHoursPrivate *context) const;
 
     uint8_t beginWeek = 0;
     uint8_t endWeek = 0;
@@ -142,7 +144,7 @@ class MonthdayRange
 {
 public:
     int requiredCapabilities() const;
-    SelectorResult nextInterval(const Interval &interval, const QDateTime &dt) const;
+    SelectorResult nextInterval(const Interval &interval, const QDateTime &dt, OpeningHoursPrivate *context) const;
 
     Date begin = { 0, 0, 0, Date::FixedDate };
     Date end = { 0, 0, 0, Date::FixedDate };
@@ -155,7 +157,7 @@ class YearRange
 {
 public:
     int requiredCapabilities() const;
-    SelectorResult nextInterval(const Interval &interval, const QDateTime &dt) const;
+    SelectorResult nextInterval(const Interval &interval, const QDateTime &dt, OpeningHoursPrivate *context) const;
 
     int begin = 0;
     int end = 0;
@@ -170,7 +172,7 @@ public:
     void setComment(const char *str, int len);
     int requiredCapabilities() const;
 
-    Interval nextInterval(const QDateTime &dt) const;
+    Interval nextInterval(const QDateTime &dt, OpeningHoursPrivate *context) const;
 
     QString m_comment;
     Interval::State m_state = Interval::Open;

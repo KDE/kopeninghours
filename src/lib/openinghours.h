@@ -31,6 +31,8 @@ class KOPENINGHOURS_EXPORT OpeningHours
 {
     Q_GADGET
     Q_PROPERTY(Error error READ error)
+    Q_PROPERTY(float latitude READ latitude WRITE setLatitude)
+    Q_PROPERTY(float longitude READ longitude WRITE setLongitude)
 public:
     explicit OpeningHours();
     /** Parse OSM opening hours expression @p openingHours. */
@@ -45,7 +47,18 @@ public:
     // TODO
     //setRegion(ISO 3166-2)
     //setCountry(ISO 3166-1)
-    //setLocation(lat, lon)
+
+    /** Geographic coordinate at which this expression should be evaluated.
+     *  This is needed for expressions containing location-based variable time references,
+     *  such as "sunset". If the expression requires a location, error() returns @c MissingLocation
+     *  if no location has been specified.
+     */
+    Q_INVOKABLE void setLocation(float latitude, float longitude);
+
+    float latitude() const;
+    void setLatitude(float latitude);
+    float longitude() const;
+    void setLongitude(float longitude);
 
     /** Error codes. */
     enum Error {

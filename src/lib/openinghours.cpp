@@ -83,6 +83,35 @@ OpeningHours::~OpeningHours() = default;
 OpeningHours& OpeningHours::operator=(const OpeningHours&) = default;
 OpeningHours& OpeningHours::operator=(OpeningHours&&) = default;
 
+void OpeningHours::setLocation(float latitude, float longitude)
+{
+    d->m_latitude = latitude;
+    d->m_longitude = longitude;
+    d->validate();
+}
+
+float OpeningHours::latitude() const
+{
+    return d->m_latitude;
+}
+
+void OpeningHours::setLatitude(float latitude)
+{
+    d->m_latitude = latitude;
+    d->validate();
+}
+
+float OpeningHours::longitude() const
+{
+    return d->m_longitude;
+}
+
+void OpeningHours::setLongitude(float longitude)
+{
+    d->m_longitude = longitude;
+    d->validate();
+}
+
 OpeningHours::Error OpeningHours::error() const
 {
     return d->m_error;
@@ -93,7 +122,7 @@ Interval OpeningHours::interval(const QDateTime &dt) const
     const auto alignedTime = QDateTime(dt.date(), {dt.time().hour(), dt.time().minute()});
     Interval i;
     for (const auto &rule : d->m_rules) {
-        const auto j = rule->nextInterval(alignedTime);
+        const auto j = rule->nextInterval(alignedTime, d.data());
         if (!j.isValid()) {
             continue;
         }
@@ -109,7 +138,6 @@ Interval OpeningHours::interval(const QDateTime &dt) const
     i2.setState(Interval::Closed);
     i2.setBegin(dt);
     i2.setEnd(i.begin());
-    qDebug() << i << dt << i2;
     return i2;
 }
 

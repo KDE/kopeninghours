@@ -6,6 +6,7 @@
 
 #include "rule_p.h"
 #include "logging.h"
+#include "openinghours_p.h"
 
 #include <QCalendar>
 #include <QDateTime>
@@ -33,7 +34,7 @@ int Timespan::requiredCapabilities() const
     return next ? next->requiredCapabilities() : Capability::None;
 }
 
-SelectorResult Timespan::nextInterval(const Interval &interval, const QDateTime &dt) const
+SelectorResult Timespan::nextInterval(const Interval &interval, const QDateTime &dt, OpeningHoursPrivate *context) const
 {
     if (dt.time() < QTime(begin.hour, begin.minute)) {
         return dt.secsTo(QDateTime(dt.date(), {begin.hour, begin.minute}));
@@ -74,7 +75,7 @@ int WeekdayRange::requiredCapabilities() const
     return Capability::NotImplemented;
 }
 
-SelectorResult WeekdayRange::nextInterval(const Interval &interval, const QDateTime &dt) const
+SelectorResult WeekdayRange::nextInterval(const Interval &interval, const QDateTime &dt, OpeningHoursPrivate *context) const
 {
     if (beginDay <= endDay) {
         if (dt.date().dayOfWeek() < beginDay) {
@@ -119,8 +120,9 @@ int Week::requiredCapabilities() const
     return next ? next->requiredCapabilities() : Capability::None;
 }
 
-SelectorResult Week::nextInterval(const Interval &interval, const QDateTime &dt) const
+SelectorResult Week::nextInterval(const Interval &interval, const QDateTime &dt, OpeningHoursPrivate *context) const
 {
+    Q_UNUSED(context);
     // TODO is endWeek < beginWeek for year wrap-around allowed?
     if (dt.date().weekNumber() < beginWeek) {
         const auto days = (7 - dt.date().dayOfWeek()) + 7 * (beginWeek - dt.date().weekNumber() - 1) + 1;
@@ -177,8 +179,9 @@ static int daysInMonth(int month)
     return QCalendar(QCalendar::System::Gregorian).daysInMonth(month);
 }
 
-SelectorResult MonthdayRange::nextInterval(const Interval &interval, const QDateTime &dt) const
+SelectorResult MonthdayRange::nextInterval(const Interval &interval, const QDateTime &dt, OpeningHoursPrivate *context) const
 {
+    Q_UNUSED(context);
     if (begin.year > 0 && begin.year > dt.date().year()) {
         return dt.secsTo(QDateTime({begin.year, begin.month, std::max<int>(begin.day, 1)}, {0, 0}));
     }
@@ -223,8 +226,9 @@ int YearRange::requiredCapabilities() const
     return next ? next->requiredCapabilities() : Capability::None;
 }
 
-SelectorResult YearRange::nextInterval(const Interval &interval, const QDateTime &dt) const
+SelectorResult YearRange::nextInterval(const Interval &interval, const QDateTime &dt, OpeningHoursPrivate *context) const
 {
+    Q_UNUSED(context);
     const auto y = dt.date().year();
     if (begin > dt.date().year()) {
         return dt.secsTo(QDateTime({begin, 1, 1}, {0, 0}));
@@ -266,7 +270,7 @@ int Rule::requiredCapabilities() const
     return c;
 }
 
-Interval Rule::nextInterval(const QDateTime &dt) const
+Interval Rule::nextInterval(const QDateTime &dt, OpeningHoursPrivate *context) const
 {
     qCDebug(Log) << dt;
 
@@ -281,13 +285,13 @@ Interval Rule::nextInterval(const QDateTime &dt) const
     if (m_yearSelector) {
         SelectorResult r;
         for (auto s = m_yearSelector.get(); s; s = s->next.get()) {
-            r = std::min(r, s->nextInterval(i, dt));
+            r = std::min(r, s->nextInterval(i, dt, context));
         }
         if (!r.canMatch()) {
             return {};
         }
         if (r.matchOffset() > 0) {
-            return nextInterval(dt.addSecs(r.matchOffset()));
+            return nextInterval(dt.addSecs(r.matchOffset()), context);
         }
         i = r.interval();
     }
@@ -295,13 +299,13 @@ Interval Rule::nextInterval(const QDateTime &dt) const
     if (m_monthdaySelector) {
         SelectorResult r;
         for (auto s = m_monthdaySelector.get(); s; s = s->next.get()) {
-            r = std::min(r, s->nextInterval(i, dt));
+            r = std::min(r, s->nextInterval(i, dt, context));
         }
         if (!r.canMatch()) {
             return {};
         }
         if (r.matchOffset() > 0) {
-            return nextInterval(dt.addSecs(r.matchOffset()));
+            return nextInterval(dt.addSecs(r.matchOffset()), context);
         }
         i = r.interval();
     }
@@ -309,13 +313,13 @@ Interval Rule::nextInterval(const QDateTime &dt) const
     if (m_weekSelector) {
         SelectorResult r;
         for (auto s = m_weekSelector.get(); s; s = s->next.get()) {
-            r = std::min(r, s->nextInterval(i, dt));
+            r = std::min(r, s->nextInterval(i, dt, context));
         }
         if (!r.canMatch()) {
             return {};
         }
         if (r.matchOffset() > 0) {
-            return nextInterval(dt.addSecs(r.matchOffset()));
+            return nextInterval(dt.addSecs(r.matchOffset()), context);
         }
         i = r.interval();
     }
@@ -323,13 +327,13 @@ Interval Rule::nextInterval(const QDateTime &dt) const
     if (m_weekdaySelector) {
         SelectorResult r;
         for (auto s = m_weekdaySelector.get(); s; s = s->next.get()) {
-            r = std::min(r, s->nextInterval(i, dt));
+            r = std::min(r, s->nextInterval(i, dt, context));
         }
         if (!r.canMatch()) {
             return {};
         }
         if (r.matchOffset() > 0) {
-            return nextInterval(dt.addSecs(r.matchOffset()));
+            return nextInterval(dt.addSecs(r.matchOffset()), context);
         }
         i = r.interval();
     }
@@ -337,13 +341,13 @@ Interval Rule::nextInterval(const QDateTime &dt) const
     if (m_timeSelector) {
         SelectorResult r;
         for (auto s = m_timeSelector.get(); s; s = s->next.get()) {
-            r = std::min(r, s->nextInterval(i, dt));
+            r = std::min(r, s->nextInterval(i, dt, context));
         }
         if (!r.canMatch()) {
             return {};
         }
         if (r.matchOffset() > 0) {
-            return nextInterval(dt.addSecs(r.matchOffset()));
+            return nextInterval(dt.addSecs(r.matchOffset()), context);
         }
         i = r.interval();
     }
