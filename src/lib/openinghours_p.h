@@ -10,6 +10,8 @@
 #include "openinghours.h"
 #include "rule_p.h"
 
+#include <KHolidays/HolidayRegion>
+
 #include <QSharedData>
 
 #include <cmath>
@@ -27,6 +29,7 @@ public:
 
     float m_latitude = NAN;
     float m_longitude = NAN;
+    KHolidays::HolidayRegion m_region;
 };
 
 }

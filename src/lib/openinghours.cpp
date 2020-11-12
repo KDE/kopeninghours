@@ -31,7 +31,7 @@ void OpeningHoursPrivate::validate()
         m_error = OpeningHours::MissingLocation;
         return;
     }
-    if (c & Capability::PublicHoliday /* TODO */) {
+    if (c & Capability::PublicHoliday && !m_region.isValid()) {
         m_error = OpeningHours::MissingRegion;
         return;
     }
@@ -109,6 +109,19 @@ float OpeningHours::longitude() const
 void OpeningHours::setLongitude(float longitude)
 {
     d->m_longitude = longitude;
+    d->validate();
+}
+
+QString OpeningHours::region() const
+{
+    return d->m_region.regionCode();
+}
+
+void OpeningHours::setRegion(const QString &region)
+{
+#if 0 // depends on not yet merged KHolidays changes
+    d->m_region = KHolidays::HolidayRegion(region);
+#endif
     d->validate();
 }
 

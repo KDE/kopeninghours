@@ -33,6 +33,7 @@ class KOPENINGHOURS_EXPORT OpeningHours
     Q_PROPERTY(Error error READ error)
     Q_PROPERTY(float latitude READ latitude WRITE setLatitude)
     Q_PROPERTY(float longitude READ longitude WRITE setLongitude)
+    Q_PROPERTY(QString region READ region WRITE setRegion)
 public:
     explicit OpeningHours();
     /** Parse OSM opening hours expression @p openingHours. */
@@ -45,7 +46,6 @@ public:
     OpeningHours& operator=(OpeningHours&&);
 
     // TODO
-    //setRegion(ISO 3166-2)
     //setCountry(ISO 3166-1)
 
     /** Geographic coordinate at which this expression should be evaluated.
@@ -59,6 +59,14 @@ public:
     void setLatitude(float latitude);
     float longitude() const;
     void setLongitude(float longitude);
+
+    /** ISO 3166-2 Region in which this expression should be evaluated.
+     *  This is needed for expressions containing public holiday references ("PH").
+     *  If the expression references a public holiday, error() returns @c MissingRegion
+     *  if no region has been specified, or if no holiday data is available for the specified region.
+     */
+    void setRegion(const QString &region);
+    QString region() const;
 
     /** Error codes. */
     enum Error {

@@ -8,6 +8,7 @@ import QtQuick 2.14
 import QtQuick.Layouts 1.1
 import QtQuick.Controls 2.1 as QQC2
 import org.kde.kirigami 2.0 as Kirigami
+import org.kde.kholidays 1.0 as KHolidays
 import org.kde.kopeninghours 1.0
 
 Kirigami.ApplicationWindow {
@@ -73,6 +74,7 @@ Kirigami.ApplicationWindow {
                     onTextChanged: {
                         var oh = OpeningHoursParser.parse(text);
                         oh.setLocation(latitude.text, longitude.text);
+                        oh.region = region.currentText;
                         page.oh = oh;
                         evaluateCurrentState();
                     }
@@ -96,6 +98,17 @@ Kirigami.ApplicationWindow {
                             oh.longitude = text;
                             evaluateCurrentState();
                         }
+                    }
+                }
+
+                KHolidays.HolidayRegionsModel { id: regionModel }
+                QQC2.ComboBox {
+                    id: region
+                    model: regionModel
+                    textRole: "region"
+                    onCurrentIndexChanged: {
+                        page.oh.region = currentText;
+                        evaluateCurrentState();
                     }
                 }
 
