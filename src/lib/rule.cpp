@@ -173,7 +173,7 @@ QDebug operator<<(QDebug debug, const WeekdayRange *weekdayRange)
 
 int Week::requiredCapabilities() const
 {
-    if (interval > 1) {
+    if (interval > 1 || endWeek < beginWeek) {
         return Capability::NotImplemented;
     }
     return next ? next->requiredCapabilities() : Capability::None;
@@ -182,7 +182,6 @@ int Week::requiredCapabilities() const
 SelectorResult Week::nextInterval(const Interval &interval, const QDateTime &dt, OpeningHoursPrivate *context) const
 {
     Q_UNUSED(context);
-    // TODO is endWeek < beginWeek for year wrap-around allowed?
     if (dt.date().weekNumber() < beginWeek) {
         const auto days = (7 - dt.date().dayOfWeek()) + 7 * (beginWeek - dt.date().weekNumber() - 1) + 1;
         return dt.secsTo(QDateTime(dt.date().addDays(days), {0, 0}));
