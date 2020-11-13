@@ -97,8 +97,8 @@ YEAR        [1-2][019][0-9][0-9]
 "Dec" { yylval->num = 12; return T_MONTH; }
 
 {COMMENT} {
-    yylval->strRef.str = yytext;
-    yylval->strRef.len = yyleng;
+    yylval->strRef.str = yytext + 1;
+    yylval->strRef.len = yyleng - 2;
     return T_COMMENT;
 }
 

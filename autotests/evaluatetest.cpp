@@ -191,6 +191,16 @@ private Q_SLOTS:
             QVERIFY(prevInterval.begin() < beginInterval.begin());
         }
     }
+
+    void testFallback()
+    {
+        OpeningHours oh("Mo 10:00-12:00 || \"on appointment\"");
+        QCOMPARE(oh.error(), OpeningHours::NoError);
+        const auto i = oh.interval(QDateTime({2020, 11, 7}, {0, 0}));
+        QVERIFY(i.isValid());
+        QCOMPARE(i.state(), Interval::Unknown);
+        QCOMPARE(i.comment(), QLatin1String("on appointment"));
+    }
 };
 
 QTEST_GUILESS_MAIN(EvaluateTest)
