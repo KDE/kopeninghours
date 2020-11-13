@@ -40,7 +40,7 @@ static QTime resolveTime(const Time &t, const QDate &date, OpeningHoursPrivate *
 {
     switch (t.event) {
         case Time::NoEvent:
-            return {t.hour, t.minute};
+            return {t.hour % 24, t.minute};
         case Time::Dawn:
             // TODO
         case Time::Sunrise:
@@ -50,7 +50,6 @@ static QTime resolveTime(const Time &t, const QDate &date, OpeningHoursPrivate *
             // TODO
         case Time::Sunset:
             return QDateTime(date, KHolidays::SunRiseSet::utcSunset(date, context->m_latitude, context->m_longitude), Qt::UTC).toLocalTime().time();
-            break;
     }
     return {};
 }
@@ -59,17 +58,26 @@ SelectorResult Timespan::nextInterval(const Interval &interval, const QDateTime 
 {
     const auto beginTime = resolveTime(begin, dt.date(), context);
     const auto endTime = resolveTime(end, dt.date(), context);
+    const auto endPastMidnight = endTime < beginTime;
 
-    if (dt.time() < beginTime) {
-        return dt.secsTo(QDateTime(dt.date(), beginTime));
+    const auto beginDt = QDateTime(dt.date(), beginTime);
+    const auto endDt = QDateTime(endPastMidnight ? dt.date().addDays(1) : dt.date(), endTime);
+
+    if (dt >= beginDt && dt < endDt) {
+        auto i = interval;
+        i.setBegin(beginDt);
+        i.setEnd(endDt);
+        return i;
     }
-    if (dt.time() >= endTime) {
-        return dt.secsTo(QDateTime(dt.date().addDays(1), beginTime));
+
+    if (dt < endDt.addDays(-1)) {
+        auto i = interval;
+        i.setBegin(beginDt.addDays(-1));
+        i.setEnd(endDt.addDays(-1));
+        return i;
     }
-    auto i = interval;
-    i.setBegin(QDateTime(dt.date(), beginTime));
-    i.setEnd(QDateTime(dt.date(), endTime));
-    return i;
+
+    return dt < beginDt ? dt.secsTo(beginDt) : dt.secsTo(beginDt.addDays(1));
 }
 
 QDebug operator<<(QDebug debug, const Timespan *timeSpan)
