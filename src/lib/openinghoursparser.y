@@ -137,6 +137,7 @@ typedef void* yyscan_t;
 %token T_INVALID
 
 %type <rule> Rule
+%type <rule> FallbackRule
 %type <selectors> SelectorSequence
 %type <selectors> WideRangeSelector
 %type <selectors> SmallRangeSelector
@@ -177,10 +178,15 @@ typedef void* yyscan_t;
 // see https://wiki.openstreetmap.org/wiki/Key:opening_hours/specification
 
 Ruleset:
-  Rule[R] { parser->addRule($R); }
-| Ruleset T_NORMAL_RULE_SEPARATOR Rule[R] { parser->addRule($R); }
-| Ruleset T_ADDITIONAL_RULE_SEPARATOR Rule[R] { parser->addRule($R); }
-| Ruleset T_FALLBACK_SEPARATOR T_COMMENT { /* TODO */ }
+  Rule[R] { parser->addRule($R, OpeningHoursPrivate::NormalRule); }
+| Ruleset T_NORMAL_RULE_SEPARATOR Rule[R] { parser->addRule($R, OpeningHoursPrivate::NormalRule); }
+| Ruleset T_ADDITIONAL_RULE_SEPARATOR Rule[R] { parser->addRule($R, OpeningHoursPrivate::AdditionalRule); }
+| Ruleset T_FALLBACK_SEPARATOR FallbackRule[R] {
+    if (parser->m_fallbackRule) {
+        YYABORT;
+    }
+    parser->addRule($R, OpeningHoursPrivate::FallbackRule);
+  }
 ;
 
 Rule:
@@ -203,6 +209,22 @@ Rule:
     $$->setComment($C.str, $C.len);
     $$->m_state = $T;
     applySelectors($S, $$);
+  }
+;
+
+FallbackRule:
+  T_COMMENT[C] {
+    $$ = new Rule;
+    $$->setComment($C.str, $C.len);
+  }
+| T_STATE[T] {
+    $$ = new Rule;
+    $$->m_state = $T;
+  }
+| T_STATE[T] T_COMMENT[C] {
+    $$ = new Rule;
+    $$->setComment($C.str, $C.len);
+    $$->m_state = $T;
   }
 ;
 

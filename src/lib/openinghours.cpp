@@ -43,9 +43,18 @@ void OpeningHoursPrivate::validate()
     m_error = OpeningHours::NoError;
 }
 
-void OpeningHoursPrivate::addRule(Rule *rule)
+void OpeningHoursPrivate::addRule(Rule *rule, RuleType type)
 {
-    m_rules.push_back(std::unique_ptr<Rule>(rule));
+    switch (type) {
+        case AdditionalRule:
+            // TODO
+            [[fallthrough]];
+        case NormalRule:
+            m_rules.push_back(std::unique_ptr<Rule>(rule));
+            break;
+        case FallbackRule:
+            m_fallbackRule.reset(rule);
+    }
 }
 
 

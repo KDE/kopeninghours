@@ -22,9 +22,16 @@ namespace KOpeningHours {
 class OpeningHoursPrivate : public QSharedData {
 public:
     void validate();
-    void addRule(Rule *rule);
+
+    enum RuleType {
+        NormalRule,
+        AdditionalRule,
+        FallbackRule,
+    };
+    void addRule(Rule *rule, RuleType type);
 
     std::vector<std::unique_ptr<Rule>> m_rules;
+    std::unique_ptr<Rule> m_fallbackRule;
     OpeningHours::Error m_error = OpeningHours::NoError;
 
     float m_latitude = NAN;
