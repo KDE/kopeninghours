@@ -155,13 +155,18 @@ Interval OpeningHours::interval(const QDateTime &dt) const
         i = i.isValid() ? std::min(i, j) : j;
     }
 
-    // check if the resulting interval contains dt, otherwise create a synthetic closed interval
+    // check if the resulting interval contains dt, otherwise create a synthetic fallback interval
     if (!i.isValid() || i.contains(dt)) {
         return i;
     }
 
     Interval i2;
-    i2.setState(Interval::Closed);
+    if (d->m_fallbackRule) {
+        i2.setState(d->m_fallbackRule->m_state);
+        i2.setComment(d->m_fallbackRule->m_comment);
+    } else {
+        i2.setState(Interval::Closed);
+    }
     i2.setBegin(dt);
     i2.setEnd(i.begin());
     return i2;

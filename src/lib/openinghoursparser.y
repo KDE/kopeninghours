@@ -216,6 +216,7 @@ FallbackRule:
   T_COMMENT[C] {
     $$ = new Rule;
     $$->setComment($C.str, $C.len);
+    $$->m_state = Interval::Unknown;
   }
 | T_STATE[T] {
     $$ = new Rule;
