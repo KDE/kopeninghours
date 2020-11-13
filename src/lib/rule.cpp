@@ -198,7 +198,7 @@ SelectorResult Week::nextInterval(const Interval &interval, const QDateTime &dt,
     auto i = interval;
     i.setBegin(QDateTime(dt.date().addDays(1 - dt.date().dayOfWeek() - 7 * (dt.date().weekNumber() - beginWeek)), {0, 0}));
     // TODO year wrap around
-    i.setEnd(QDateTime(i.begin().date().addDays(((endWeek-beginWeek) * 7) + 6), {23, 59}));
+    i.setEnd(QDateTime(i.begin().date().addDays((1 + endWeek - beginWeek) * 7), {0, 0}));
     return i;
 }
 
@@ -256,14 +256,14 @@ SelectorResult MonthdayRange::nextInterval(const Interval &interval, const QDate
         return dt.secsTo(QDateTime({dt.date().year(), dt.date().month(), begin.day}, {0, 0}));
     }
     if (end.day > 0 && end.day < dt.date().day()) {
-        return dt.secsTo(QDateTime({dt.date().year(), dt.date().month(), dt.date().daysInMonth()}, {23, 59})) + 60;
+        return dt.secsTo(QDateTime(QDate(dt.date().year(), dt.date().month(), dt.date().daysInMonth()).addDays(1), {0, 0}));
     }
 
     auto i = interval;
     i.setBegin(QDateTime({begin.year ? begin.year : dt.date().year(), begin.month, begin.day ? begin.day : 1}, {0, 0}));
     // TODO this does not handle year wrapping
     // TODO this does not handle open ended intervals
-    i.setEnd(QDateTime({end.year ? end.year : dt.date().year() + (end.month < begin.month ? 1 : 0), end.month, end.day ? end.day : daysInMonth(end.month)}, {23, 59}));
+    i.setEnd(QDateTime({end.year ? end.year : dt.date().year() + (end.month < begin.month ? 1 : 0), end.month, end.day ? end.day : daysInMonth(end.month)}, {0, 0}).addDays(1));
     return i;
 }
 
@@ -297,7 +297,7 @@ SelectorResult YearRange::nextInterval(const Interval &interval, const QDateTime
 
     auto i = interval;
     i.setBegin(QDateTime({begin, 1, 1}, {0, 0}));
-    i.setEnd(end > 0 ? QDateTime({end, 12, 31}, {23, 59}) : QDateTime());
+    i.setEnd(end > 0 ? QDateTime({end + 1, 1, 1}, {0, 0}) : QDateTime());
     return i;
 }
 
