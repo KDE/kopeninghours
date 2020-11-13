@@ -72,6 +72,7 @@ private Q_SLOTS:
 
         QTest::newRow("year/month") << QByteArray("2020 Nov") << QDateTime({2020, 11, 1}, {0, 0}) << QDateTime({2020, 12, 1}, {0, 0});
         QTest::newRow("year/month next") << QByteArray("2020 Dec") << QDateTime({2020, 12, 1}, {0, 0}) << QDateTime({2021, 1, 1}, {0, 0});
+        QTest::newRow("year/month range") << QByteArray("2020 Oct-Dec") << QDateTime({2020, 10, 1}, {0, 0}) << QDateTime({2021, 1, 1}, {0, 0});
 
         QTest::newRow("full date") << QByteArray("2020 Nov 7") << QDateTime({2020, 11, 7}, {0, 0}) << QDateTime({2020, 11, 8}, {0, 0});
         QTest::newRow("full date next year") << QByteArray("2021 Nov 7") << QDateTime({2021, 11, 7}, {0, 0}) << QDateTime({2021, 11, 8}, {0, 0});
