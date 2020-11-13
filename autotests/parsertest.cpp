@@ -116,6 +116,8 @@ private Q_SLOTS:
         QTest::newRow("nth day") << QByteArray("Mo[1-2,4]") << OpeningHours::UnsupportedFeature;
         QTest::newRow("nth day offset") << QByteArray("We[-1] + 2 days") << OpeningHours::UnsupportedFeature;
         QTest::newRow("week wrap") << QByteArray("week 45-13") << OpeningHours::UnsupportedFeature;
+        QTest::newRow("single timepoint") << QByteArray("10:00") << OpeningHours::UnsupportedFeature;
+        QTest::newRow("single timepoint range") << QByteArray("10:00-10:00") << OpeningHours::UnsupportedFeature;
     }
 
     void testValidation()
