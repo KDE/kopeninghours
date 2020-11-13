@@ -78,6 +78,13 @@ public:
     int minute;
 };
 
+inline constexpr bool operator==(const Time &lhs, const Time &rhs)
+{
+    return lhs.event == rhs.event
+        && lhs.hour == rhs.hour
+        && lhs.minute == rhs.minute;
+}
+
 /** Time span selector. */
 class Timespan
 {

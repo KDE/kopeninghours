@@ -27,7 +27,7 @@ QDebug operator<<(QDebug debug, const Time &time)
 
 int Timespan::requiredCapabilities() const
 {
-    if (interval > 0 || begin.event == Time::Dusk || begin.event == Time::Dawn || end.event == Time::Dusk || end.event == Time::Dawn) {
+    if (interval > 0 || begin.event == Time::Dusk || begin.event == Time::Dawn || end.event == Time::Dusk || end.event == Time::Dawn || begin == end) {
         return Capability::NotImplemented;
     }
     if (begin.event != Time::NoEvent || end.event != Time::NoEvent) {
