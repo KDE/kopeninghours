@@ -472,6 +472,10 @@ MonthdayRange:
     $$ = new MonthdayRange;
     $$->begin = $$->end = { 0, $M, 0, Date::FixedDate };
   }
+| T_YEAR[Y] T_MONTH[M] {
+    $$ = new MonthdayRange;
+    $$->begin = $$->end = { $Y, $M, 0, Date::FixedDate };
+  }
 | T_MONTH[M1] T_MINUS T_MONTH[M2] {
     $$ = new MonthdayRange;
     $$->begin = { 0, $M1, 0, Date::FixedDate };
