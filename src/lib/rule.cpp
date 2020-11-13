@@ -131,7 +131,7 @@ SelectorResult WeekdayRange::nextInterval(const Interval &interval, const QDateT
             auto i = interval;
             const auto d = beginDay - dt.date().dayOfWeek();
             i.setBegin(QDateTime(dt.date().addDays(d), {0, 0}));
-            i.setEnd(QDateTime(i.begin().date().addDays(beginDay <= endDay ? endDay - beginDay : 7 - (beginDay - endDay)), {23, 59}));
+            i.setEnd(QDateTime(i.begin().date().addDays(1 + (beginDay <= endDay ? endDay - beginDay : 7 - (beginDay - endDay))), {0, 0}));
             return i;
         }
         case PublicHoliday:

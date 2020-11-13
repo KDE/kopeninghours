@@ -41,11 +41,16 @@ public:
     /** Default constructed empty/invalid interval. */
     bool isValid() const;
 
-    /** Begin of the interval. */
+    /** Begin of the interval.
+     *  This is the first point in time included in the interval.
+     */
     QDateTime begin() const;
     void setBegin(const QDateTime &begin);
 
-    /** End of the interval. */
+    /** End of the interval.
+     *  This is the first point in time not included in the interval anymore.
+     *  That is, the end of an interval describing the year 2020 would be Jan 1st 2021 at midnight (00:00).
+     */
     QDateTime end() const;
     void setEnd(const QDateTime &end);
 
