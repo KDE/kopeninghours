@@ -16,9 +16,36 @@ Kirigami.ApplicationWindow {
     reachableModeEnabled: false
 
     width: 640
-    height: 240
+    height: 480
 
     pageStack.initialPage: mainPage
+
+    Component {
+        id: openingHoursDelegate
+        Row {
+            property var dayData: model
+            QQC2.Label { text: dayData.display }
+            Repeater {
+                model: dayData.intervals
+                Rectangle {
+                    property var interval: modelData
+                    color: {
+                        switch (interval.state) {
+                            case Interval.Open: return "green";
+                            case Interval.Closed: return "red";
+                            case Interval.Unknown: return "yellow";
+                        }
+                        return "blue";
+                    }
+                    width: {
+                        var ratio = (interval.end - interval.begin) / (24 * 60 * 60 * 1000);
+                        return ratio * 640;
+                    }
+                    height: 20
+                }
+            }
+        }
+    }
 
     Component {
         id: mainPage
@@ -131,6 +158,19 @@ Kirigami.ApplicationWindow {
 
                 QQC2.Label {
                     id: currentState
+                }
+
+                IntervalModel {
+                    id: intervalModel
+                    openingHours: page.oh
+                }
+
+                ListView {
+                    id: intervalView
+                    model: intervalModel
+                    delegate: openingHoursDelegate
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
                 }
 
                 Timer {

@@ -21,6 +21,7 @@ add_library(KOpeningHours
     ${BISON_openinghoursparser_OUTPUTS}
     ${FLEX_openinghoursscanner_OUTPUTS}
     interval.cpp
+    intervalmodel.cpp
     openinghours.cpp
     rule.cpp
 )
@@ -41,6 +42,7 @@ target_link_libraries(KOpeningHours
 ecm_generate_headers(KOpeningHours_FORWARDING_HEADERS
     HEADER_NAMES
         Interval
+        IntervalModel
         OpeningHours
     PREFIX KOpeningHours
     REQUIRED_HEADERS KOpeningHours_HEADERS
