@@ -46,6 +46,7 @@ public:
     enum Roles {
         IntervalsRole = Qt::UserRole,
         DateRole,
+        DayBeginTimeRole,
     };
 
     int rowCount(const QModelIndex& parent = {}) const override;

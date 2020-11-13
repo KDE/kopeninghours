@@ -22,27 +22,55 @@ Kirigami.ApplicationWindow {
 
     Component {
         id: openingHoursDelegate
-        Row {
+        Item {
+            id: delegateRoot
             property var dayData: model
-            QQC2.Label { text: dayData.display }
-            Repeater {
-                model: dayData.intervals
-                Rectangle {
-                    property var interval: modelData
-                    color: {
-                        switch (interval.state) {
-                            case Interval.Open: return "green";
-                            case Interval.Closed: return "red";
-                            case Interval.Unknown: return "yellow";
-                        }
-                        return "blue";
-                    }
-                    width: {
-                        var ratio = (interval.end - interval.begin) / (24 * 60 * 60 * 1000);
-                        return ratio * 640;
-                    }
-                    height: 20
+            implicitHeight: row.implicitHeight
+            Row {
+                id: row
+                QQC2.Label {
+                    text: dayData.display
+                    width: delegateRoot.ListView.view.labelWidth + Kirigami.Units.smallSpacing
+                    Component.onCompleted: delegateRoot.ListView.view.labelWidth = Math.max(delegateRoot.ListView.view.labelWidth, implicitWidth)
                 }
+                Repeater {
+                    model: dayData.intervals
+                    Rectangle {
+                        id: intervalBox
+                        property var interval: modelData
+                        color: {
+                            switch (interval.state) {
+                                case Interval.Open: return Kirigami.Theme.positiveBackgroundColor;
+                                case Interval.Closed: return Kirigami.Theme.negativeBackgroundColor;
+                                case Interval.Unknown: return Kirigami.Theme.neutralBackgroundColor;
+                            }
+                            return "transparent";
+                        }
+                        width: {
+                            var ratio = (interval.end - interval.begin) / (24 * 60 * 60 * 1000);
+                            return ratio * (delegateRoot.ListView.view.width - delegateRoot.ListView.view.labelWidth - Kirigami.Units.smallSpacing);
+                        }
+                        height: Kirigami.Units.gridUnit
+
+                        QQC2.Label {
+                            id: commentLabel
+                            text: interval.comment
+                            anchors.centerIn: parent
+                            visible: commentLabel.implicitWidth < intervalBox.width
+                            font.italic: true
+                        }
+                    }
+                }
+            }
+            Rectangle {
+                id: nowMarker
+                property double position: (Date.now() - dayData.dayBegin) / (24 * 60 * 60 * 1000)
+                visible: position >= 0.0 && position < 1.0
+                color: Kirigami.Theme.textColor
+                width: 2
+                height: Kirigami.Units.gridUnit
+                x: position * (delegateRoot.ListView.view.width - delegateRoot.ListView.view.labelWidth - Kirigami.Units.smallSpacing)
+                    + delegateRoot.ListView.view.labelWidth + Kirigami.Units.smallSpacing
             }
         }
     }
@@ -51,7 +79,7 @@ Kirigami.ApplicationWindow {
         id: mainPage
         Kirigami.Page {
             id: page
-            title: "OSM Opening Hours Expression Evaluator"
+            title: "OSM Opening Hours Expression Evaluator Demo"
             property var oh: {
                 var v = OpeningHoursParser.parse(expression.text);
                 v.setLocation(52.5, 13.0);
@@ -97,7 +125,7 @@ Kirigami.ApplicationWindow {
                 QQC2.TextField {
                     id: expression
                     Layout.fillWidth: true
-                    text: "Mo-Fr 08:00-12:00,13:00-17:30; Sa 08:00-12:00"
+                    text: "Mo-Fr 08:00-12:00,13:00-17:30; Sa 08:00-12:00; Su unknown \"on appointment\""
                     onTextChanged: {
                         var oh = OpeningHoursParser.parse(text);
                         oh.setLocation(latitude.text, longitude.text);
@@ -169,8 +197,24 @@ Kirigami.ApplicationWindow {
                     id: intervalView
                     model: intervalModel
                     delegate: openingHoursDelegate
+                    property int labelWidth: 0
                     Layout.fillWidth: true
                     Layout.fillHeight: true
+                    spacing: Kirigami.Units.smallSpacing
+                    clip: true
+                    header: Row {
+                        id: intervalHeader
+                        property int itemWidth: (intervalHeader.ListView.view.width -  intervalHeader.ListView.view.labelWidth - Kirigami.Units.smallSpacing) / 8
+                        x: intervalHeader.ListView.view.labelWidth + Kirigami.Units.smallSpacing + intervalHeader.itemWidth/2
+                        Repeater {
+                            model: [3, 6, 9, 12, 15, 18, 21]
+                            QQC2.Label {
+                                text: modelData + ":00" // TODO
+                                width: intervalHeader.itemWidth
+                                horizontalAlignment: Qt.AlignHCenter
+                            }
+                        }
+                    }
                 }
 
                 Timer {

@@ -136,6 +136,8 @@ QVariant IntervalModel::data(const QModelIndex &index, int role) const
             return QVariant::fromValue(d->m_intervals[index.row()].intervals);
         case DateRole:
             return d->m_intervals[index.row()].day;
+        case DayBeginTimeRole:
+            return QDateTime(d->m_intervals[index.row()].day, {0, 0});
     }
 
     return {};
@@ -146,6 +148,7 @@ QHash<int, QByteArray> IntervalModel::roleNames() const
     auto n = QAbstractListModel::roleNames();
     n.insert(IntervalsRole, "intervals");
     n.insert(DateRole, "date");
+    n.insert(DayBeginTimeRole, "dayBegin");
     return n;
 }
 
