@@ -516,11 +516,17 @@ YearRange:
     $$ = new YearRange;
     $$->begin = $Y1;
     $$->end = $Y2;
+    if ($$->end < $$->begin) {
+        YYABORT;
+    }
   }
 | T_YEAR[Y1] T_MINUS T_YEAR[Y2] T_SLASH T_INTEGER[I] {
     $$ = new YearRange;
     $$->begin = $Y1;
     $$->end = $Y2;
+    if ($$->end < $$->begin) {
+        YYABORT;
+    }
     $$->interval = $I;
   }
 | T_YEAR[Y] T_PLUS {

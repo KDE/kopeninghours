@@ -75,6 +75,7 @@ private Q_SLOTS:
         T("23/7");
         T("\"comment\"");
         T("24/7 geöffnet");
+        T("2020-2000");
 
         // from https://wiki.openstreetmap.org/wiki/Key:opening_hours#Common_mistakes
         T("7/8-23");
