@@ -102,14 +102,12 @@ private Q_SLOTS:
 
         OpeningHours oh(expression);
         oh.setLocation(52.5, 13.0);
-        oh.setRegion(QStringLiteral("de-be_de"));
+        oh.setRegion(QStringLiteral("DE"));
         QCOMPARE(oh.error(), OpeningHours::NoError);
         auto i = oh.interval(QDateTime({2020, 11, 7}, {18, 0}));
-        qDebug() << i;
         QVERIFY(i.isValid());
         if (i.state() == Interval::Closed) { // skip synthetic closed intervals
             i = oh.nextInterval(i);
-            qDebug() << i;
         }
 
         QVERIFY(i.isValid());

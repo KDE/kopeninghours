@@ -65,7 +65,7 @@ public:
      *  If the expression references a public holiday, error() returns @c MissingRegion
      *  if no region has been specified, or if no holiday data is available for the specified region.
      */
-    void setRegion(const QString &region);
+    void setRegion(QStringView region);
     QString region() const;
 
     /** Error codes. */

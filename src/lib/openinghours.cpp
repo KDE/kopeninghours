@@ -126,10 +126,15 @@ QString OpeningHours::region() const
     return d->m_region.regionCode();
 }
 
-void OpeningHours::setRegion(const QString &region)
+void OpeningHours::setRegion(QStringView region)
 {
 #if 0 // depends on not yet merged KHolidays changes
-    d->m_region = KHolidays::HolidayRegion(region);
+    const auto idx = region.indexOf(QLatin1Char('_')); // compatibility with KHolidays region codes
+    if (idx > 0) {
+        region = region.left(idx);
+    }
+
+    d->m_region = KHolidays::HolidayRegion(KHolidays::HolidayRegion::defaultRegionCode(region.toString()));
 #endif
     d->validate();
 }
