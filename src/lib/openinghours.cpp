@@ -16,6 +16,8 @@
 
 using namespace KOpeningHours;
 
+QHash<QString, QString> OpeningHoursPrivate::s_holidayRegionCache;
+
 void OpeningHoursPrivate::validate()
 {
     if (m_error == OpeningHours::SyntaxError) {
@@ -128,13 +130,21 @@ QString OpeningHours::region() const
 
 void OpeningHours::setRegion(QStringView region)
 {
-#if 0 // depends on not yet merged KHolidays changes
     const auto idx = region.indexOf(QLatin1Char('_')); // compatibility with KHolidays region codes
     if (idx > 0) {
         region = region.left(idx);
     }
 
-    d->m_region = KHolidays::HolidayRegion(KHolidays::HolidayRegion::defaultRegionCode(region.toString()));
+    const auto loc = region.toString();
+    const auto it = OpeningHoursPrivate::s_holidayRegionCache.constFind(loc);
+#if 0 // depends on not yet merged KHolidays changes
+    if (it != OpeningHoursPrivate::s_holidayRegionCache.constEnd()) {
+        d->m_region = KHolidays::HolidayRegion(it.value());
+    } else {
+        const auto code = KHolidays::HolidayRegion::defaultRegionCode(loc);
+        d->m_region = KHolidays::HolidayRegion(code);
+        OpeningHoursPrivate::s_holidayRegionCache.insert(loc, code);
+    }
 #endif
     d->validate();
 }
