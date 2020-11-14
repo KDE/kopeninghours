@@ -147,12 +147,37 @@ Interval OpeningHours::interval(const QDateTime &dt) const
 
     const auto alignedTime = QDateTime(dt.date(), {dt.time().hour(), dt.time().minute()});
     Interval i;
+    // first try to find the nearest open interval, and afterwards check closed rules
     for (const auto &rule : d->m_rules) {
+        if (rule->m_state == Interval::Closed) {
+            continue;
+        }
         const auto j = rule->nextInterval(alignedTime, d.data());
         if (!j.isValid()) {
             continue;
         }
         i = i.isValid() ? std::min(i, j) : j;
+    }
+
+    for (const auto &rule : d->m_rules) {
+        if (rule->m_state != Interval::Closed) {
+            continue;
+        }
+        const auto j = rule->nextInterval(i.begin(), d.data());
+        if (!j.isValid() || !i.intersects(j)) {
+            continue;
+        }
+
+        if (j.contains(alignedTime)) {
+            i = j;
+            break;
+        }
+
+        if (alignedTime < j.begin()) {
+            i.setEnd(j.begin());
+        } else {
+            i.setBegin(j.end());
+        }
     }
 
     // check if the resulting interval contains dt, otherwise create a synthetic fallback interval
@@ -169,6 +194,7 @@ Interval OpeningHours::interval(const QDateTime &dt) const
     }
     i2.setBegin(dt);
     i2.setEnd(i.begin());
+    // TODO do we need to intersect this with closed rules as well?
     return i2;
 }
 
