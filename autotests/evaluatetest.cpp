@@ -169,14 +169,16 @@ private Q_SLOTS:
         QCOMPARE(beginInterval.begin(), begin);
         QCOMPARE(beginInterval.end(), end);
         QVERIFY(beginInterval.contains(begin));
-        QVERIFY(beginInterval.contains(end));
+        QVERIFY(beginInterval.contains(end.addSecs(-1)));
+        QVERIFY(!beginInterval.contains(end));
 
         const auto endInterval = oh.interval(end.addSecs(-60));
         QVERIFY(endInterval.isValid());
         QCOMPARE(endInterval.begin(), begin);
         QCOMPARE(endInterval.end(), end);
         QVERIFY(endInterval.contains(begin));
-        QVERIFY(endInterval.contains(end));
+        QVERIFY(endInterval.contains(end.addSecs(-1)));
+        QVERIFY(!endInterval.contains(end));
 
         QCOMPARE(beginInterval < endInterval, false);
         QCOMPARE(endInterval < beginInterval, false);
