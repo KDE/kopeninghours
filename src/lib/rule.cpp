@@ -58,7 +58,7 @@ SelectorResult Timespan::nextInterval(const Interval &interval, const QDateTime 
 {
     const auto beginTime = resolveTime(begin, dt.date(), context);
     const auto endTime = resolveTime(end, dt.date(), context);
-    const auto endPastMidnight = endTime < beginTime;
+    const auto endPastMidnight = endTime < beginTime || (end.hour >= 24 && begin.hour < 24);
 
     const auto beginDt = QDateTime(dt.date(), beginTime);
     const auto endDt = QDateTime(endPastMidnight ? dt.date().addDays(1) : dt.date(), endTime);

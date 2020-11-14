@@ -30,6 +30,7 @@ private Q_SLOTS:
         QTest::newRow("time range wrap overlap") << QByteArray("23:00-19:00") << QDateTime({2020, 11, 6}, {23, 0}) << QDateTime({2020, 11, 7}, {19, 0});
         QTest::newRow("time range wrap prev") << QByteArray("23:00-17:00") << QDateTime({2020, 11, 7}, {23, 0}) << QDateTime({2020, 11, 8}, {17, 0});
         QTest::newRow("time range overflow") << QByteArray("20:00-30:00") << QDateTime({2020, 11, 7}, {20, 0}) << QDateTime({2020, 11, 8}, {6, 0});
+        QTest::newRow("time range max") << QByteArray("00:00-24:00") << QDateTime({2020, 11, 7}, {0, 0}) << QDateTime({2020, 11, 8}, {0, 0});
 
         QTest::newRow("two time ranges") << QByteArray("08:00-10:00,20:00-22:00") << QDateTime({2020, 11, 7}, {20, 0}) << QDateTime({2020, 11, 7}, {22, 0});
         QTest::newRow("time ranges next day") << QByteArray("08:30-10:45,12:00-13:30,14:00-15:00") << QDateTime({2020, 11, 8}, {8, 30}) << QDateTime({2020, 11, 8}, {10, 45});
@@ -46,6 +47,7 @@ private Q_SLOTS:
         QTest::newRow("matching day range2") << QByteArray("Fr-Su") << QDateTime({2020, 11, 6}, {0, 0}) << QDateTime({2020, 11, 9}, {0, 0});
         QTest::newRow("matching day range2") << QByteArray("Mo-Tu,Th-Fr") << QDateTime({2020, 11, 9}, {0, 0}) << QDateTime({2020, 11, 11}, {0, 0});
         QTest::newRow("day wrap around") << QByteArray("Fr-Mo") << QDateTime({2020, 11, 6}, {0, 0}) << QDateTime({2020, 11, 10}, {0, 0});
+        QTest::newRow("day range max") << QByteArray("Mo-Su") << QDateTime({2020, 11, 2}, {0, 0}) << QDateTime({2020, 11, 9}, {0, 0});
 
         QTest::newRow("day and time") << QByteArray("Su 20:00-22:00") << QDateTime({2020, 11, 8}, {20, 0}) << QDateTime({2020, 11, 8}, {22, 0});
 
@@ -62,6 +64,7 @@ private Q_SLOTS:
         QTest::newRow("prev month") << QByteArray("Oct") << QDateTime({2021, 10, 1}, {0, 0}) << QDateTime({2021, 11, 1}, {0, 0});
         QTest::newRow("overlapping month range") << QByteArray("Oct-Dec") << QDateTime({2020, 10, 1}, {0, 0}) << QDateTime({2021, 1, 1}, {0, 0});
         QTest::newRow("month sets") << QByteArray("Oct,Nov,Dec") << QDateTime({2020, 11, 1}, {0, 0}) << QDateTime({2020, 12, 1}, {0, 0});
+        QTest::newRow("month range max") << QByteArray("Jan-Dec") << QDateTime({2020, 1, 1}, {0, 0}) << QDateTime({2021, 1, 1}, {0, 0});
 
         QTest::newRow("month/day") << QByteArray("Nov 7") << QDateTime({2020, 11, 7}, {0, 0}) << QDateTime({2020, 11, 8}, {0, 0});
         QTest::newRow("next month/day") << QByteArray("Nov 8") << QDateTime({2020, 11, 8}, {0, 0}) << QDateTime({2020, 11, 9}, {0, 0});
@@ -77,12 +80,14 @@ private Q_SLOTS:
         QTest::newRow("full date") << QByteArray("2020 Nov 7") << QDateTime({2020, 11, 7}, {0, 0}) << QDateTime({2020, 11, 8}, {0, 0});
         QTest::newRow("full date next year") << QByteArray("2021 Nov 7") << QDateTime({2021, 11, 7}, {0, 0}) << QDateTime({2021, 11, 8}, {0, 0});
         QTest::newRow("full date range") << QByteArray("2020 Nov 6-2020 Dec 13") << QDateTime({2020, 11, 6}, {0, 0}) << QDateTime({2020, 12, 14}, {0, 0});
+        QTest::newRow("full date range max") << QByteArray("2020 Jan 1-2020 Dec 31") << QDateTime({2020, 1, 1}, {0, 0}) << QDateTime({2021, 1, 1}, {0, 0});
 
         QTest::newRow("week") << QByteArray("week 45") << QDateTime({2020, 11, 2}, {0, 0}) << QDateTime({2020, 11, 9}, {0, 0});
         QTest::newRow("next week") << QByteArray("week 46") << QDateTime({2020, 11, 9}, {0, 0}) << QDateTime({2020, 11, 16}, {0, 0});
         QTest::newRow("prev week") << QByteArray("week 44") << QDateTime({2021, 11, 1}, {0, 0}) << QDateTime({2021, 11, 8}, {0, 0});
         QTest::newRow("week range") << QByteArray("week 44-46") << QDateTime({2020, 10, 26}, {0, 0}) << QDateTime({2020, 11, 16}, {0, 0});
         QTest::newRow("week set") << QByteArray("week 42,45,46") << QDateTime({2020, 11, 2}, {0, 0}) << QDateTime({2020, 11, 9}, {0, 0});
+        QTest::newRow("week range max") << QByteArray("week 1-53") << QDateTime({2019, 12, 30}, {0, 0}) << QDateTime({2021, 1, 4}, {0, 0});
 
         QTest::newRow("variable time") << QByteArray("sunrise-sunset") << QDateTime({2020, 11, 8}, {7, 18}) << QDateTime({2020, 11, 8}, {16, 25});
 
