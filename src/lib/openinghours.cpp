@@ -159,6 +159,8 @@ Interval OpeningHours::interval(const QDateTime &dt) const
         i = i.isValid() ? std::min(i, j) : j;
     }
 
+    QDateTime closeEnd = i.begin(), closeBegin = i.end();
+    Interval closedInterval;
     for (const auto &rule : d->m_rules) {
         if (rule->m_state != Interval::Closed) {
             continue;
@@ -169,15 +171,24 @@ Interval OpeningHours::interval(const QDateTime &dt) const
         }
 
         if (j.contains(alignedTime)) {
-            i = j;
-            break;
+            if (closedInterval.isValid()) {
+                // TODO we lose comment information here
+                closedInterval.setBegin(std::min(closedInterval.begin(), j.begin()));
+                closedInterval.setEnd(std::max(closedInterval.end(), j.end()));
+            } else {
+                closedInterval = j;
+            }
+        } else if (alignedTime < j.begin()) {
+            closeBegin = std::min(j.begin(), closeBegin);
+        } else if (j.end() <= alignedTime) {
+            closeEnd = std::max(closeEnd, j.end());
         }
-
-        if (alignedTime < j.begin()) {
-            i.setEnd(j.begin());
-        } else {
-            i.setBegin(j.end());
-        }
+    }
+    if (closedInterval.isValid()) {
+        i = closedInterval;
+    } else {
+        i.setBegin(closeEnd);
+        i.setEnd(closeBegin);
     }
 
     // check if the resulting interval contains dt, otherwise create a synthetic fallback interval
@@ -201,7 +212,11 @@ Interval OpeningHours::interval(const QDateTime &dt) const
 Interval OpeningHours::nextInterval(const Interval &interval) const
 {
     if (interval.end().isValid()) {
-        return this->interval(interval.end());
+        auto i = this->interval(interval.end());
+        if (i.begin() < interval.end() && i.end() > interval.end()) {
+            i.setBegin(interval.end());
+        }
+        return i;
     }
     return {};
 }
