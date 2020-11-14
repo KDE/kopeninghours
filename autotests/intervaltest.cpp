@@ -32,6 +32,29 @@ private Q_SLOTS:
         i.setBegin(dt);
         QVERIFY(i.contains(dt));
     }
+
+    void testIntersects()
+    {
+        Interval i, j;
+        QVERIFY(i.intersects(j));
+        i.setBegin(QDateTime({2020, 11, 7}, {18, 0}));
+        QVERIFY(i.intersects(j));
+        QVERIFY(j.intersects(i));
+        i.setEnd(QDateTime({2020, 11, 7}, {20, 0}));
+        QVERIFY(i.intersects(j));
+        QVERIFY(j.intersects(i));
+
+        j.setBegin(QDateTime({2020, 11, 7}, {19, 0}));
+        QVERIFY(i.intersects(j));
+        QVERIFY(j.intersects(i));
+        j.setEnd(QDateTime({2020, 11, 7}, {21, 0}));
+        QVERIFY(i.intersects(j));
+        QVERIFY(j.intersects(i));
+
+        j.setBegin(QDateTime({2020, 11, 7}, {20, 0}));
+        QVERIFY(!i.intersects(j));
+        QVERIFY(!j.intersects(i));
+    }
 };
 
 QTEST_GUILESS_MAIN(IntervalTest)

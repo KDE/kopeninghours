@@ -36,10 +36,14 @@ public:
     Interval& operator=(const Interval&);
     Interval& operator=(Interval&&);
 
+    /** Check whether this interval starts before @p other. */
     bool operator<(const Interval &other) const;
 
     /** Default constructed empty/invalid interval. */
     bool isValid() const;
+
+    /** Checks whether this interval overlaps with @p other. */
+    bool intersects(const Interval &other) const;
 
     /** Begin of the interval.
      *  This is the first point in time included in the interval.

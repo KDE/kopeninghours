@@ -38,6 +38,17 @@ bool Interval::operator<(const Interval &other) const
     return d->begin < other.d->begin;
 }
 
+bool Interval::intersects(const Interval &other) const
+{
+    if (d->end.isValid() && other.d->begin.isValid() && d->end <= other.d->begin) {
+        return false;
+    }
+    if (other.d->end.isValid() && d->begin.isValid() && other.d->end <= d->begin) {
+        return false;
+    }
+    return true;
+}
+
 bool Interval::isValid() const
 {
     return d->state != Invalid;
@@ -95,6 +106,6 @@ void Interval::setComment(const QString &comment)
 QDebug operator<<(QDebug debug, const Interval &interval)
 {
     QDebugStateSaver saver(debug);
-    debug.nospace() << '[' << interval.begin() << '-' << interval.end() << ' ' << interval.state() << ':' << interval.comment() << ']';
+    debug.nospace().noquote() << '[' << interval.begin().toString(QLatin1String("yyyy-MM-ddThh:mm")) << " - " << interval.end().toString(QLatin1String("yyyy-MM-ddThh:mm")) << ' ' << interval.state() << " (\"" << interval.comment() << "\")]";
     return debug;
 }
