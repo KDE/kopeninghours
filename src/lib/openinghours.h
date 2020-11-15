@@ -45,9 +45,6 @@ public:
     OpeningHours& operator=(const OpeningHours&);
     OpeningHours& operator=(OpeningHours&&);
 
-    // TODO
-    //setCountry(ISO 3166-1)
-
     /** Geographic coordinate at which this expression should be evaluated.
      *  This is needed for expressions containing location-based variable time references,
      *  such as "sunset". If the expression requires a location, error() returns @c MissingLocation
@@ -60,7 +57,7 @@ public:
     float longitude() const;
     void setLongitude(float longitude);
 
-    /** ISO 3166-2 Region in which this expression should be evaluated.
+    /** ISO 3166-2 region or ISO 316-1 country in which this expression should be evaluated.
      *  This is needed for expressions containing public holiday references ("PH").
      *  If the expression references a public holiday, error() returns @c MissingRegion
      *  if no region has been specified, or if no holiday data is available for the specified region.
