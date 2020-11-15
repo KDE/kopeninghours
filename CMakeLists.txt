@@ -30,6 +30,7 @@ set(CMAKE_AUTORCC ON)
 ecm_setup_version(PROJECT VARIABLE_PREFIX KOPENINGHOURS
     VERSION_HEADER kopeninghours_version.h
     PACKAGE_VERSION_FILE "${CMAKE_CURRENT_BINARY_DIR}/KOpeningHoursConfigVersion.cmake"
+    SOVERSION 1
 )
 
 find_package(Qt5 5.14 REQUIRED COMPONENTS Core) # 5.14 for QCalendar
