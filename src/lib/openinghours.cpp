@@ -137,7 +137,6 @@ void OpeningHours::setRegion(QStringView region)
 
     const auto loc = region.toString();
     const auto it = OpeningHoursPrivate::s_holidayRegionCache.constFind(loc);
-#if 0 // depends on not yet merged KHolidays changes
     if (it != OpeningHoursPrivate::s_holidayRegionCache.constEnd()) {
         d->m_region = KHolidays::HolidayRegion(it.value());
     } else {
@@ -145,7 +144,6 @@ void OpeningHours::setRegion(QStringView region)
         d->m_region = KHolidays::HolidayRegion(code);
         OpeningHoursPrivate::s_holidayRegionCache.insert(loc, code);
     }
-#endif
     d->validate();
 }
 

@@ -27,7 +27,7 @@ QDebug operator<<(QDebug debug, const Time &time)
 
 int Timespan::requiredCapabilities() const
 {
-    if (interval > 0 || begin.event == Time::Dusk || begin.event == Time::Dawn || end.event == Time::Dusk || end.event == Time::Dawn || begin == end) {
+    if (interval > 0 || begin == end) {
         return Capability::NotImplemented;
     }
     if (begin.event != Time::NoEvent || end.event != Time::NoEvent) {
@@ -41,13 +41,13 @@ static QTime resolveTime(const Time &t, const QDate &date, OpeningHoursPrivate *
     switch (t.event) {
         case Time::NoEvent:
             return {t.hour % 24, t.minute};
+        // TODO we probably want an explicit timezone selection as well, for evaluating this in other locations
         case Time::Dawn:
-            // TODO
+            return QDateTime(date, KHolidays::SunRiseSet::utcDawn(date, context->m_latitude, context->m_longitude), Qt::UTC).toLocalTime().time();
         case Time::Sunrise:
-            // TODO we probably want an explicit timezone selection as well, for evaluating this in other locations
             return QDateTime(date, KHolidays::SunRiseSet::utcSunrise(date, context->m_latitude, context->m_longitude), Qt::UTC).toLocalTime().time();
         case Time::Dusk:
-            // TODO
+            return QDateTime(date, KHolidays::SunRiseSet::utcDusk(date, context->m_latitude, context->m_longitude), Qt::UTC).toLocalTime().time();
         case Time::Sunset:
             return QDateTime(date, KHolidays::SunRiseSet::utcSunset(date, context->m_latitude, context->m_longitude), Qt::UTC).toLocalTime().time();
     }

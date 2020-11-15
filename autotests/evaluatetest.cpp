@@ -90,6 +90,7 @@ private Q_SLOTS:
         QTest::newRow("week range max") << QByteArray("week 1-53") << QDateTime({2019, 12, 30}, {0, 0}) << QDateTime({2021, 1, 4}, {0, 0});
 
         QTest::newRow("variable time") << QByteArray("sunrise-sunset") << QDateTime({2020, 11, 8}, {7, 18}) << QDateTime({2020, 11, 8}, {16, 25});
+        QTest::newRow("variable time 2") << QByteArray("dawn-dusk") << QDateTime({2020, 11, 8}, {6, 41}) << QDateTime({2020, 11, 8}, {17, 2});
 
         QTest::newRow("public holiday") << QByteArray("PH") << QDateTime({2020, 12, 25}, {0, 0}) << QDateTime({2020, 12, 26}, {0, 0});
     }
