@@ -38,3 +38,7 @@ Still missing features:
 * open ended month ranges
 * variable date selectors
 * year intervals
+
+## Other Formats
+
+Opening hours in the schema.org format can be read as well, via KOpeningHours::OpeningHours::fromJsonLd().

@@ -9,9 +9,12 @@
 #include "openinghoursparser_p.h"
 #include "openinghoursscanner_p.h"
 #include "interval.h"
+#include "rule_p.h"
 #include "logging.h"
 
 #include <QDateTime>
+#include <QJsonArray>
+#include <QJsonObject>
 #include <QScopeGuard>
 
 using namespace KOpeningHours;
@@ -21,6 +24,10 @@ QHash<QString, QString> OpeningHoursPrivate::s_holidayRegionCache;
 void OpeningHoursPrivate::validate()
 {
     if (m_error == OpeningHours::SyntaxError) {
+        return;
+    }
+    if (m_rules.empty()) {
+        m_error = OpeningHours::Null;
         return;
     }
 
@@ -232,4 +239,95 @@ Interval OpeningHours::nextInterval(const Interval &interval) const
         return i;
     }
     return {};
+}
+
+static Rule* openingHoursSpecToRule(const QJsonObject &obj)
+{
+    if (obj.value(QLatin1String("@type")).toString() != QLatin1String("OpeningHoursSpecification")) {
+        return nullptr;
+    }
+
+    const auto opens = QTime::fromString(obj.value(QLatin1String("opens")).toString());
+    const auto closes = QTime::fromString(obj.value(QLatin1String("closes")).toString());
+
+    if (!opens.isValid() || !closes.isValid()) {
+        return nullptr;
+    }
+
+    auto r = new Rule;
+    r->m_state = Interval::Open;
+    // ### is name or description used for comments?
+
+    r->m_timeSelector.reset(new Timespan);
+    r->m_timeSelector->begin = { Time::NoEvent, opens.hour(), opens.minute() };
+    r->m_timeSelector->end = { Time::NoEvent, closes.hour(), closes.minute() };
+
+    const auto validFrom = QDate::fromString(obj.value(QLatin1String("validFrom")).toString(), Qt::ISODate);
+    const auto validTo = QDate::fromString(obj.value(QLatin1String("validThrough")).toString(), Qt::ISODate);
+    if (validFrom.isValid() || validTo.isValid()) {
+        r->m_monthdaySelector.reset(new MonthdayRange);
+        r->m_monthdaySelector->begin = { validFrom.year(), validFrom.month(), validFrom.day(), Date::FixedDate };
+        r->m_monthdaySelector->end = { validTo.year(), validTo.month(), validTo.day(), Date::FixedDate };
+    }
+
+    const auto weekday = obj.value(QLatin1String("dayOfWeek")).toString();
+    if (!weekday.isEmpty()) {
+        r->m_weekdaySelector.reset(new WeekdayRange);
+        int i = 1;
+        for (const auto &d : { "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"}) {
+            if (weekday.endsWith(QLatin1String(d))) {
+                r->m_weekdaySelector->beginDay = r->m_weekdaySelector->endDay = i;
+                break;
+            }
+            ++i;
+        }
+    }
+
+    return r;
+}
+
+OpeningHours OpeningHours::fromJsonLd(const QJsonObject &obj)
+{
+    OpeningHours result;
+
+    const auto oh = obj.value(QLatin1String("openingHours"));
+    if (oh.isString()) {
+        result = OpeningHours(oh.toString().toUtf8());
+    } else if (oh.isArray()) {
+        const auto ohA = oh.toArray();
+        QByteArray expr;
+        for (const auto exprV : ohA) {
+            const auto exprS = exprV.toString();
+            if (exprS.isEmpty()) {
+                continue;
+            }
+            expr += (expr.isEmpty() ? "" : "; ") + exprS.toUtf8();
+        }
+        result = OpeningHours(expr);
+    }
+
+    std::vector<std::unique_ptr<Rule>> rules;
+    const auto sohs = obj.value(QLatin1String("specialOpeningHoursSpecification")).toArray();
+    for (const auto &ohsV : sohs) {
+        const auto r = openingHoursSpecToRule(ohsV.toObject());
+        if (r) {
+            rules.push_back(std::unique_ptr<Rule>(r));
+        }
+    }
+    const auto ohs = obj.value(QLatin1String("openingHoursSpecification")).toArray();
+    for (const auto &ohsV : ohs) {
+        const auto r = openingHoursSpecToRule(ohsV.toObject());
+        if (r) {
+            rules.push_back(std::unique_ptr<Rule>(r));
+        }
+    }
+    if (!rules.empty()) {
+        std::swap(result.d->m_rules, rules);
+        for (auto &r : rules) {
+            result.d->m_rules.push_back(std::move(r));
+        }
+    }
+
+    result.d->validate();
+    return result;
 }

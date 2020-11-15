@@ -14,6 +14,7 @@
 
 class QByteArray;
 class QDateTime;
+class QJsonObject;
 class QString;
 
 /** OSM opening hours parsing and evaluation. */
@@ -67,7 +68,8 @@ public:
 
     /** Error codes. */
     enum Error {
-        NoError,
+        Null, ///< no expression is set
+        NoError, ///< there is no error, the expression is valid and can be used
         SyntaxError, ///< syntax error in the opening hours expression
         MissingRegion, ///< expression refers to public or school holidays, but that information is not available
         MissingLocation, ///< evaluation requires location information and those aren't set
@@ -90,6 +92,14 @@ public:
 
     // TODO point-in-time mode iteration API?
     // nextPointInTime(QDateTime) const
+
+    /** Convert opening hours in schema.org JSON-LD format.
+     *  This supports the following formats:
+     *  - https://schema.org/openingHours
+     *  - https://schema.org/openingHoursSpecification
+     *  - https://schema.org/specialOpeningHoursSpecification
+     */
+    static OpeningHours fromJsonLd(const QJsonObject &obj);
 
 private:
     QExplicitlySharedDataPointer<OpeningHoursPrivate> d;

@@ -3,6 +3,6 @@ Upstream-Name: KOpeningHours
 Upstream-Contact: Volker Krause <vkrause@kde.org>
 Source: https://invent.kde.org/libraries/kopeninghours
 
-Files: autotests/data/*
+Files: autotests/data/* autotests/jsonlddata/*
 Copyright: none
 License: CC0-1.0

@@ -1,0 +1,10 @@
+{
+    "@context": "https://schema.org",
+    "@type": ["TouristAttraction", "AmusementPark"],
+    "name": "Disneyland Paris",
+    "description": "example from schema.org",
+    "openingHours":["Mo-Fr 10:00-19:00", "Sa 10:00-22:00", "Su 10:00-21:00"],
+    "isAccessibleForFree": false,
+    "currenciesAccepted": "EUR",
+    "paymentAccepted":"Cash, Credit Card"
+}

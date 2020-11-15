@@ -64,6 +64,7 @@ int main(int argc, char **argv)
 
     OpeningHours oh(parser.positionalArguments().at(0).toUtf8());
     switch(oh.error()) {
+        case OpeningHours::Null:
         case OpeningHours::SyntaxError:
         case OpeningHours::MissingLocation:
         case OpeningHours::MissingRegion:

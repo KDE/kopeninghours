@@ -1,0 +1,8 @@
+{
+    "@context": "https://schema.org",
+    "@type": "Pharmacy",
+    "name": "Philippa's Pharmacy",
+    "description": "example from schema.org",
+    "openingHours": "Mo,Tu,We,Th 09:00-12:00",
+    "telephone": "+18005551234"
+}

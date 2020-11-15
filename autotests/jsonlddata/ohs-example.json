@@ -1,0 +1,52 @@
+{
+  "@context": [
+    "https://schema.org",
+    { "@language": "en-ca" }
+  ],
+  "@type": "Library",
+  "name":  "Music Resource Centre",
+  "openingHoursSpecification": [
+    {
+      "@type": "OpeningHoursSpecification",
+      "closes":  "17:00:00",
+      "dayOfWeek": "https://schema.org/Sunday",
+      "opens":  "09:00:00"
+    },
+    {
+      "@type": "OpeningHoursSpecification",
+      "closes": "16:00:00" ,
+      "dayOfWeek": "https://schema.org/Saturday",
+      "opens": "09:00:00"
+    },
+    {
+      "@type": "OpeningHoursSpecification",
+      "closes":  "15:00:00",
+      "dayOfWeek": "https://schema.org/Thursday",
+      "opens": "09:00:00"
+    },
+    {
+      "@type": "OpeningHoursSpecification",
+      "closes": "14:00:00",
+      "dayOfWeek": "https://schema.org/Tuesday",
+      "opens": "09:00:00"
+    },
+    {
+      "@type": "OpeningHoursSpecification",
+      "closes": "13:00:00",
+      "dayOfWeek":  "https://schema.org/Friday",
+      "opens": "09:00:00"
+    },
+    {
+      "@type": "OpeningHoursSpecification",
+      "closes": "12:00:00",
+      "dayOfWeek": "https://schema.org/Monday",
+      "opens": "09:00:00"
+    },
+    {
+      "@type": "OpeningHoursSpecification",
+      "closes": "11:00:00",
+      "dayOfWeek":  "https://schema.org/Wednesday",
+      "opens": "09:00:00"
+    }
+  ]
+}
