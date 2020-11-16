@@ -305,26 +305,35 @@ QDebug operator<<(QDebug debug, const MonthdayRange *monthdayRange)
 
 int YearRange::requiredCapabilities() const
 {
-    if (interval != 1) {
-        return Capability::NotImplemented;
-    }
-    return next ? next->requiredCapabilities() : Capability::None;
+    return Capability::None;
 }
 
 SelectorResult YearRange::nextInterval(const Interval &interval, const QDateTime &dt, OpeningHoursPrivate *context) const
 {
     Q_UNUSED(context);
     const auto y = dt.date().year();
-    if (begin > dt.date().year()) {
+    if (begin > y) {
         return dt.secsTo(QDateTime({begin, 1, 1}, {0, 0}));
     }
     if (end > 0 && end < y) {
         return false;
     }
 
+    if (this->interval > 1) {
+        const int yd = (y - begin) % this->interval;
+        if (yd) {
+            return dt.secsTo(QDateTime({y + (this->interval - yd), 1, 1}, {0, 0}));
+        }
+    }
+
     auto i = interval;
-    i.setBegin(QDateTime({begin, 1, 1}, {0, 0}));
-    i.setEnd(end > 0 ? QDateTime({end + 1, 1, 1}, {0, 0}) : QDateTime());
+    if (this->interval > 1) {
+        i.setBegin(QDateTime({y, 1, 1}, {0, 0}));
+        i.setEnd(QDateTime({y + 1, 1, 1}, {0, 0}));
+    } else {
+        i.setBegin(QDateTime({begin, 1, 1}, {0, 0}));
+        i.setEnd(end > 0 ? QDateTime({end + 1, 1, 1}, {0, 0}) : QDateTime());
+    }
     return i;
 }
 

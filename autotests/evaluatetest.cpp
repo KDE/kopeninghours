@@ -58,6 +58,9 @@ private Q_SLOTS:
         QTest::newRow("year set") << QByteArray("2010,2020,2030") << QDateTime({2020, 1, 1}, {0, 0}) << QDateTime({2021, 1, 1}, {0, 0});
         QTest::newRow("year set of ranges") << QByteArray("2010-2015,2020-2025,2030") << QDateTime({2020, 1, 1}, {0, 0}) << QDateTime({2026, 1, 1}, {0, 0});
         QTest::newRow("year open end") << QByteArray("2010+") << QDateTime({2010, 1, 1}, {0, 0}) << QDateTime();
+        QTest::newRow("year interval odd") << QByteArray("2011-2031/2") << QDateTime({2021, 1, 1}, {0, 0}) << QDateTime({2022, 1, 1}, {0, 0});
+        QTest::newRow("year interval even") << QByteArray("2010-2030/2") << QDateTime({2020, 1, 1}, {0, 0}) << QDateTime({2021, 1, 1}, {0, 0});
+        QTest::newRow("year interval 4") << QByteArray("2000-2100/4") << QDateTime({2020, 1, 1}, {0, 0}) << QDateTime({2021, 1, 1}, {0, 0});
 
         QTest::newRow("current month") << QByteArray("Nov") << QDateTime({2020, 11, 1}, {0, 0}) << QDateTime({2020, 12, 1}, {0, 0});
         QTest::newRow("next month") << QByteArray("Dec") << QDateTime({2020, 12, 1}, {0, 0}) << QDateTime({2021, 1, 1}, {0, 0});

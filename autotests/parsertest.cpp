@@ -38,6 +38,7 @@ private Q_SLOTS:
         T("PH off || open");
         T("PH off || unknown \"foo\"");
         T("2020 Jan-Apr");
+        T("1980-2030/4");
 
         // from https://wiki.openstreetmap.org/wiki/Key:opening_hours#Simple_examples
         T("Mo-Fr 08:00-17:30");
@@ -115,7 +116,6 @@ private Q_SLOTS:
         QTest::newRow("location") << QByteArray("sunrise-sunset") << OpeningHours::MissingLocation;
         QTest::newRow("PH") << QByteArray("PH off") << OpeningHours::MissingRegion;
         QTest::newRow("SH") << QByteArray("SH off") << OpeningHours::UnsupportedFeature;
-        QTest::newRow("year interval") << QByteArray("1980-2030/4") << OpeningHours::UnsupportedFeature;
         QTest::newRow("time interval") << QByteArray("10:00-16:00/90") << OpeningHours::UnsupportedFeature;
         QTest::newRow("nth day") << QByteArray("Mo[1-2,4]") << OpeningHours::UnsupportedFeature;
         QTest::newRow("nth day offset") << QByteArray("We[-1] + 2 days") << OpeningHours::UnsupportedFeature;
