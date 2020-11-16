@@ -508,6 +508,29 @@ MonthdayRange:
     $$->begin = $F;
     $$->end = $T;
   }
+| DateFrom[F] DateOffset[OF] T_MINUS DateTo[T] {
+    $$ = new MonthdayRange;
+    $$->begin = $F;
+    $$->begin.dayOffset = $OF.dayOffset;
+    $$->begin.weekdayOffset = $OF.weekdayOffset;
+    $$->end = $T;
+  }
+| DateFrom[F] T_MINUS DateTo[T] DateOffset[OT] {
+    $$ = new MonthdayRange;
+    $$->begin = $F;
+    $$->end = $T;
+    $$->end.dayOffset = $OT.dayOffset;
+    $$->end.weekdayOffset = $OT.weekdayOffset;
+  }
+| DateFrom[F] DateOffset[OF] T_MINUS DateTo[T] DateOffset[OT] {
+    $$ = new MonthdayRange;
+    $$->begin = $F;
+    $$->begin.dayOffset = $OF.dayOffset;
+    $$->begin.weekdayOffset = $OF.weekdayOffset;
+    $$->end = $T;
+    $$->end.dayOffset = $OT.dayOffset;
+    $$->end.weekdayOffset = $OT.weekdayOffset;
+  }
 ;
 
 DateOffset:

@@ -106,6 +106,9 @@ private Q_SLOTS:
 
         QTest::newRow("day offset positive") << QByteArray("easter +2 days") << QDateTime({2021, 4, 6}, {0, 0}) << QDateTime({2021, 4, 7}, {0, 0});
         QTest::newRow("day offset negative") << QByteArray("2022 easter -3 days") << QDateTime({2022, 4, 14}, {0, 0}) << QDateTime({2022, 4, 15}, {0, 0});
+        QTest::newRow("day offset range b") << QByteArray("easter -10 days-easter +12 days") << QDateTime({2021, 3, 25}, {0, 0}) << QDateTime({2021, 4, 17}, {0, 0});
+        QTest::newRow("day offset range f") << QByteArray("easter -10 days-easter") << QDateTime({2021, 3, 25}, {0, 0}) << QDateTime({2021, 4, 5}, {0, 0});
+        QTest::newRow("day offset range t") << QByteArray("easter-easter +12 days") << QDateTime({2021, 4, 4}, {0, 0}) << QDateTime({2021, 4, 17}, {0, 0});
     }
 
     void testNext()
