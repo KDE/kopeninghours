@@ -145,6 +145,18 @@ private Q_SLOTS:
         QVERIFY(!i.isValid());
     }
 
+    void test247()
+    {
+        OpeningHours oh("24/7 closed \"always closed\"");
+        QCOMPARE(oh.error(), OpeningHours::NoError);
+        const auto i = oh.interval(QDateTime({2020, 11, 7}, {18, 0}));
+        QVERIFY(i.isValid());
+        QCOMPARE(i.state(), Interval::Closed);
+        QCOMPARE(i.comment(), QLatin1String("always closed"));
+        QVERIFY(!i.begin().isValid());
+        QVERIFY(!i.end().isValid());
+    }
+
     void testFractions()
     {
         OpeningHours oh("14:00-15:00");
