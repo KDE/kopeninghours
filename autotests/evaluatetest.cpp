@@ -103,6 +103,9 @@ private Q_SLOTS:
         QTest::newRow("mixed variable/fixed date") << QByteArray("easter-May 1") << QDateTime({2021, 4, 4}, {0, 0}) << QDateTime({2021, 5, 2}, {0, 0});
         QTest::newRow("mixed fixed/variable date") << QByteArray("Jan 1-easter") << QDateTime({2021, 1, 1}, {0, 0}) << QDateTime({2021, 4, 5}, {0, 0});
         QTest::newRow("year/easter") << QByteArray("2022 easter") << QDateTime({2022, 4, 17}, {0, 0}) << QDateTime({2022, 4, 18}, {0, 0});
+
+        QTest::newRow("day offset positive") << QByteArray("easter +2 days") << QDateTime({2021, 4, 6}, {0, 0}) << QDateTime({2021, 4, 7}, {0, 0});
+        QTest::newRow("day offset negative") << QByteArray("2022 easter -3 days") << QDateTime({2022, 4, 14}, {0, 0}) << QDateTime({2022, 4, 15}, {0, 0});
     }
 
     void testNext()

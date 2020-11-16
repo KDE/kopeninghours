@@ -37,6 +37,7 @@ Still missing features:
 * holiday offset selectors
 * week intervals
 * open ended month ranges
+* weekday-based offsets
 
 ## Other Formats
 

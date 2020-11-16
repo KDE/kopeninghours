@@ -66,6 +66,11 @@ struct Selectors {
     YearRange *yearSelector;
 };
 
+struct DateOffset {
+    int dayOffset;
+    int weekdayOffset;
+};
+
 #ifndef YY_TYPEDEF_YY_SCANNER_T
 #define YY_TYPEDEF_YY_SCANNER_T
 typedef void* yyscan_t;
@@ -94,6 +99,7 @@ typedef void* yyscan_t;
     Week *week;
     Date date;
     MonthdayRange *monthdayRange;
+    DateOffset dateOffset;
     YearRange *yearRange;
 }
 
@@ -155,7 +161,7 @@ typedef void* yyscan_t;
 %type <num> NthSequence
 %type <num> NthEntry
 %type <offset> DayOffset
-%type <offset> DateOffset
+%type <dateOffset> DateOffset
 %type <week> Week
 %type <date> DateFrom
 %type <date> DateTo
@@ -493,7 +499,9 @@ MonthdayRange:
 | DateFrom[D] DateOffset[O] {
     $$ = new MonthdayRange;
     $$->begin = $D;
-    $$->offset = $O;
+    $$->begin.dayOffset = $O.dayOffset;
+    $$->begin.weekdayOffset = $O.weekdayOffset;
+    $$->end = $$->begin;
   }
 | DateFrom[F] T_MINUS DateTo[T] {
     $$ = new MonthdayRange;
@@ -503,14 +511,14 @@ MonthdayRange:
 ;
 
 DateOffset:
-  T_PLUS T_WEEKDAY[D] { $$ = $D; }
-| T_MINUS T_WEEKDAY[D] { $$ = -$D; }
-| DayOffset[O] { $$ = $O; }
+  T_PLUS T_WEEKDAY[D] { $$ = { 0, $D }; }
+| T_MINUS T_WEEKDAY[D] { $$ = { 0, -$D }; }
+| DayOffset[O] { $$ = { $O, 0 }; }
 ;
 
 DateFrom:
-  T_MONTH[M] T_INTEGER[D] { $$ = { 0, $M, $D, Date::FixedDate }; }
-| T_YEAR[Y] T_MONTH[M] T_INTEGER[D] { $$ = { $Y, $M, $D, Date::FixedDate }; }
+  T_MONTH[M] T_INTEGER[D] { $$ = { 0, $M, $D, Date::FixedDate, 0, 0 }; }
+| T_YEAR[Y] T_MONTH[M] T_INTEGER[D] { $$ = { $Y, $M, $D, Date::FixedDate, 0, 0 }; }
 | VariableDate[D] { $$ = $D; }
 | T_INTEGER[Y] VariableDate[D] {
     $$ = $D;
@@ -520,11 +528,11 @@ DateFrom:
 
 DateTo:
   DateFrom[D] { $$ = $D; }
-| T_INTEGER[N] { $$ = { 0, 0, $N, Date::FixedDate }; }
+| T_INTEGER[N] { $$ = { 0, 0, $N, Date::FixedDate, 0, 0 }; }
 ;
 
 VariableDate:
-  T_EASTER { $$ = { 0, 0, 0, Date::Easter }; }
+  T_EASTER { $$ = { 0, 0, 0, Date::Easter, 0, 0 }; }
 ;
 
 // Year selector

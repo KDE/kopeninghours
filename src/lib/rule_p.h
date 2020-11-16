@@ -144,6 +144,8 @@ public:
         Easter
     };
     VariableDate variableDate;
+    int8_t weekdayOffset;
+    int16_t dayOffset;
 };
 
 /** Monthday range. */
@@ -153,9 +155,8 @@ public:
     int requiredCapabilities() const;
     SelectorResult nextInterval(const Interval &interval, const QDateTime &dt, OpeningHoursPrivate *context) const;
 
-    Date begin = { 0, 0, 0, Date::FixedDate };
-    Date end = { 0, 0, 0, Date::FixedDate };
-    int32_t offset = 0;
+    Date begin = { 0, 0, 0, Date::FixedDate, 0, 0 };
+    Date end = { 0, 0, 0, Date::FixedDate, 0, 0 };
     std::unique_ptr<MonthdayRange> next;
 };
 

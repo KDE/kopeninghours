@@ -227,7 +227,7 @@ QDebug operator<<(QDebug debug, const Date &date)
 
 int MonthdayRange::requiredCapabilities() const
 {
-    if (offset != 0) {
+    if (begin.weekdayOffset != 0 || end.weekdayOffset != 0) {
         return Capability::NotImplemented;
     }
     return next ? next->requiredCapabilities() : Capability::None;
@@ -244,8 +244,9 @@ static QDate resolveDate(Date d, int year)
             date = Easter::easterDate(d.year ? d.year : year);
             break;
     }
+    date = date.addDays(d.dayOffset);
 
-    // TODO consider offsets
+    // TODO consider weekday offsets
     return date;
 }
 
