@@ -241,7 +241,7 @@ static QDate resolveDate(Date d, int year)
             date = {d.year ? d.year : year, d.month, d.day ? d.day : 1};
             break;
         case Date::Easter:
-            date = Easter::easterDate(year);
+            date = Easter::easterDate(d.year ? d.year : year);
             break;
     }
 
