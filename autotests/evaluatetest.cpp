@@ -65,6 +65,7 @@ private Q_SLOTS:
         QTest::newRow("overlapping month range") << QByteArray("Oct-Dec") << QDateTime({2020, 10, 1}, {0, 0}) << QDateTime({2021, 1, 1}, {0, 0});
         QTest::newRow("month sets") << QByteArray("Oct,Nov,Dec") << QDateTime({2020, 11, 1}, {0, 0}) << QDateTime({2020, 12, 1}, {0, 0});
         QTest::newRow("month range max") << QByteArray("Jan-Dec") << QDateTime({2020, 1, 1}, {0, 0}) << QDateTime({2021, 1, 1}, {0, 0});
+        QTest::newRow("month wrap") << QByteArray("Nov-Feb") << QDateTime({2020, 11, 1}, {0, 0}) << QDateTime({2021, 3, 1}, {0, 0});
 
         QTest::newRow("month/day") << QByteArray("Nov 7") << QDateTime({2020, 11, 7}, {0, 0}) << QDateTime({2020, 11, 8}, {0, 0});
         QTest::newRow("next month/day") << QByteArray("Nov 8") << QDateTime({2020, 11, 8}, {0, 0}) << QDateTime({2020, 11, 9}, {0, 0});
@@ -81,6 +82,7 @@ private Q_SLOTS:
         QTest::newRow("full date next year") << QByteArray("2021 Nov 7") << QDateTime({2021, 11, 7}, {0, 0}) << QDateTime({2021, 11, 8}, {0, 0});
         QTest::newRow("full date range") << QByteArray("2020 Nov 6-2020 Dec 13") << QDateTime({2020, 11, 6}, {0, 0}) << QDateTime({2020, 12, 14}, {0, 0});
         QTest::newRow("full date range max") << QByteArray("2020 Jan 1-2020 Dec 31") << QDateTime({2020, 1, 1}, {0, 0}) << QDateTime({2021, 1, 1}, {0, 0});
+        QTest::newRow("full date cross year") << QByteArray("2020 Nov 1-2022 Apr 1") << QDateTime({2020, 11, 1}, {0, 0}) << QDateTime({2022, 4, 2}, {0, 0});
 
         QTest::newRow("week") << QByteArray("week 45") << QDateTime({2020, 11, 2}, {0, 0}) << QDateTime({2020, 11, 9}, {0, 0});
         QTest::newRow("next week") << QByteArray("week 46") << QDateTime({2020, 11, 9}, {0, 0}) << QDateTime({2020, 11, 16}, {0, 0});
@@ -93,6 +95,10 @@ private Q_SLOTS:
         QTest::newRow("variable time 2") << QByteArray("dawn-dusk") << QDateTime({2020, 11, 8}, {6, 41}) << QDateTime({2020, 11, 8}, {17, 2});
 
         QTest::newRow("public holiday") << QByteArray("PH") << QDateTime({2020, 12, 25}, {0, 0}) << QDateTime({2020, 12, 26}, {0, 0});
+
+        QTest::newRow("easter") << QByteArray("easter") << QDateTime({2021, 4, 4}, {0, 0}) << QDateTime({2021, 4, 5}, {0, 0});
+        QTest::newRow("mixed variable/fixed date") << QByteArray("easter-May 1") << QDateTime({2021, 4, 4}, {0, 0}) << QDateTime({2021, 5, 2}, {0, 0});
+        QTest::newRow("mixed fixed/variable date") << QByteArray("Jan 1-easter") << QDateTime({2021, 1, 1}, {0, 0}) << QDateTime({2021, 4, 5}, {0, 0});
     }
 
     void testNext()

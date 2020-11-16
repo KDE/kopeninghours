@@ -23,6 +23,7 @@ Supported opening hours features are:
 * time span, weekday, week, month, month day and year selectors
 * solar position based variable time events
 * public holiday selectors (based on KF5::Holidays)
+* variable date selectors
 
 Still missing features:
 * additional rules (treated as normal rules atm)
@@ -36,7 +37,6 @@ Still missing features:
 * holiday offset selectors
 * week intervals
 * open ended month ranges
-* variable date selectors
 * year intervals
 
 ## Other Formats

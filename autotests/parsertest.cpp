@@ -37,6 +37,7 @@ private Q_SLOTS:
         T("2020+");
         T("PH off || open");
         T("PH off || unknown \"foo\"");
+        T("2020 Jan-Apr");
 
         // from https://wiki.openstreetmap.org/wiki/Key:opening_hours#Simple_examples
         T("Mo-Fr 08:00-17:30");
@@ -80,6 +81,9 @@ private Q_SLOTS:
         T("2020-2000");
         T("PH off || 2020 open");
         T("PH off || open || unknown");
+        T("Jan-Apr 1");
+        T("Feb-2020 Apr 1");
+        T("Apr 1-Nov");
 
         // from https://wiki.openstreetmap.org/wiki/Key:opening_hours#Common_mistakes
         T("7/8-23");

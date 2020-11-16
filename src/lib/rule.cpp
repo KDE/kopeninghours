@@ -5,6 +5,7 @@
 */
 
 #include "rule_p.h"
+#include "easter_p.h"
 #include "logging.h"
 #include "openinghours_p.h"
 
@@ -226,10 +227,26 @@ QDebug operator<<(QDebug debug, const Date &date)
 
 int MonthdayRange::requiredCapabilities() const
 {
-    if (offset != 0 || begin.variableDate != Date::FixedDate || end.variableDate != Date::FixedDate) {
+    if (offset != 0) {
         return Capability::NotImplemented;
     }
     return next ? next->requiredCapabilities() : Capability::None;
+}
+
+static QDate resolveDate(Date d, int year)
+{
+    QDate date;
+    switch (d.variableDate) {
+        case Date::FixedDate:
+            date = {d.year ? d.year : year, d.month, d.day ? d.day : 1};
+            break;
+        case Date::Easter:
+            date = Easter::easterDate(year);
+            break;
+    }
+
+    // TODO consider offsets
+    return date;
 }
 
 static int daysInMonth(int month)
@@ -237,33 +254,43 @@ static int daysInMonth(int month)
     return QCalendar(QCalendar::System::Gregorian).daysInMonth(month);
 }
 
+static QDate resolveDateEnd(Date d, int year)
+{
+    auto date = resolveDate(d, year);
+    if (!d.day && d.variableDate == Date::FixedDate) {
+        return date.addDays(daysInMonth(d.month));
+    }
+    return date.addDays(1);
+}
+
 SelectorResult MonthdayRange::nextInterval(const Interval &interval, const QDateTime &dt, OpeningHoursPrivate *context) const
 {
     Q_UNUSED(context);
-    if (begin.year > 0 && begin.year > dt.date().year()) {
-        return dt.secsTo(QDateTime({begin.year, begin.month, std::max<int>(begin.day, 1)}, {0, 0}));
+    auto beginDt = resolveDate(begin, dt.date().year());
+    auto endDt = resolveDateEnd(end, dt.date().year());
+
+    // note that for any of the following we cannot just do addYears(1), as that will break
+    // for leap years. instead we have to recompute the date again for each year
+    if (endDt < beginDt) {
+        // month range wraps over the year boundary
+        endDt = resolveDateEnd(end, dt.date().year() + 1);
     }
-    if (end.year > 0 && end.year < dt.date().year()) {
+
+    if (end.year && dt.date() >= endDt) {
         return false;
     }
-    if (begin.month > dt.date().month()) {
-        return dt.secsTo(QDateTime({dt.date().year(), begin.month, std::max<int>(begin.day, 1)}, {0, 0}));
+    if (dt.date() >= endDt) {
+        beginDt = resolveDate(begin, dt.date().year() + 1);
+        endDt = resolveDateEnd(end, dt.date().year() + 1);
     }
-    if (end.month && end.month >= begin.month && end.month < dt.date().month()) {
-        return dt.secsTo(QDateTime({dt.date().year() + 1, begin.month, std::max<int>(begin.day, 1)}, {0, 0}));
-    }
-    if (begin.day > 0 && begin.day > dt.date().day()) {
-        return dt.secsTo(QDateTime({dt.date().year(), dt.date().month(), begin.day}, {0, 0}));
-    }
-    if (end.day > 0 && end.day < dt.date().day()) {
-        return dt.secsTo(QDateTime(QDate(dt.date().year(), dt.date().month(), dt.date().daysInMonth()).addDays(1), {0, 0}));
+
+    if (dt.date() < beginDt) {
+        return dt.secsTo(QDateTime(beginDt, {0, 0}));
     }
 
     auto i = interval;
-    i.setBegin(QDateTime({begin.year ? begin.year : dt.date().year(), begin.month, begin.day ? begin.day : 1}, {0, 0}));
-    // TODO this does not handle year wrapping
-    // TODO this does not handle open ended intervals
-    i.setEnd(QDateTime({end.year ? end.year : dt.date().year() + (end.month < begin.month ? 1 : 0), end.month, end.day ? end.day : daysInMonth(end.month)}, {0, 0}).addDays(1));
+    i.setBegin(QDateTime(beginDt, {0, 0}));
+    i.setEnd(QDateTime(endDt, {0, 0}));
     return i;
 }
 
