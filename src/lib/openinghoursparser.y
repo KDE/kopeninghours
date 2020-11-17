@@ -154,6 +154,7 @@ typedef void* yyscan_t;
 %type <selectors> YearSelector
 %type <timespan> Timespan
 %type <time> Time
+%type <time> VariableTime
 %type <weekdayRange> WeekdaySequence
 %type <weekdayRange> WeekdayRange
 %type <weekdayRange> HolidySequence
@@ -321,14 +322,22 @@ Timespan:
 ;
 
 Time:
-  T_EXTENDED_HOUR_MINUTE
-| VariableTime
+  T_EXTENDED_HOUR_MINUTE[T] { $$ = $T; }
+| VariableTime[T] { $$ = $T; }
 ;
 
 VariableTime:
-  T_EVENT
-| T_LPAREN T_EVENT T_PLUS T_INTEGER T_RPAREN
-| T_LPAREN T_EVENT T_MINUS T_INTEGER T_RPAREN
+  T_EVENT[E] { $$ = $E; }
+| T_LPAREN T_EVENT[E] T_PLUS T_EXTENDED_HOUR_MINUTE[O] T_RPAREN {
+    $$ = $E;
+    $$.hour = $O.hour;
+    $$.minute = $O.minute;
+  }
+| T_LPAREN T_EVENT[E] T_MINUS T_EXTENDED_HOUR_MINUTE[O] T_RPAREN {
+    $$ = $E;
+    $$.hour = -$O.hour;
+    $$.minute = -$O.minute;
+  }
 ;
 
 // Weekday selector

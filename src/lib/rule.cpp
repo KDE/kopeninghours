@@ -37,32 +37,38 @@ int Timespan::requiredCapabilities() const
     return next ? next->requiredCapabilities() : Capability::None;
 }
 
-static QTime resolveTime(const Time &t, const QDate &date, OpeningHoursPrivate *context)
+static QDateTime resolveTime(const Time &t, const QDate &date, OpeningHoursPrivate *context)
 {
+    QDateTime dt;
     switch (t.event) {
         case Time::NoEvent:
-            return {t.hour % 24, t.minute};
+            return QDateTime(date, {t.hour % 24, t.minute});
         // TODO we probably want an explicit timezone selection as well, for evaluating this in other locations
         case Time::Dawn:
-            return QDateTime(date, KHolidays::SunRiseSet::utcDawn(date, context->m_latitude, context->m_longitude), Qt::UTC).toLocalTime().time();
+            dt = QDateTime(date, KHolidays::SunRiseSet::utcDawn(date, context->m_latitude, context->m_longitude), Qt::UTC).toLocalTime();
+            break;
         case Time::Sunrise:
-            return QDateTime(date, KHolidays::SunRiseSet::utcSunrise(date, context->m_latitude, context->m_longitude), Qt::UTC).toLocalTime().time();
+            dt = QDateTime(date, KHolidays::SunRiseSet::utcSunrise(date, context->m_latitude, context->m_longitude), Qt::UTC).toLocalTime();
+            break;
         case Time::Dusk:
-            return QDateTime(date, KHolidays::SunRiseSet::utcDusk(date, context->m_latitude, context->m_longitude), Qt::UTC).toLocalTime().time();
+            dt = QDateTime(date, KHolidays::SunRiseSet::utcDusk(date, context->m_latitude, context->m_longitude), Qt::UTC).toLocalTime();
+            break;
         case Time::Sunset:
-            return QDateTime(date, KHolidays::SunRiseSet::utcSunset(date, context->m_latitude, context->m_longitude), Qt::UTC).toLocalTime().time();
+            dt = QDateTime(date, KHolidays::SunRiseSet::utcSunset(date, context->m_latitude, context->m_longitude), Qt::UTC).toLocalTime();
+            break;
     }
-    return {};
+
+    dt = dt.addSecs(t.hour * 3600 + t.minute * 60);
+    return dt;
 }
 
 SelectorResult Timespan::nextInterval(const Interval &interval, const QDateTime &dt, OpeningHoursPrivate *context) const
 {
-    const auto beginTime = resolveTime(begin, dt.date(), context);
-    const auto endTime = resolveTime(end, dt.date(), context);
-    const auto endPastMidnight = endTime < beginTime || (end.hour >= 24 && begin.hour < 24);
-
-    const auto beginDt = QDateTime(dt.date(), beginTime);
-    const auto endDt = QDateTime(endPastMidnight ? dt.date().addDays(1) : dt.date(), endTime);
+    const auto beginDt = resolveTime(begin, dt.date(), context);
+    auto endDt = resolveTime(end, dt.date(), context);
+    if (endDt < beginDt || (end.hour >= 24 && begin.hour < 24)) {
+        endDt = endDt.addDays(1);
+    }
 
     if (dt >= beginDt && dt < endDt) {
         auto i = interval;

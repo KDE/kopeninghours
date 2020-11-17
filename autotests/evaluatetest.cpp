@@ -96,6 +96,8 @@ private Q_SLOTS:
 
         QTest::newRow("variable time") << QByteArray("sunrise-sunset") << QDateTime({2020, 11, 8}, {7, 18}) << QDateTime({2020, 11, 8}, {16, 25});
         QTest::newRow("variable time 2") << QByteArray("dawn-dusk") << QDateTime({2020, 11, 8}, {6, 41}) << QDateTime({2020, 11, 8}, {17, 2});
+        QTest::newRow("variable time with +offset") << QByteArray("(sunset+02:00)-24:00") << QDateTime({2020, 11, 7}, {18, 27}) << QDateTime({2020, 11, 8}, {0, 0});
+        QTest::newRow("variable time with -offset") << QByteArray("(sunset-02:00)-(sunset+02:00)") << QDateTime({2020, 11, 7}, {14, 27}) << QDateTime({2020, 11, 7}, {18, 27});
 
         QTest::newRow("public holiday") << QByteArray("PH") << QDateTime({2020, 12, 25}, {0, 0}) << QDateTime({2020, 12, 26}, {0, 0});
 
