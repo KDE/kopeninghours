@@ -39,6 +39,8 @@ private Q_SLOTS:
         T("PH off || unknown \"foo\"");
         T("2020 Jan-Apr");
         T("1980-2030/4");
+        T("\"comment\"");
+        T("PH off || 2020 open");
 
         // from https://wiki.openstreetmap.org/wiki/Key:opening_hours#Simple_examples
         T("Mo-Fr 08:00-17:30");
@@ -60,6 +62,66 @@ private Q_SLOTS:
         T("Mo-Sa 08:00-13:00,14:00-17:00 || \"by appointment\"");
         T("Su-Tu 11:00-01:00, We-Th 11:00-03:00, Fr 11:00-06:00, Sa 11:00-07:00");
         T("Mo-Su,PH 15:00-03:00; easter -2 days off");
+
+        // from https://openingh.openstreetmap.de/evaluation_tool/
+        T("Mo-Fr 10:00-20:00; PH off");
+        T("Mo,Tu,Th,Fr 12:00-18:00; Sa,PH 12:00-17:00; Th[3],Th[-1] off");
+        T("00:00-24:00; Tu-Su,PH 08:30-09:00 off; Tu-Su 14:00-14:30 off; Mo 08:00-13:00 off");
+        T("Fr-Sa 18:00-06:00; PH off");
+        T("Mo 10:00-12:00,12:30-15:00");
+        T("Mo 10:00-12:00,12:30-15:00; Tu-Fr 08:00-12:00,12:30-15:00; Sa 08:00-12:00");
+        T("\"only after registration\"; PH off");
+        T("22:00-23:00; PH off");
+        T("08:00-11:00; PH off");
+        T("open; Mo 15:00-16:00 off; PH off");
+        T("Mo-Su 22:00-23:00; We,PH off");
+        T("We-Fr 10:00-24:00 open \"it is open\" || \"please call\"; PH off");
+        T("Mo-Fr 08:00-11:00 || Tu-Th,PH open \"Emergency only\"");
+        T("Tu-Th,We 22:00-23:00 open \"Hot meals\"; PH off");
+        T("Mo 12:00-14:00 open \"female only\", Mo 14:00-16:00 open \"male only\"; PH off");
+        T("Apr: 22:00-23:00; PH off");
+        T("Jul-Jan: 22:00-23:00; PH off");
+        T("Jan-Jul: 22:00-23:00; PH off");
+        T("Jul 23-Jan 3: \"needs reservation by phone\"; PH off");
+        T("Jul 23-Jan 3: 22:00-23:00 \"Please make a reservation by phone.\"; PH off");
+        T("Jul 23-Jan 3: 08:00-11:00 \"Please make a reservation by phone.\"; PH off");
+        T("Jan 23-Jul 3: 22:00-23:00 \"Please make a reservation by phone.\"; PH off");
+//         T("Mar Su[-1]-Dec Su[1] -2 days: 22:00-23:00; PH off");
+        T("Sa[1],Sa[1] +1 day 10:00-12:00 open \"first weekend in the month\"; PH off");
+        T("Sa[-1],Sa[-1] +1 day 10:00-12:00 open \"last weekend in the month\"; PH off");
+        T("Sa-Su 00:00-24:00; PH off");
+        T("Mo-Fr 00:00-24:00; PH off");
+        T("sunrise-sunset open \"Beware of sunburn!\"; PH off");
+        T("sunset-sunrise open \"Beware of vampires!\"; PH off");
+        T("(sunset+01:00)-24:00 || closed \"No drink before sunset!\"; PH off");
+        T("22:00+; PH off");
+        T("Tu,PH 23:59-22:59");
+        T("We-Mo,PH 23:59-22:59");
+        T("week 2-52/2 We 00:00-24:00; week 1-53/2 Sa 00:00-24:00; PH off");
+        T("week 4-16 We 00:00-24:00; week 38-42 Sa 00:00-24:00; PH off");
+//         T("2012 easter -2 days-2012 easter +2 days: open \"Around easter\"; PH off");
+        T("24/7 closed \"always closed\"");
+        T("Jan 23-Feb 11,Feb 12 00:00-24:00; PH off");
+        T("Apr-Oct Su[2] 14:00-18:00; Aug Su[-1] -1 day 10:00-18:00; Aug Su[-1] 10:00-18:00; PH off");
+        T("Mo-Fr 08:00-12:00, We 14:00-18:00; Su,PH off");
+
+        T("We; PH off");
+        T("PH");
+//         T("PH Mo-Fr");
+        T("PH -1 day");
+        T("SH");
+        T("SH,PH");
+        T("PH,SH");
+        T("We[1-3]");
+        T("We[3-5]");
+        T("Sa");
+        T("Sa[1]");
+        T("Sa[1-3]");
+        T("Tu-Th");
+        T("Fr-Mo");
+        T("Mo-Su; We \"only after registration\"");
+        T("Oct: We[1]");
+
 #undef T
     }
 
@@ -77,10 +139,8 @@ private Q_SLOTS:
 
 #define T(x) QTest::newRow(x) << QByteArray(x) << OpeningHours::SyntaxError
         T("23/7");
-        T("\"comment\"");
         T("24/7 geöffnet");
         T("2020-2000");
-        T("PH off || 2020 open");
         T("PH off || open || unknown");
         T("Jan-Apr 1");
         T("Feb-2020 Apr 1");
@@ -97,6 +157,11 @@ private Q_SLOTS:
         T("Dining in: 6am to 11pm; Drive thru: 24/7");
         T("MWThF: 1200-1800; SaSu: 1200-1700");
         T("BAR: Su-Mo 18:00-02:00; Tu-Th 18:00-03:00; Fr-Sa 18:00-04:00; CLUB: Tu-Th 20:00-03:00; Fr-Sa 20:00-04:00");
+
+        // from https://openingh.openstreetmap.de/evaluation_tool/
+        T("2013,2015,2050-2053,2055/2,2020-2029/3,2060+ Jan 1"); // periodic open end year selectors are a non-standard extension
+        T("00:00-24:00 week 6 Mo-Su Feb; PH off");
+        T("monday, Tu, wE, TH 12:00 - 20:00 ; 14:00-16:00 Off ; closed public Holiday");
 #undef T
     }
 

@@ -143,7 +143,6 @@ typedef void* yyscan_t;
 %token T_INVALID
 
 %type <rule> Rule
-%type <rule> FallbackRule
 %type <selectors> SelectorSequence
 %type <selectors> WideRangeSelector
 %type <selectors> SmallRangeSelector
@@ -188,7 +187,7 @@ Ruleset:
   Rule[R] { parser->addRule($R, OpeningHoursPrivate::NormalRule); }
 | Ruleset T_NORMAL_RULE_SEPARATOR Rule[R] { parser->addRule($R, OpeningHoursPrivate::NormalRule); }
 | Ruleset T_ADDITIONAL_RULE_SEPARATOR Rule[R] { parser->addRule($R, OpeningHoursPrivate::AdditionalRule); }
-| Ruleset T_FALLBACK_SEPARATOR FallbackRule[R] {
+| Ruleset T_FALLBACK_SEPARATOR Rule[R] {
     if (parser->m_fallbackRule) {
         YYABORT;
     }
@@ -217,10 +216,7 @@ Rule:
     $$->m_state = $T;
     applySelectors($S, $$);
   }
-;
-
-FallbackRule:
-  T_COMMENT[C] {
+| T_COMMENT[C] {
     $$ = new Rule;
     $$->setComment($C.str, $C.len);
     $$->m_state = Interval::Unknown;
@@ -240,7 +236,13 @@ SelectorSequence:
   T_24_7 { initSelectors($$); }
 | SmallRangeSelector[S] { $$ = $S; }
 | WideRangeSelector[W] { $$ = $W; }
+| WideRangeSelector[W] T_COLON { $$ = $W; }
 | WideRangeSelector[W] SmallRangeSelector[S] {
+    $$.timeSelector = $S.timeSelector;
+    $$.weekdaySelector = $S.weekdaySelector;
+    $$.weekSelector = $W.weekSelector;
+  }
+| WideRangeSelector[W] T_COLON SmallRangeSelector[S] {
     $$.timeSelector = $S.timeSelector;
     $$.weekdaySelector = $S.weekdaySelector;
     $$.weekSelector = $W.weekSelector;
