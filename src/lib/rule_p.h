@@ -107,7 +107,7 @@ public:
 
     uint8_t beginDay = 0;
     uint8_t endDay = 0;
-    uint8_t nthMask = 0;
+    uint16_t nthMask = 0;
     int16_t offset = 0;
     enum Holiday : uint8_t {
         NoHoliday = 0,

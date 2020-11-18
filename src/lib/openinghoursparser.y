@@ -425,15 +425,20 @@ NthSequence:
 | NthSequence[N1] T_COMMA NthEntry[N2] { $$ = $N1 | $N2; }
 
 NthEntry:
-  T_INTEGER[N] { $$ = (1 << ($N - 1)); }
+  T_INTEGER[N] {
+    if ($N < 1 || $N > 5) { YYABORT; }
+    $$ = (1 << (2 * $N));
+  }
 | T_INTEGER[N1] T_MINUS T_INTEGER[N2] {
+    if ($N1 < 1 || $N1 > 5 || $N2 < 1 || $N2 > 5 || $N2 <= $N1) { YYABORT; }
     $$ = 0;
     for (int i = $N1; i < $N2; ++i) {
-        $$ |= (1 << (i - 1));
+        $$ |= (1 << (2 * i));
     }
   }
 | T_MINUS T_INTEGER[N] {
-    $$ = (1 << ($N - 1)) | (1 << 7);
+    if ($N < 1 || $N > 5) { YYABORT; }
+    $$ = (1 << ((2 * (6 - $N)) - 1));
   }
 ;
 

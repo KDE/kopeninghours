@@ -111,6 +111,18 @@ private Q_SLOTS:
         QTest::newRow("day offset range b") << QByteArray("easter -10 days-easter +12 days") << QDateTime({2021, 3, 25}, {0, 0}) << QDateTime({2021, 4, 17}, {0, 0});
         QTest::newRow("day offset range f") << QByteArray("easter -10 days-easter") << QDateTime({2021, 3, 25}, {0, 0}) << QDateTime({2021, 4, 5}, {0, 0});
         QTest::newRow("day offset range t") << QByteArray("easter-easter +12 days") << QDateTime({2021, 4, 4}, {0, 0}) << QDateTime({2021, 4, 17}, {0, 0});
+
+        QTest::newRow("nth day") << QByteArray("Sa[1]") << QDateTime({2020, 11, 7}, {0, 0}) << QDateTime({2020, 11, 8}, {0, 0});
+        QTest::newRow("nth day next week") << QByteArray("Sa[2]") << QDateTime({2020, 11, 14}, {0, 0}) << QDateTime({2020, 11, 15}, {0, 0});
+        QTest::newRow("nth day next day") << QByteArray("Su[2]") << QDateTime({2020, 11, 8}, {0, 0}) << QDateTime({2020, 11, 9}, {0, 0});
+        QTest::newRow("nth day prev day") << QByteArray("Fr[1]") << QDateTime({2020, 12, 4}, {0, 0}) << QDateTime({2020, 12, 5}, {0, 0});
+        QTest::newRow("nth day set") << QByteArray("Su[1,4,5]") << QDateTime({2020, 11, 22}, {0, 0}) << QDateTime({2020, 11, 23}, {0, 0});
+        QTest::newRow("nth day 5th day") << QByteArray("Su[5]") << QDateTime({2020, 11, 29}, {0, 0}) << QDateTime({2020, 11, 30}, {0, 0});
+        QTest::newRow("nth day last day") << QByteArray("Su[-1]") << QDateTime({2020, 11, 29}, {0, 0}) << QDateTime({2020, 11, 30}, {0, 0});
+        QTest::newRow("nth day -3") << QByteArray("Su[-3]") << QDateTime({2020, 11, 15}, {0, 0}) << QDateTime({2020, 11, 16}, {0, 0});
+        QTest::newRow("nth day -5") << QByteArray("Su[-5]") << QDateTime({2021, 1, 3}, {0, 0}) << QDateTime({2021, 1, 4}, {0, 0});
+        QTest::newRow("nth day 4/-3") << QByteArray("Su[4,-3]") << QDateTime({2020, 11, 15}, {0, 0}) << QDateTime({2020, 11, 16}, {0, 0});
+        QTest::newRow("nth day 3/-4") << QByteArray("Su[-4,3]") << QDateTime({2020, 11, 8}, {0, 0}) << QDateTime({2020, 11, 9}, {0, 0});
     }
 
     void testNext()

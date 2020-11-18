@@ -16,6 +16,11 @@
 
 using namespace KOpeningHours;
 
+static int daysInMonth(int month)
+{
+    return QCalendar(QCalendar::System::Gregorian).daysInMonth(month);
+}
+
 QDebug operator<<(QDebug debug, const Time &time)
 {
     QDebugStateSaver saver(debug);
@@ -99,7 +104,10 @@ QDebug operator<<(QDebug debug, const Timespan *timeSpan)
 
 int WeekdayRange::requiredCapabilities() const
 {
-    if (nthMask > 1 || offset > 0) { // TODO
+    // only ranges or nthMask are allowed, not both at the same time, enforced by parser
+    assert(beginDay == endDay || nthMask == 0);
+
+    if (offset > 0) { // TODO
         return Capability::NotImplemented;
     }
 
@@ -114,11 +122,50 @@ int WeekdayRange::requiredCapabilities() const
     return Capability::NotImplemented;
 }
 
+static QDate nthWeekday(const QDate &month, int weekDay, int n)
+{
+    if (n > 0) {
+        const auto firstOfMonth = QDate{month.year(), month.month(), 1};
+        const auto delta = (7 + weekDay - firstOfMonth.dayOfWeek()) % 7;
+        const auto day = firstOfMonth.addDays(7 * (n - 1) + delta);
+        return day.month() == month.month() ? day : QDate();
+    } else {
+        const auto lastOfMonth = QDate{month.year(), month.month(), daysInMonth(month.month())};
+        const auto delta = (7 + lastOfMonth.dayOfWeek() - weekDay) % 7;
+        const auto day = lastOfMonth.addDays(7 * (n + 1) - delta);
+        return day.month() == month.month() ? day : QDate();
+    }
+}
+
 SelectorResult WeekdayRange::nextInterval(const Interval &interval, const QDateTime &dt, OpeningHoursPrivate *context) const
 {
     switch (holiday) {
         case NoHoliday:
         {
+            if (nthMask > 0) {
+                for (int i = 1; i <= 10; ++i) {
+                    if ((nthMask & (1 << i)) == 0) {
+                        continue;
+                    }
+                    const auto n = (i % 2) ? (-5 + (i /2)) : (i / 2);
+                    const auto d = nthWeekday(dt.date(), beginDay, n);
+                    if (!d.isValid() || d < dt.date()) {
+                        continue;
+                    }
+                    if (d == dt.date()) {
+                        auto i = interval;
+                        i.setBegin(QDateTime(d, {0, 0}));
+                        i.setEnd(QDateTime(d.addDays(1), {0, 0}));
+                        return i;
+                    }
+                    // d > dt.date()
+                    return dt.secsTo(QDateTime(d, {0, 0}));
+                }
+
+                // skip to next month
+                return dt.secsTo(QDateTime(dt.date().addDays(dt.date().daysTo({dt.date().year(), dt.date().month(), daysInMonth(dt.date().month())}) + 1) , {0, 0}));
+            }
+
             if (beginDay <= endDay) {
                 if (dt.date().dayOfWeek() < beginDay) {
                     const auto d = beginDay - dt.date().dayOfWeek();
@@ -254,11 +301,6 @@ static QDate resolveDate(Date d, int year)
 
     // TODO consider weekday offsets
     return date;
-}
-
-static int daysInMonth(int month)
-{
-    return QCalendar(QCalendar::System::Gregorian).daysInMonth(month);
 }
 
 static QDate resolveDateEnd(Date d, int year)
