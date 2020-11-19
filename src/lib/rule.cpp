@@ -227,7 +227,7 @@ QDebug operator<<(QDebug debug, const WeekdayRange *weekdayRange)
 
 int Week::requiredCapabilities() const
 {
-    if (interval > 1 || endWeek < beginWeek) {
+    if (endWeek < beginWeek) { // is this even officially allowed?
         return Capability::NotImplemented;
     }
     return next ? next->requiredCapabilities() : Capability::None;
@@ -249,10 +249,22 @@ SelectorResult Week::nextInterval(const Interval &interval, const QDateTime &dt,
         return dt.secsTo(d);
     }
 
+    if (this->interval > 1) {
+        const int wd = (dt.date().weekNumber() - beginWeek) % this->interval;
+        if (wd) {
+            const auto days = (7 - dt.date().dayOfWeek()) + 7 * (this->interval - wd - 1) + 1;
+            return dt.secsTo(QDateTime(dt.date().addDays(days), {0, 0}));
+        }
+    }
+
     auto i = interval;
-    i.setBegin(QDateTime(dt.date().addDays(1 - dt.date().dayOfWeek() - 7 * (dt.date().weekNumber() - beginWeek)), {0, 0}));
-    // TODO year wrap around
-    i.setEnd(QDateTime(i.begin().date().addDays((1 + endWeek - beginWeek) * 7), {0, 0}));
+    if (this->interval > 1) {
+        i.setBegin(QDateTime(dt.date().addDays(1 - dt.date().dayOfWeek()), {0, 0}));
+        i.setEnd(QDateTime(i.begin().date().addDays(7), {0, 0}));
+    } else {
+        i.setBegin(QDateTime(dt.date().addDays(1 - dt.date().dayOfWeek() - 7 * (dt.date().weekNumber() - beginWeek)), {0, 0}));
+        i.setEnd(QDateTime(i.begin().date().addDays((1 + endWeek - beginWeek) * 7), {0, 0}));
+    }
     return i;
 }
 

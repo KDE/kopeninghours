@@ -123,6 +123,10 @@ private Q_SLOTS:
         QTest::newRow("nth day -5") << QByteArray("Su[-5]") << QDateTime({2021, 1, 3}, {0, 0}) << QDateTime({2021, 1, 4}, {0, 0});
         QTest::newRow("nth day 4/-3") << QByteArray("Su[4,-3]") << QDateTime({2020, 11, 15}, {0, 0}) << QDateTime({2020, 11, 16}, {0, 0});
         QTest::newRow("nth day 3/-4") << QByteArray("Su[-4,3]") << QDateTime({2020, 11, 8}, {0, 0}) << QDateTime({2020, 11, 9}, {0, 0});
+
+        QTest::newRow("odd week") << QByteArray("week 1-53/2") << QDateTime({2020, 11, 2}, {0, 0}) << QDateTime({2020, 11, 9}, {0, 0});
+        QTest::newRow("even week") << QByteArray("week 2-52/2") <<  QDateTime({2020, 11, 9}, {0, 0}) << QDateTime({2020, 11, 16}, {0, 0});
+        QTest::newRow("/4 week") << QByteArray("week 3-53/4") <<  QDateTime({2020, 11, 16}, {0, 0}) << QDateTime({2020, 11, 23}, {0, 0});
     }
 
     void testNext()
