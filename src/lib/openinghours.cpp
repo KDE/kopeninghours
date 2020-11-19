@@ -296,7 +296,7 @@ OpeningHours OpeningHours::fromJsonLd(const QJsonObject &obj)
     } else if (oh.isArray()) {
         const auto ohA = oh.toArray();
         QByteArray expr;
-        for (const auto exprV : ohA) {
+        for (const auto &exprV : ohA) {
             const auto exprS = exprV.toString();
             if (exprS.isEmpty()) {
                 continue;
