@@ -136,9 +136,9 @@ public:
 class Date
 {
 public:
-    uint16_t year;
-    uint8_t month;
-    uint8_t day;
+    int year;
+    int month;
+    int day;
     enum VariableDate : uint8_t {
         FixedDate,
         Easter

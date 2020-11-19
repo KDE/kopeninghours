@@ -87,8 +87,7 @@ typedef void* yyscan_t;
 %parse-param { yyscan_t scanner }
 
 %union {
-    uint32_t num;
-    int32_t offset;
+    int num;
     StringRef strRef;
     Interval::State state;
     Rule *rule;
@@ -160,7 +159,7 @@ typedef void* yyscan_t;
 %type <weekdayRange> Holiday
 %type <num> NthSequence
 %type <num> NthEntry
-%type <offset> DayOffset
+%type <num> DayOffset
 %type <dateOffset> DateOffset
 %type <week> Week
 %type <date> DateFrom
@@ -492,21 +491,21 @@ MonthdaySelector:
 MonthdayRange:
   T_MONTH[M] {
     $$ = new MonthdayRange;
-    $$->begin = $$->end = { 0, $M, 0, Date::FixedDate };
+    $$->begin = $$->end = { 0, $M, 0, Date::FixedDate, 0, 0 };
   }
 | T_YEAR[Y] T_MONTH[M] {
     $$ = new MonthdayRange;
-    $$->begin = $$->end = { $Y, $M, 0, Date::FixedDate };
+    $$->begin = $$->end = { $Y, $M, 0, Date::FixedDate, 0, 0 };
   }
 | T_MONTH[M1] T_MINUS T_MONTH[M2] {
     $$ = new MonthdayRange;
-    $$->begin = { 0, $M1, 0, Date::FixedDate };
-    $$->end = { 0, $M2, 0, Date::FixedDate };
+    $$->begin = { 0, $M1, 0, Date::FixedDate, 0, 0 };
+    $$->end = { 0, $M2, 0, Date::FixedDate, 0, 0 };
   }
 | T_YEAR[Y] T_MONTH[M1] T_MINUS T_MONTH[M2] {
     $$ = new MonthdayRange;
-    $$->begin = { $Y, $M1, 0, Date::FixedDate };
-    $$->end = { $Y, $M2, 0, Date::FixedDate };
+    $$->begin = { $Y, $M1, 0, Date::FixedDate, 0, 0 };
+    $$->end = { $Y, $M2, 0, Date::FixedDate, 0, 0 };
   }
 | DateFrom[D] {
     $$ = new MonthdayRange;
