@@ -88,7 +88,7 @@ public:
     /** Returns the interval containing @p dt. */
     Q_INVOKABLE KOpeningHours::Interval interval(const QDateTime &dt) const;
     /** Returns the interval immediately following @p interval. */
-    Q_INVOKABLE Interval nextInterval(const KOpeningHours::Interval &interval) const;
+    Q_INVOKABLE KOpeningHours::Interval nextInterval(const KOpeningHours::Interval &interval) const;
 
     // TODO point-in-time mode iteration API?
     // nextPointInTime(QDateTime) const
