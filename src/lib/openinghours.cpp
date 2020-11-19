@@ -266,8 +266,8 @@ static Rule* openingHoursSpecToRule(const QJsonObject &obj)
     const auto validTo = QDate::fromString(obj.value(QLatin1String("validThrough")).toString(), Qt::ISODate);
     if (validFrom.isValid() || validTo.isValid()) {
         r->m_monthdaySelector.reset(new MonthdayRange);
-        r->m_monthdaySelector->begin = { validFrom.year(), validFrom.month(), validFrom.day(), Date::FixedDate };
-        r->m_monthdaySelector->end = { validTo.year(), validTo.month(), validTo.day(), Date::FixedDate };
+        r->m_monthdaySelector->begin = { validFrom.year(), validFrom.month(), validFrom.day(), Date::FixedDate, 0, 0 };
+        r->m_monthdaySelector->end = { validTo.year(), validTo.month(), validTo.day(), Date::FixedDate, 0, 0 };
     }
 
     const auto weekday = obj.value(QLatin1String("dayOfWeek")).toString();
