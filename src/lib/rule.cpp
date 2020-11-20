@@ -205,6 +205,9 @@ SelectorResult WeekdayRange::nextInterval(const Interval &interval, const QDateT
             auto i = interval;
             i.setBegin(QDateTime(h.observedStartDate().addDays(offset), {0, 0}));
             i.setEnd(QDateTime(h.observedEndDate().addDays(1).addDays(offset), {0, 0}));
+            if (i.comment().isEmpty() && offset == 0) {
+                i.setComment(h.name());
+            }
             return i;
         }
         case SchoolHoliday:
