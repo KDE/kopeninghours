@@ -107,7 +107,7 @@ int WeekdayRange::requiredCapabilities() const
     // only ranges or nthMask are allowed, not both at the same time, enforced by parser
     assert(beginDay == endDay || nthMask == 0);
 
-    if (offset > 0) { // TODO
+    if (offset > 0 && holiday != PublicHoliday) { // TODO
         return Capability::NotImplemented;
     }
 
@@ -190,7 +190,7 @@ SelectorResult WeekdayRange::nextInterval(const Interval &interval, const QDateT
         }
         case PublicHoliday:
         {
-            auto holidays = context->m_region.holidays(dt.date(), dt.date().addYears(1));
+            auto holidays = context->m_region.holidays(dt.date().addDays(-offset), dt.date().addDays(-offset).addYears(1));
             holidays.erase(std::remove_if(holidays.begin(), holidays.end(), [](const auto &h) { return h.dayType() != KHolidays::Holiday::NonWorkday; }), holidays.end());
             std::sort(holidays.begin(), holidays.end(), [](const auto &lhs, const auto &rhs) { return lhs.observedStartDate() < rhs.observedStartDate(); });
             if (holidays.empty()) {
@@ -198,13 +198,13 @@ SelectorResult WeekdayRange::nextInterval(const Interval &interval, const QDateT
             }
 
             const auto h = holidays.at(0);
-            if (dt.date() < h.observedStartDate()) {
-                return dt.secsTo(QDateTime(h.observedStartDate(), {0, 0}));
+            if (dt.date() < h.observedStartDate().addDays(offset)) {
+                return dt.secsTo(QDateTime(h.observedStartDate().addDays(offset), {0, 0}));
             }
 
             auto i = interval;
-            i.setBegin(QDateTime(h.observedStartDate(), {0, 0}));
-            i.setEnd(QDateTime(h.observedEndDate().addDays(1), {0, 0}));
+            i.setBegin(QDateTime(h.observedStartDate().addDays(offset), {0, 0}));
+            i.setEnd(QDateTime(h.observedEndDate().addDays(1).addDays(offset), {0, 0}));
             return i;
         }
         case SchoolHoliday:

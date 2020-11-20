@@ -32,7 +32,6 @@ Still missing features:
 * open-ended time selectors
 * AND/OR distinction in weekday selectors
 * school holiday selectors
-* holiday offset selectors
 * open ended month ranges
 * weekday-based offsets
 
