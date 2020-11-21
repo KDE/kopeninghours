@@ -107,12 +107,11 @@ int WeekdayRange::requiredCapabilities() const
     // only ranges or nthMask are allowed, not both at the same time, enforced by parser
     assert(beginDay == endDay || nthMask == 0);
 
-    if (offset > 0 && holiday != PublicHoliday) { // TODO
-        return Capability::NotImplemented;
-    }
-
     switch (holiday) {
         case NoHoliday:
+            if (offset > 0 && nthMask == 0) {
+                return Capability::NotImplemented;
+            }
             return (next ? next->requiredCapabilities() : Capability::None) | (next2 ? next2->requiredCapabilities() : Capability::None);
         case PublicHoliday:
             return Capability::PublicHoliday;
@@ -148,22 +147,22 @@ SelectorResult WeekdayRange::nextInterval(const Interval &interval, const QDateT
                         continue;
                     }
                     const auto n = (i % 2) ? (-5 + (i /2)) : (i / 2);
-                    const auto d = nthWeekday(dt.date(), beginDay, n);
-                    if (!d.isValid() || d < dt.date()) {
+                    const auto d = nthWeekday(dt.date().addDays(-offset), beginDay, n);
+                    if (!d.isValid() || d.addDays(offset) < dt.date()) {
                         continue;
                     }
-                    if (d == dt.date()) {
+                    if (d.addDays(offset) == dt.date()) {
                         auto i = interval;
-                        i.setBegin(QDateTime(d, {0, 0}));
-                        i.setEnd(QDateTime(d.addDays(1), {0, 0}));
+                        i.setBegin(QDateTime(d.addDays(offset), {0, 0}));
+                        i.setEnd(QDateTime(d.addDays(offset + 1), {0, 0}));
                         return i;
                     }
                     // d > dt.date()
-                    return dt.secsTo(QDateTime(d, {0, 0}));
+                    return dt.secsTo(QDateTime(d.addDays(offset), {0, 0}));
                 }
 
                 // skip to next month
-                return dt.secsTo(QDateTime(dt.date().addDays(dt.date().daysTo({dt.date().year(), dt.date().month(), daysInMonth(dt.date().month())}) + 1) , {0, 0}));
+                return dt.secsTo(QDateTime(dt.date().addDays(dt.date().daysTo({dt.date().year(), dt.date().month(), daysInMonth(dt.date().month())}) + 1 + offset) , {0, 0}));
             }
 
             if (beginDay <= endDay) {

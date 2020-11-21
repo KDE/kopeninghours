@@ -129,6 +129,11 @@ private Q_SLOTS:
         QTest::newRow("odd week") << QByteArray("week 1-53/2") << QDateTime({2020, 11, 2}, {0, 0}) << QDateTime({2020, 11, 9}, {0, 0});
         QTest::newRow("even week") << QByteArray("week 2-52/2") <<  QDateTime({2020, 11, 9}, {0, 0}) << QDateTime({2020, 11, 16}, {0, 0});
         QTest::newRow("/4 week") << QByteArray("week 3-53/4") <<  QDateTime({2020, 11, 16}, {0, 0}) << QDateTime({2020, 11, 23}, {0, 0});
+
+        QTest::newRow("nth day +offset") << QByteArray("Fr[1] +1 day") << QDateTime({2020, 11, 7}, {0, 0}) << QDateTime({2020, 11, 8}, {0, 0});
+        QTest::newRow("nth day -offset") << QByteArray("Mo[-1] -1 day") << QDateTime({2020, 11, 29}, {0, 0}) << QDateTime({2020, 11, 30}, {0, 0});
+        QTest::newRow("nth day +offset next month") << QByteArray("Su[1] -1 days") << QDateTime({2020, 12, 5}, {0, 0}) << QDateTime({2020, 12, 6}, {0, 0});
+        QTest::newRow("nth day -offset next month") << QByteArray("Su[1] +1 days") << QDateTime({2020, 12, 7}, {0, 0}) << QDateTime({2020, 12, 8}, {0, 0});
     }
 
     void testNext()

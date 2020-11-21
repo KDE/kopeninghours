@@ -42,6 +42,7 @@ private Q_SLOTS:
         T("\"comment\"");
         T("PH off || 2020 open");
         T("Mo[1-2,4]");
+        T("We[-1] + 2 days");
 
         // from https://wiki.openstreetmap.org/wiki/Key:opening_hours#Simple_examples
         T("Mo-Fr 08:00-17:30");
@@ -189,7 +190,6 @@ private Q_SLOTS:
         QTest::newRow("PH") << QByteArray("PH off") << OpeningHours::MissingRegion;
         QTest::newRow("SH") << QByteArray("SH off") << OpeningHours::UnsupportedFeature;
         QTest::newRow("time interval") << QByteArray("10:00-16:00/90") << OpeningHours::UnsupportedFeature;
-        QTest::newRow("nth day offset") << QByteArray("We[-1] + 2 days") << OpeningHours::UnsupportedFeature;
         QTest::newRow("week wrap") << QByteArray("week 45-13") << OpeningHours::UnsupportedFeature;
         QTest::newRow("single timepoint") << QByteArray("10:00") << OpeningHours::UnsupportedFeature;
         QTest::newRow("single timepoint range") << QByteArray("10:00-10:00") << OpeningHours::UnsupportedFeature;
