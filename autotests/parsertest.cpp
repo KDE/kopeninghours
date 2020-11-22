@@ -189,10 +189,10 @@ private Q_SLOTS:
         QTest::newRow("location") << QByteArray("sunrise-sunset") << OpeningHours::MissingLocation;
         QTest::newRow("PH") << QByteArray("PH off") << OpeningHours::MissingRegion;
         QTest::newRow("SH") << QByteArray("SH off") << OpeningHours::UnsupportedFeature;
-        QTest::newRow("time interval") << QByteArray("10:00-16:00/90") << OpeningHours::UnsupportedFeature;
+        QTest::newRow("time interval") << QByteArray("10:00-16:00/90") << OpeningHours::IncompatibleMode;
         QTest::newRow("week wrap") << QByteArray("week 45-13") << OpeningHours::UnsupportedFeature;
-        QTest::newRow("single timepoint") << QByteArray("10:00") << OpeningHours::UnsupportedFeature;
-        QTest::newRow("single timepoint range") << QByteArray("10:00-10:00") << OpeningHours::UnsupportedFeature;
+        QTest::newRow("single timepoint") << QByteArray("10:00") << OpeningHours::IncompatibleMode;
+        QTest::newRow("single timepoint range") << QByteArray("10:00-10:00") << OpeningHours::IncompatibleMode;
     }
 
     void testValidation()

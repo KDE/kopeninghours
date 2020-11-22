@@ -36,9 +36,23 @@ class KOPENINGHOURS_EXPORT OpeningHours
     Q_PROPERTY(float longitude READ longitude WRITE setLongitude)
     Q_PROPERTY(QString region READ region WRITE setRegion)
 public:
+    /** Evaluation modes for opening hours expressions. */
+    enum Mode {
+        IntervalMode = 1, ///< Expressions that describe time ranges
+        PointInTimeMode = 2, ///< Expressions that describe points in time
+    };
+    Q_DECLARE_FLAGS(Modes, Mode)
+    Q_FLAG(Modes)
+
+    /** Create an empty/invalid instance. */
     explicit OpeningHours();
-    /** Parse OSM opening hours expression @p openingHours. */
-    explicit OpeningHours(const QByteArray &openingHours);
+
+    /** Parse OSM opening hours expression @p openingHours.
+     *  @param modes Specify whether time interval and/or point in time expressions are expected.
+     *  If @p openingHours doesn't match @p modes, error() return IncompatibleMode.
+     */
+    explicit OpeningHours(const QByteArray &openingHours, Modes modes = IntervalMode);
+
     OpeningHours(const OpeningHours&);
     OpeningHours(OpeningHours&&);
     ~OpeningHours();
@@ -73,6 +87,7 @@ public:
         SyntaxError, ///< syntax error in the opening hours expression
         MissingRegion, ///< expression refers to public or school holidays, but that information is not available
         MissingLocation, ///< evaluation requires location information and those aren't set
+        IncompatibleMode, ///< expression mode doesn't match the expected mode
         UnsupportedFeature, ///< expression uses a feature that isn't implemented/supported (yet)
     };
     Q_ENUM(Error)

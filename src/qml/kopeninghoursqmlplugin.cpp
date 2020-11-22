@@ -26,12 +26,13 @@ class OpeningHoursFactory
 {
     Q_GADGET
 public:
-    Q_INVOKABLE KOpeningHours::OpeningHours parse(const QString &expression) const;
+    Q_INVOKABLE KOpeningHours::OpeningHours parse(const QString &expression, int modes = OpeningHours::IntervalMode) const;
 };
 
-OpeningHours OpeningHoursFactory::parse(const QString &expression) const
+OpeningHours OpeningHoursFactory::parse(const QString &expression, int modes) const
 {
-    return OpeningHours(expression.toUtf8());
+    qDebug() << modes;
+    return OpeningHours(expression.toUtf8(), OpeningHours::Modes(modes));
 }
 
 }
@@ -40,6 +41,7 @@ void KOpeningHoursQmlPlugin::registerTypes(const char*)
 {
     qRegisterMetaType<KOpeningHours::Interval>();
     qRegisterMetaType<KOpeningHours::OpeningHours>();
+    qRegisterMetaType<KOpeningHours::OpeningHours::Modes>();
 
     qmlRegisterUncreatableType<KOpeningHours::Interval>("org.kde.kopeninghours", 1, 0, "Interval", {});
     qmlRegisterUncreatableType<KOpeningHours::OpeningHours>("org.kde.kopeninghours", 1, 0, "OpeningHours", {});

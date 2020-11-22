@@ -87,6 +87,11 @@ Kirigami.ApplicationWindow {
             }
 
             function evaluateCurrentState() {
+                var tmp = OpeningHoursParser.parse(expression.text, intervalMode.checked ? OpeningHours.IntervalMode : OpeningHours.PointInTimeMode);
+                tmp.setLocation(latitude.text, longitude.text);
+                tmp.region = region.currentText;
+                page.oh = tmp;
+
                 if (oh.error != OpeningHours.NoError) {
                     currentState.text = "";
                     return;
@@ -126,12 +131,20 @@ Kirigami.ApplicationWindow {
                     id: expression
                     Layout.fillWidth: true
                     text: "Mo-Fr 08:00-12:00,13:00-17:30; Sa 08:00-12:00; Su unknown \"on appointment\""
-                    onTextChanged: {
-                        var oh = OpeningHoursParser.parse(text);
-                        oh.setLocation(latitude.text, longitude.text);
-                        oh.region = region.currentText;
-                        page.oh = oh;
-                        evaluateCurrentState();
+                    onTextChanged: evaluateCurrentState();
+                }
+
+                RowLayout {
+                    QQC2.RadioButton {
+                        id: intervalMode
+                        text: "Interval Mode"
+                        checked: true
+                        onCheckedChanged: evaluateCurrentState()
+                    }
+                    QQC2.RadioButton {
+                        id: pointInTimeMode
+                        text: "Point in Time Mode"
+                        onCheckedChanged: evaluateCurrentState()
                     }
                 }
 
@@ -140,19 +153,13 @@ Kirigami.ApplicationWindow {
                     QQC2.TextField {
                         id: latitude
                         text: "52.5"
-                        onTextChanged: {
-                            oh.latitude = text;
-                            evaluateCurrentState();
-                        }
+                        onTextChanged: evaluateCurrentState();
                     }
                     QQC2.Label { text: "Longitude:" }
                     QQC2.TextField {
                         id: longitude
                         text: "13.0"
-                        onTextChanged: {
-                            oh.longitude = text;
-                            evaluateCurrentState();
-                        }
+                        onTextChanged: evaluateCurrentState();
                     }
                 }
 
@@ -161,10 +168,7 @@ Kirigami.ApplicationWindow {
                     id: region
                     model: regionModel
                     textRole: "region"
-                    onCurrentIndexChanged: {
-                        page.oh.region = currentText;
-                        evaluateCurrentState();
-                    }
+                    onCurrentIndexChanged: evaluateCurrentState();
                 }
 
                 QQC2.Label {
@@ -180,6 +184,8 @@ Kirigami.ApplicationWindow {
                                 return "Expression needs to know the geo coordinates of the location it is evaluated for.";
                             case OpeningHours.UnsupportedFeature:
                                 return "Expression uses a feature that is not supported/implemented yet.";
+                            case OpeningHours.IncompatibleMode:
+                                return "Expression uses an incompatible evaluation mode.";
                         }
                     }
                 }
@@ -195,6 +201,7 @@ Kirigami.ApplicationWindow {
 
                 ListView {
                     id: intervalView
+                    visible: intervalMode.checked
                     model: intervalModel
                     delegate: openingHoursDelegate
                     property int labelWidth: 0

@@ -44,7 +44,12 @@ void OpeningHoursPrivate::validate()
         m_error = OpeningHours::MissingRegion;
         return;
     }
-    if (c & (Capability::SchoolHoliday | Capability::NotImplemented)) {
+    if (((c & Capability::PointInTime) && (m_modes & OpeningHours::PointInTimeMode) == 0)
+     || ((c & Capability::Interval) && (m_modes & OpeningHours::IntervalMode) == 0)) {
+        m_error = OpeningHours::IncompatibleMode;
+        return;
+    }
+    if (c & (Capability::SchoolHoliday | Capability::NotImplemented | Capability::PointInTime)) {
         m_error = OpeningHours::UnsupportedFeature;
         return;
     }
@@ -72,9 +77,11 @@ OpeningHours::OpeningHours()
 {
 }
 
-OpeningHours::OpeningHours(const QByteArray &openingHours)
+OpeningHours::OpeningHours(const QByteArray &openingHours, Modes modes)
     : d(new OpeningHoursPrivate)
 {
+    d->m_modes = modes;
+
     yyscan_t scanner;
     if (yylex_init(&scanner)) {
         qCWarning(Log) << "Failed to initialize scanner?!";

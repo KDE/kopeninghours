@@ -33,6 +33,7 @@ public:
 
     std::vector<std::unique_ptr<Rule>> m_rules;
     std::unique_ptr<Rule> m_fallbackRule;
+    OpeningHours::Modes m_modes = OpeningHours::IntervalMode;
     OpeningHours::Error m_error = OpeningHours::NoError;
 
     float m_latitude = NAN;

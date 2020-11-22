@@ -26,6 +26,8 @@ namespace  Capability {
         SchoolHoliday = 2,
         Location = 4,
         NotImplemented = 8,
+        Interval = 16,
+        PointInTime = 32,
     };
 }
 

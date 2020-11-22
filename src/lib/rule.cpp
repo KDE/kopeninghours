@@ -33,13 +33,16 @@ QDebug operator<<(QDebug debug, const Time &time)
 
 int Timespan::requiredCapabilities() const
 {
+    int c = Capability::None;
     if (interval > 0 || begin == end) {
-        return Capability::NotImplemented;
+        c |= Capability::PointInTime;
+    } else {
+        c |= Capability::Interval;
     }
     if (begin.event != Time::NoEvent || end.event != Time::NoEvent) {
-        return Capability::Location;
+        c |= Capability::Location;
     }
-    return next ? next->requiredCapabilities() : Capability::None;
+    return next ? (next->requiredCapabilities() | c) : c;
 }
 
 static QDateTime resolveTime(const Time &t, const QDate &date, OpeningHoursPrivate *context)
