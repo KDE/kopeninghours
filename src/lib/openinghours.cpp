@@ -19,6 +19,8 @@
 
 using namespace KOpeningHours;
 
+enum { RecursionLimit = 64 };
+
 QHash<QString, QString> OpeningHoursPrivate::s_holidayRegionCache;
 
 void OpeningHoursPrivate::validate()
@@ -179,7 +181,7 @@ Interval OpeningHours::interval(const QDateTime &dt) const
         if (rule->m_state == Interval::Closed) {
             continue;
         }
-        const auto j = rule->nextInterval(alignedTime, d.data());
+        const auto j = rule->nextInterval(alignedTime, d.data(), RecursionLimit);
         if (!j.isValid()) {
             continue;
         }
@@ -192,7 +194,7 @@ Interval OpeningHours::interval(const QDateTime &dt) const
         if (rule->m_state != Interval::Closed) {
             continue;
         }
-        const auto j = rule->nextInterval(i.begin(), d.data());
+        const auto j = rule->nextInterval(i.begin(), d.data(), RecursionLimit);
         if (!j.isValid() || !i.intersects(j)) {
             continue;
         }

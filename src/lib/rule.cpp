@@ -430,9 +430,12 @@ int Rule::requiredCapabilities() const
     return c;
 }
 
-Interval Rule::nextInterval(const QDateTime &dt, OpeningHoursPrivate *context) const
+Interval Rule::nextInterval(const QDateTime &dt, OpeningHoursPrivate *context, int recursionBudget) const
 {
-    qCDebug(Log) << dt;
+    if (recursionBudget == 0) {
+        qCWarning(Log) << "Recursion limited reached!";
+        return {};
+    }
 
     Interval i;
     i.setState(m_state);
@@ -451,7 +454,7 @@ Interval Rule::nextInterval(const QDateTime &dt, OpeningHoursPrivate *context) c
             return {};
         }
         if (r.matchOffset() > 0) {
-            return nextInterval(dt.addSecs(r.matchOffset()), context);
+            return nextInterval(dt.addSecs(r.matchOffset()), context, --recursionBudget);
         }
         i = r.interval();
     }
@@ -465,7 +468,7 @@ Interval Rule::nextInterval(const QDateTime &dt, OpeningHoursPrivate *context) c
             return {};
         }
         if (r.matchOffset() > 0) {
-            return nextInterval(dt.addSecs(r.matchOffset()), context);
+            return nextInterval(dt.addSecs(r.matchOffset()), context, --recursionBudget);
         }
         i = r.interval();
     }
@@ -479,7 +482,7 @@ Interval Rule::nextInterval(const QDateTime &dt, OpeningHoursPrivate *context) c
             return {};
         }
         if (r.matchOffset() > 0) {
-            return nextInterval(dt.addSecs(r.matchOffset()), context);
+            return nextInterval(dt.addSecs(r.matchOffset()), context, --recursionBudget);
         }
         i = r.interval();
     }
@@ -493,7 +496,7 @@ Interval Rule::nextInterval(const QDateTime &dt, OpeningHoursPrivate *context) c
             return {};
         }
         if (r.matchOffset() > 0) {
-            return nextInterval(dt.addSecs(r.matchOffset()), context);
+            return nextInterval(dt.addSecs(r.matchOffset()), context, --recursionBudget);
         }
         i = r.interval();
     }
@@ -507,7 +510,7 @@ Interval Rule::nextInterval(const QDateTime &dt, OpeningHoursPrivate *context) c
             return {};
         }
         if (r.matchOffset() > 0) {
-            return nextInterval(dt.addSecs(r.matchOffset()), context);
+            return nextInterval(dt.addSecs(r.matchOffset()), context, --recursionBudget);
         }
         i = r.interval();
     }

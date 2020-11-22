@@ -182,7 +182,7 @@ public:
     void setComment(const char *str, int len);
     int requiredCapabilities() const;
 
-    Interval nextInterval(const QDateTime &dt, OpeningHoursPrivate *context) const;
+    Interval nextInterval(const QDateTime &dt, OpeningHoursPrivate *context, int recursionBudget) const;
 
     QString m_comment;
     Interval::State m_state = Interval::Open;

@@ -31,7 +31,6 @@ public:
 
 OpeningHours OpeningHoursFactory::parse(const QString &expression, int modes) const
 {
-    qDebug() << modes;
     return OpeningHours(expression.toUtf8(), OpeningHours::Modes(modes));
 }
 
