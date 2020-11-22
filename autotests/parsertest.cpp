@@ -109,7 +109,7 @@ private Q_SLOTS:
 
         T("We; PH off");
         T("PH");
-//         T("PH Mo-Fr");
+        T("PH Mo-Fr");
         T("PH -1 day");
         T("SH");
         T("SH,PH");

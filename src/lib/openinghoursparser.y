@@ -361,7 +361,7 @@ WeekdaySelector:
     $$.weekdaySelector = $W;
     appendSelector($$.weekdaySelector, $H);
   }
-| HolidySequence[H] " " WeekdaySequence[W] { // TODO
+| HolidySequence[H] WeekdaySequence[W] { // ### enforce a space inbetween those
     initSelectors($$);
     $$.weekdaySelector = new WeekdayRange;
     $$.weekdaySelector->next.reset($H);

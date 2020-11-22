@@ -112,7 +112,7 @@ int WeekdayRange::requiredCapabilities() const
 
     switch (holiday) {
         case NoHoliday:
-            if (offset > 0 && nthMask == 0) {
+            if ((offset > 0 && nthMask == 0) || next2) {
                 return Capability::NotImplemented;
             }
             return (next ? next->requiredCapabilities() : Capability::None) | (next2 ? next2->requiredCapabilities() : Capability::None);
