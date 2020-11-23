@@ -106,6 +106,7 @@ class WeekdayRange
 public:
     int requiredCapabilities() const;
     SelectorResult nextInterval(const Interval &interval, const QDateTime &dt, OpeningHoursPrivate *context) const;
+    SelectorResult nextIntervalLocal(const Interval &interval, const QDateTime &dt, OpeningHoursPrivate *context) const;
 
     uint8_t beginDay = 0;
     uint8_t endDay = 0;
@@ -118,7 +119,7 @@ public:
     };
     Holiday holiday = NoHoliday;
     std::unique_ptr<WeekdayRange> next;
-    std::unique_ptr<WeekdayRange> next2;
+    std::unique_ptr<WeekdayRange> andSelector;
 };
 
 /** Week */

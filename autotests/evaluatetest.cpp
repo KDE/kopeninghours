@@ -134,6 +134,9 @@ private Q_SLOTS:
         QTest::newRow("nth day -offset") << QByteArray("Mo[-1] -1 day") << QDateTime({2020, 11, 29}, {0, 0}) << QDateTime({2020, 11, 30}, {0, 0});
         QTest::newRow("nth day +offset next month") << QByteArray("Su[1] -1 days") << QDateTime({2020, 12, 5}, {0, 0}) << QDateTime({2020, 12, 6}, {0, 0});
         QTest::newRow("nth day -offset next month") << QByteArray("Su[1] +1 days") << QDateTime({2020, 12, 7}, {0, 0}) << QDateTime({2020, 12, 8}, {0, 0});
+
+        QTest::newRow("holiday and condition") << QByteArray("PH Mo") << QDateTime({2021, 4, 5}, {0, 0}) << QDateTime({2021, 4, 6}, {0, 0});
+        QTest::newRow("holiday and condition, range") << QByteArray("PH Mo-Fr") << QDateTime({2020, 12, 25}, {0, 0}) << QDateTime({2020, 12, 26}, {0, 0});
     }
 
     void testNext()

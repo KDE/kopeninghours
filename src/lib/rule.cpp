@@ -110,18 +110,27 @@ int WeekdayRange::requiredCapabilities() const
     // only ranges or nthMask are allowed, not both at the same time, enforced by parser
     assert(beginDay == endDay || nthMask == 0);
 
+    int c = Capability::None;
     switch (holiday) {
         case NoHoliday:
-            if ((offset > 0 && nthMask == 0) || next2) {
-                return Capability::NotImplemented;
+            if ((offset > 0 && nthMask == 0)) {
+                c |= Capability::NotImplemented;
             }
-            return (next ? next->requiredCapabilities() : Capability::None) | (next2 ? next2->requiredCapabilities() : Capability::None);
+            break;
         case PublicHoliday:
-            return Capability::PublicHoliday;
+            c |= Capability::PublicHoliday;
+            break;
         case SchoolHoliday:
-            return Capability::SchoolHoliday;
+            c |= Capability::SchoolHoliday;
+            break;
     }
-    return Capability::NotImplemented;
+    if (andSelector) {
+        c |= andSelector->requiredCapabilities();
+    }
+    if (next) {
+        c |= next->requiredCapabilities();
+    }
+    return c;
 }
 
 static QDate nthWeekday(const QDate &month, int weekDay, int n)
@@ -140,6 +149,24 @@ static QDate nthWeekday(const QDate &month, int weekDay, int n)
 }
 
 SelectorResult WeekdayRange::nextInterval(const Interval &interval, const QDateTime &dt, OpeningHoursPrivate *context) const
+{
+    const auto r1 = nextIntervalLocal(interval, dt, context);
+    if (!andSelector || r1.matchOffset() > 0 || !r1.canMatch()) {
+        return r1;
+    }
+
+    const auto r2 = andSelector->nextInterval(interval, dt, context);
+    if (r2.matchOffset() > 0 || !r2.canMatch()) {
+        return r2;
+    }
+
+    auto i = r1.interval();
+    i.setBegin(std::max(i.begin(), r2.interval().begin()));
+    i.setEnd(std::min(i.end(), r2.interval().end()));
+    return i;
+}
+
+SelectorResult WeekdayRange::nextIntervalLocal(const Interval &interval, const QDateTime &dt, OpeningHoursPrivate *context) const
 {
     switch (holiday) {
         case NoHoliday:
@@ -224,8 +251,8 @@ QDebug operator<<(QDebug debug, const WeekdayRange *weekdayRange)
     if (weekdayRange->next) {
         debug << "  " << weekdayRange->next.get();
     }
-    if (weekdayRange->next2) {
-        debug << "  " << weekdayRange->next2.get();
+    if (weekdayRange->andSelector) {
+        debug << " AND " << weekdayRange->andSelector.get();
     }
     return debug;
 }

@@ -30,7 +30,6 @@ Still missing features:
 * comment preservation on intersecting close rules
 * wide range selector placeholder comments
 * open-ended time selectors
-* AND/OR distinction in weekday selectors
 * school holiday selectors
 * open ended month ranges
 * weekday-based offsets
