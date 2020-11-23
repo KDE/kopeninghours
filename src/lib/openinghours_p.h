@@ -12,7 +12,6 @@
 
 #include <KHolidays/HolidayRegion>
 
-#include <QHash>
 #include <QSharedData>
 
 #include <cmath>
@@ -39,8 +38,6 @@ public:
     float m_latitude = NAN;
     float m_longitude = NAN;
     KHolidays::HolidayRegion m_region;
-
-    static QHash<QString, QString> s_holidayRegionCache;
 };
 
 }

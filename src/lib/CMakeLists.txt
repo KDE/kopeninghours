@@ -21,6 +21,7 @@ add_library(KOpeningHours
     ${BISON_openinghoursparser_OUTPUTS}
     ${FLEX_openinghoursscanner_OUTPUTS}
     easter.cpp
+    holidaycache.cpp
     interval.cpp
     intervalmodel.cpp
     openinghours.cpp

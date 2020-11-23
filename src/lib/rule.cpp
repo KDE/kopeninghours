@@ -6,6 +6,7 @@
 
 #include "rule_p.h"
 #include "easter_p.h"
+#include "holidaycache_p.h"
 #include "logging.h"
 #include "openinghours_p.h"
 
@@ -219,14 +220,10 @@ SelectorResult WeekdayRange::nextIntervalLocal(const Interval &interval, const Q
         }
         case PublicHoliday:
         {
-            auto holidays = context->m_region.holidays(dt.date().addDays(-offset), dt.date().addDays(-offset).addYears(1));
-            holidays.erase(std::remove_if(holidays.begin(), holidays.end(), [](const auto &h) { return h.dayType() != KHolidays::Holiday::NonWorkday; }), holidays.end());
-            std::sort(holidays.begin(), holidays.end(), [](const auto &lhs, const auto &rhs) { return lhs.observedStartDate() < rhs.observedStartDate(); });
-            if (holidays.empty()) {
+            const auto h = HolidayCache::nextHoliday(context->m_region, dt.date().addDays(-offset));
+            if (h.name().isEmpty()) {
                 return false;
             }
-
-            const auto h = holidays.at(0);
             if (dt.date() < h.observedStartDate().addDays(offset)) {
                 return dt.secsTo(QDateTime(h.observedStartDate().addDays(offset), {0, 0}));
             }

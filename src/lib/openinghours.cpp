@@ -8,6 +8,7 @@
 #include "openinghours_p.h"
 #include "openinghoursparser_p.h"
 #include "openinghoursscanner_p.h"
+#include "holidaycache_p.h"
 #include "interval.h"
 #include "rule_p.h"
 #include "logging.h"
@@ -20,8 +21,6 @@
 using namespace KOpeningHours;
 
 enum { RecursionLimit = 64 };
-
-QHash<QString, QString> OpeningHoursPrivate::s_holidayRegionCache;
 
 void OpeningHoursPrivate::validate()
 {
@@ -146,20 +145,7 @@ QString OpeningHours::region() const
 
 void OpeningHours::setRegion(QStringView region)
 {
-    const auto idx = region.indexOf(QLatin1Char('_')); // compatibility with KHolidays region codes
-    if (idx > 0) {
-        region = region.left(idx);
-    }
-
-    const auto loc = region.toString();
-    const auto it = OpeningHoursPrivate::s_holidayRegionCache.constFind(loc);
-    if (it != OpeningHoursPrivate::s_holidayRegionCache.constEnd()) {
-        d->m_region = KHolidays::HolidayRegion(it.value());
-    } else {
-        const auto code = KHolidays::HolidayRegion::defaultRegionCode(loc);
-        d->m_region = KHolidays::HolidayRegion(code);
-        OpeningHoursPrivate::s_holidayRegionCache.insert(loc, code);
-    }
+    d->m_region = HolidayCache::resolveRegion(region);
     d->validate();
 }
 
