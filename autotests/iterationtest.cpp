@@ -15,6 +15,15 @@
 
 using namespace KOpeningHours;
 
+void initLocale()
+{
+    qputenv("LC_ALL", "en_US.utf-8");
+    qputenv("LANG", "en_US");
+    qputenv("TZ", "Europe/Berlin");
+}
+
+Q_CONSTRUCTOR_FUNCTION(initLocale)
+
 class IterationTest : public QObject
 {
     Q_OBJECT
