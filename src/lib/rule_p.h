@@ -187,6 +187,7 @@ public:
 
     QString m_comment;
     Interval::State m_state = Interval::Open;
+    bool isAdditional = false;
 
     std::unique_ptr<Timespan> m_timeSelector;
     std::unique_ptr<WeekdayRange> m_weekdaySelector;

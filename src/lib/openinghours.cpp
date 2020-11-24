@@ -62,7 +62,7 @@ void OpeningHoursPrivate::addRule(Rule *rule, RuleType type)
 {
     switch (type) {
         case AdditionalRule:
-            // TODO
+            rule->isAdditional = true;
             [[fallthrough]];
         case NormalRule:
             m_rules.push_back(std::unique_ptr<Rule>(rule));
