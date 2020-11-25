@@ -26,7 +26,6 @@ Supported opening hours features are:
 * variable date selectors
 
 Still missing features:
-* additional rules (treated as normal rules atm)
 * comment preservation on intersecting close rules
 * wide range selector placeholder comments
 * open-ended time selectors

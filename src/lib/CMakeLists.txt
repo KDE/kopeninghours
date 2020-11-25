@@ -26,6 +26,7 @@ add_library(KOpeningHours
     intervalmodel.cpp
     openinghours.cpp
     rule.cpp
+    selectors.cpp
 )
 generate_export_header(KOpeningHours BASE_NAME KOpeningHours)
 

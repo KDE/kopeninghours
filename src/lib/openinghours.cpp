@@ -20,8 +20,6 @@
 
 using namespace KOpeningHours;
 
-enum { RecursionLimit = 64 };
-
 void OpeningHoursPrivate::validate()
 {
     if (m_error == OpeningHours::SyntaxError) {
@@ -167,11 +165,23 @@ Interval OpeningHours::interval(const QDateTime &dt) const
         if (rule->m_state == Interval::Closed) {
             continue;
         }
-        const auto j = rule->nextInterval(alignedTime, d.data(), RecursionLimit);
-        if (!j.isValid()) {
+        const auto res = rule->nextInterval(alignedTime, d.data(), Rule::RecursionLimit);
+        if (!res.interval.isValid()) {
             continue;
         }
-        i = i.isValid() ? std::min(i, j) : j;
+        if (i.isValid() && res.mode == RuleResult::Override) {
+            if (res.interval.begin().isValid() && res.interval.begin().date() > alignedTime.date()) {
+                i = Interval();
+                i.setBegin(alignedTime);
+                i.setEnd({alignedTime.date().addDays(1), {0, 0}});
+                i.setState(Interval::Closed),
+                i.setComment({});
+            } else {
+                i = res.interval;
+            }
+        } else {
+            i = i.isValid() ? std::min(i, res.interval) : res.interval;
+        }
     }
 
     QDateTime closeEnd = i.begin(), closeBegin = i.end();
@@ -180,7 +190,7 @@ Interval OpeningHours::interval(const QDateTime &dt) const
         if (rule->m_state != Interval::Closed) {
             continue;
         }
-        const auto j = rule->nextInterval(i.begin(), d.data(), RecursionLimit);
+        const auto j = rule->nextInterval(i.begin(), d.data(), Rule::RecursionLimit).interval;
         if (!j.isValid() || !i.intersects(j)) {
             continue;
         }
