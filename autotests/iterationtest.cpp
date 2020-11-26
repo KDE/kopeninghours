@@ -12,6 +12,7 @@
 #include <QLocale>
 #include <QProcess>
 #include <QTest>
+#include <QTimeZone>
 
 using namespace KOpeningHours;
 
@@ -19,7 +20,7 @@ void initLocale()
 {
     qputenv("LC_ALL", "en_US.utf-8");
     qputenv("LANG", "en_US");
-    qputenv("TZ", "Europe/Berlin");
+    qputenv("TZ", "Pacific/Auckland"); // way off from what we set below
 }
 
 Q_CONSTRUCTOR_FUNCTION(initLocale)
@@ -83,6 +84,7 @@ private Q_SLOTS:
         OpeningHours oh(expr);
         oh.setLocation(52.5, 13.0);
         oh.setRegion(QStringLiteral("DE-BE"));
+        oh.setTimeZone(QTimeZone("Europe/Berlin"));
         QCOMPARE(oh.error(), OpeningHours::NoError);
 
         const auto iterationCount = inFile.readLine().toInt();

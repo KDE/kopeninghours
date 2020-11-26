@@ -13,6 +13,7 @@
 #include <KHolidays/HolidayRegion>
 
 #include <QSharedData>
+#include <QTimeZone>
 
 #include <cmath>
 #include <memory>
@@ -38,6 +39,7 @@ public:
     float m_latitude = NAN;
     float m_longitude = NAN;
     KHolidays::HolidayRegion m_region;
+    QTimeZone m_timezone = QTimeZone::systemTimeZone();
 };
 
 }

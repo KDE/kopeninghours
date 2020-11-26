@@ -52,21 +52,20 @@ static QDateTime resolveTime(const Time &t, const QDate &date, OpeningHoursPriva
     switch (t.event) {
         case Time::NoEvent:
             return QDateTime(date, {t.hour % 24, t.minute});
-        // TODO we probably want an explicit timezone selection as well, for evaluating this in other locations
         case Time::Dawn:
-            dt = QDateTime(date, KHolidays::SunRiseSet::utcDawn(date, context->m_latitude, context->m_longitude), Qt::UTC).toLocalTime();
-            break;
+            dt = QDateTime(date, KHolidays::SunRiseSet::utcDawn(date, context->m_latitude, context->m_longitude), Qt::UTC).toTimeZone(context->m_timezone);            break;
         case Time::Sunrise:
-            dt = QDateTime(date, KHolidays::SunRiseSet::utcSunrise(date, context->m_latitude, context->m_longitude), Qt::UTC).toLocalTime();
+            dt = QDateTime(date, KHolidays::SunRiseSet::utcSunrise(date, context->m_latitude, context->m_longitude), Qt::UTC).toTimeZone(context->m_timezone);
             break;
         case Time::Dusk:
-            dt = QDateTime(date, KHolidays::SunRiseSet::utcDusk(date, context->m_latitude, context->m_longitude), Qt::UTC).toLocalTime();
+            dt = QDateTime(date, KHolidays::SunRiseSet::utcDusk(date, context->m_latitude, context->m_longitude), Qt::UTC).toTimeZone(context->m_timezone);
             break;
         case Time::Sunset:
-            dt = QDateTime(date, KHolidays::SunRiseSet::utcSunset(date, context->m_latitude, context->m_longitude), Qt::UTC).toLocalTime();
+            dt = QDateTime(date, KHolidays::SunRiseSet::utcSunset(date, context->m_latitude, context->m_longitude), Qt::UTC).toTimeZone(context->m_timezone);
             break;
     }
 
+    dt.setTimeSpec(Qt::LocalTime);
     dt = dt.addSecs(t.hour * 3600 + t.minute * 60);
     return dt;
 }

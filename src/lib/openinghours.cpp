@@ -17,6 +17,7 @@
 #include <QJsonArray>
 #include <QJsonObject>
 #include <QScopeGuard>
+#include <QTimeZone>
 
 using namespace KOpeningHours;
 
@@ -145,6 +146,26 @@ void OpeningHours::setRegion(QStringView region)
 {
     d->m_region = HolidayCache::resolveRegion(region);
     d->validate();
+}
+
+QTimeZone OpeningHours::timeZone() const
+{
+    return d->m_timezone;
+}
+
+void OpeningHours::setTimeZone(const QTimeZone &tz)
+{
+    d->m_timezone = tz;
+}
+
+QString OpeningHours::timeZoneId() const
+{
+    return QString::fromUtf8(d->m_timezone.id());
+}
+
+void OpeningHours::setTimeZoneId(const QString &tzId)
+{
+    d->m_timezone = QTimeZone(tzId.toUtf8());
 }
 
 OpeningHours::Error OpeningHours::error() const

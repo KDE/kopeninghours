@@ -16,6 +16,7 @@ class QByteArray;
 class QDateTime;
 class QJsonObject;
 class QString;
+class QTimeZone;
 
 /** OSM opening hours parsing and evaluation. */
 namespace KOpeningHours {
@@ -35,6 +36,7 @@ class KOPENINGHOURS_EXPORT OpeningHours
     Q_PROPERTY(float latitude READ latitude WRITE setLatitude)
     Q_PROPERTY(float longitude READ longitude WRITE setLongitude)
     Q_PROPERTY(QString region READ region WRITE setRegion)
+    Q_PROPERTY(QString timezone READ timeZoneId WRITE setTimeZoneId)
 public:
     /** Evaluation modes for opening hours expressions. */
     enum Mode {
@@ -80,6 +82,12 @@ public:
     void setRegion(QStringView region);
     QString region() const;
 
+    /** Timezone in which this expression should be evaluated.
+     *  If not specified, this assumes local time.
+     */
+    void setTimeZone(const QTimeZone &tz);
+    QTimeZone timeZone() const;
+
     /** Error codes. */
     enum Error {
         Null, ///< no expression is set
@@ -117,6 +125,10 @@ public:
     static OpeningHours fromJsonLd(const QJsonObject &obj);
 
 private:
+    // for QML bindings
+    QString timeZoneId() const;
+    void setTimeZoneId(const QString &tzId);
+
     QExplicitlySharedDataPointer<OpeningHoursPrivate> d;
 };
 
