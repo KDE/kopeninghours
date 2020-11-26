@@ -22,7 +22,7 @@ static int daysInMonth(int month)
     return QCalendar(QCalendar::System::Gregorian).daysInMonth(month);
 }
 
-QDebug operator<<(QDebug debug, const Time &time)
+QDebug operator<<(QDebug debug, Time time)
 {
     QDebugStateSaver saver(debug);
     debug.nospace() << time.hour << ':' << time.minute;
@@ -46,7 +46,7 @@ int Timespan::requiredCapabilities() const
     return next ? (next->requiredCapabilities() | c) : c;
 }
 
-static QDateTime resolveTime(const Time &t, const QDate &date, OpeningHoursPrivate *context)
+static QDateTime resolveTime(Time t, QDate date, OpeningHoursPrivate *context)
 {
     QDateTime dt;
     switch (t.event) {
@@ -133,7 +133,7 @@ int WeekdayRange::requiredCapabilities() const
     return c;
 }
 
-static QDate nthWeekday(const QDate &month, int weekDay, int n)
+static QDate nthWeekday(QDate month, int weekDay, int n)
 {
     if (n > 0) {
         const auto firstOfMonth = QDate{month.year(), month.month(), 1};
@@ -305,7 +305,7 @@ QDebug operator<<(QDebug debug, const Week *week)
     return debug;
 }
 
-QDebug operator<<(QDebug debug, const Date &date)
+QDebug operator<<(QDebug debug, Date date)
 {
     switch (date.variableDate) {
         case Date::FixedDate:

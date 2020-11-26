@@ -24,9 +24,9 @@ private:
     QByteArray intervalToString(const Interval &i) const
     {
         QByteArray b;
-        i.begin().isValid() ? b += QLocale::c().toString(i.begin(), QLatin1String("ddd yyyy-MM-dd hh:mm")).toUtf8() : b += "-inf";
+        i.begin().isValid() ? b += QLocale::c().toString(i.begin(), QStringLiteral("ddd yyyy-MM-dd hh:mm")).toUtf8() : b += "-inf";
         b += " - ";
-        i.end().isValid() ? b += QLocale::c().toString(i.end(), QLatin1String("ddd yyyy-MM-dd hh:mm")).toUtf8() : b += "inf";
+        i.end().isValid() ? b += QLocale::c().toString(i.end(), QStringLiteral("ddd yyyy-MM-dd hh:mm")).toUtf8() : b += "inf";
         b += ": ";
         switch (i.state()) {
             case Interval::Open:

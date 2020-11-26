@@ -106,6 +106,6 @@ void Interval::setComment(const QString &comment)
 QDebug operator<<(QDebug debug, const Interval &interval)
 {
     QDebugStateSaver saver(debug);
-    debug.nospace().noquote() << '[' << interval.begin().toString(QLatin1String("yyyy-MM-ddThh:mm")) << " - " << interval.end().toString(QLatin1String("yyyy-MM-ddThh:mm")) << ' ' << interval.state() << " (\"" << interval.comment() << "\")]";
+    debug.nospace().noquote() << '[' << interval.begin().toString(QStringLiteral("yyyy-MM-ddThh:mm")) << " - " << interval.end().toString(QStringLiteral("yyyy-MM-ddThh:mm")) << ' ' << interval.state() << " (\"" << interval.comment() << "\")]";
     return debug;
 }

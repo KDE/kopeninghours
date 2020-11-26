@@ -18,13 +18,13 @@ using namespace KOpeningHours;
 void printInterval(const Interval &i)
 {
     if (i.begin().isValid()) {
-        std::cout << qPrintable(i.begin().toString(QLatin1String("ddd yyyy-MM-dd hh:mm")));
+        std::cout << qPrintable(i.begin().toString(QStringLiteral("ddd yyyy-MM-dd hh:mm")));
     } else {
         std::cout << "since ever";
     }
     std::cout << " - ";
     if (i.end().isValid()) {
-        std::cout << qPrintable(i.end().toString(QLatin1String("ddd yyyy-MM-dd hh:mm")));
+        std::cout << qPrintable(i.end().toString(QStringLiteral("ddd yyyy-MM-dd hh:mm")));
     } else {
         std::cout << "until all eternity";
     }
@@ -69,6 +69,7 @@ int main(int argc, char **argv)
         case OpeningHours::MissingLocation:
         case OpeningHours::MissingRegion:
         case OpeningHours::UnsupportedFeature:
+        case OpeningHours::IncompatibleMode:
             return 1;
         case OpeningHours::NoError:
             break;

@@ -13,8 +13,9 @@ using namespace KOpeningHours;
 
 void yyerror(YYLTYPE *loc, OpeningHoursPrivate *parser, yyscan_t scanner, char const* msg)
 {
-    (void)scanner;
-    qCDebug(Log) << "PARSER ERROR:" << msg; // << "in" << parser->fileName() << "line:" << loc->first_line << "column:" << loc->first_column;
+    Q_UNUSED(loc);
+    Q_UNUSED(scanner);
+    qCDebug(Log) << "PARSER ERROR:" << msg;
     parser->m_error = OpeningHours::SyntaxError;
 }
 
@@ -176,6 +177,10 @@ typedef void* yyscan_t;
     delete $$.monthdaySelector;
     delete $$.yearSelector;
 } <selectors>
+
+// resolve SR conflict between the YearSelector and MonthdaySelector on T_YEAR T_MONTH
+%nonassoc T_YEAR
+%nonassoc T_MONTH
 
 %verbose
 

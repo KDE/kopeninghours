@@ -85,7 +85,7 @@ QDate IntervalModel::beginDate() const
     return d->beginDt;
 }
 
-void IntervalModel::setBeginDate(const QDate &beginDate)
+void IntervalModel::setBeginDate(QDate beginDate)
 {
     if (d->beginDt == beginDate) {
         return;
@@ -103,7 +103,7 @@ QDate IntervalModel::endDate() const
 }
 
 
-void IntervalModel::setEndDate(const QDate &endDate)
+void IntervalModel::setEndDate(QDate endDate)
 {
     if (d->endDt == endDate) {
         return;

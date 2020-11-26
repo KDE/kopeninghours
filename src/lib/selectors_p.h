@@ -80,7 +80,7 @@ public:
     int minute;
 };
 
-inline constexpr bool operator==(const Time &lhs, const Time &rhs)
+inline constexpr bool operator==(Time lhs, Time rhs)
 {
     return lhs.event == rhs.event
         && lhs.hour == rhs.hour
@@ -177,11 +177,11 @@ public:
 };
 }
 
-QDebug operator<<(QDebug debug, const KOpeningHours::Time &time);
+QDebug operator<<(QDebug debug, KOpeningHours::Time time);
 QDebug operator<<(QDebug debug, const KOpeningHours::Timespan *timeSpan);
 QDebug operator<<(QDebug debug, const KOpeningHours::WeekdayRange *weekdayRange);
 QDebug operator<<(QDebug debug, const KOpeningHours::Week *week);
-QDebug operator<<(QDebug debug, const KOpeningHours::Date &date);
+QDebug operator<<(QDebug debug, KOpeningHours::Date date);
 QDebug operator<<(QDebug debug, const KOpeningHours::MonthdayRange *monthdayRange);
 QDebug operator<<(QDebug debug, const KOpeningHours::YearRange *yearRange);
 

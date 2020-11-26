@@ -39,9 +39,9 @@ public:
     void setOpeningHours(const OpeningHours &oh);
 
     QDate beginDate() const;
-    void setBeginDate(const QDate &beginDate);
+    void setBeginDate(QDate beginDate);
     QDate endDate() const;
-    void setEndDate(const QDate &endDate);
+    void setEndDate(QDate endDate);
 
     enum Roles {
         IntervalsRole = Qt::UserRole,
