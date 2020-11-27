@@ -31,7 +31,13 @@ Interval& Interval::operator=(Interval&&) = default;
 
 bool Interval::operator<(const Interval &other) const
 {
-    // TODO handle open intervals correctly
+    if (hasOpenBegin() && !other.hasOpenBegin()) {
+        return true;
+    }
+    if (other.hasOpenBegin() && !hasOpenBegin()) {
+        return false;
+    }
+
     if (d->begin == other.d->begin) {
         return d->end < other.d->end;
     }
@@ -65,6 +71,11 @@ void Interval::setBegin(const QDateTime &begin)
     d->begin = begin;
 }
 
+bool Interval::hasOpenBegin() const
+{
+    return !d->begin.isValid();
+}
+
 QDateTime Interval::end() const
 {
     return d->end;
@@ -74,6 +85,11 @@ void Interval::setEnd(const QDateTime &end)
 {
     d.detach();
     d->end = end;
+}
+
+bool Interval::hasOpenEnd() const
+{
+    return !d->end.isValid();
 }
 
 bool Interval::contains(const QDateTime &dt) const

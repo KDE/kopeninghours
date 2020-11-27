@@ -257,7 +257,7 @@ Interval OpeningHours::interval(const QDateTime &dt) const
 
 Interval OpeningHours::nextInterval(const Interval &interval) const
 {
-    if (interval.end().isValid()) {
+    if (!interval.hasOpenEnd()) {
         auto i = this->interval(interval.end());
         if (i.begin() < interval.end() && i.end() > interval.end()) {
             i.setBegin(interval.end());

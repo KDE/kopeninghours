@@ -55,6 +55,16 @@ private Q_SLOTS:
         QVERIFY(!i.intersects(j));
         QVERIFY(!j.intersects(i));
     }
+
+    void testOrder()
+    {
+        Interval i, j;
+        QCOMPARE(i < j, false);
+        QCOMPARE(j < i, false);
+        i.setBegin(QDateTime({2020, 11, 7}, {18, 0}));
+        QCOMPARE(i < j, false);
+        QCOMPARE(j < i, true);
+    }
 };
 
 QTEST_GUILESS_MAIN(IntervalTest)

@@ -26,7 +26,9 @@ class KOPENINGHOURS_EXPORT Interval
     Q_GADGET
     Q_PROPERTY(State state READ state)
     Q_PROPERTY(QDateTime begin READ begin)
+    Q_PROPERTY(bool hasOpenBegin READ hasOpenBegin)
     Q_PROPERTY(QDateTime end READ end)
+    Q_PROPERTY(bool hasOpenEnd READ hasOpenEnd)
     Q_PROPERTY(QString comment READ comment)
 public:
     Interval();
@@ -46,17 +48,25 @@ public:
     bool intersects(const Interval &other) const;
 
     /** Begin of the interval.
-     *  This is the first point in time included in the interval.
+     *  This is the first point in time included in the interval, or invalid if this is an interval with an open begin.
      */
     QDateTime begin() const;
     void setBegin(const QDateTime &begin);
 
+    /** Returns @c true if this is an interval with an open begin, ie. starting at the beginning of time. */
+    bool hasOpenBegin() const;
+
     /** End of the interval.
-     *  This is the first point in time not included in the interval anymore.
+     *  This is the first point in time not included in the interval anymore, or invalid for open-ended intervals.
      *  That is, the end of an interval describing the year 2020 would be Jan 1st 2021 at midnight (00:00).
      */
     QDateTime end() const;
     void setEnd(const QDateTime &end);
+
+    /** Returns @c true if this is an interval with an open end date, ie. continuing for all eternity.
+     *  Note that this is different from an interval with an open end time.
+     */
+    bool hasOpenEnd() const;
 
     /** Check if this interval contains @p dt. */
     bool contains(const QDateTime &dt) const;
