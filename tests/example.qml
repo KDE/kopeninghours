@@ -186,6 +186,8 @@ Kirigami.ApplicationWindow {
                                 return "Expression uses a feature that is not supported/implemented yet.";
                             case OpeningHours.IncompatibleMode:
                                 return "Expression uses an incompatible evaluation mode.";
+                            case OpeningHours.EvaluationError:
+                                return "Runtime error."
                         }
                     }
                 }

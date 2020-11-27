@@ -70,6 +70,7 @@ int main(int argc, char **argv)
         case OpeningHours::MissingRegion:
         case OpeningHours::UnsupportedFeature:
         case OpeningHours::IncompatibleMode:
+        case OpeningHours::EvaluationError:
             return 1;
         case OpeningHours::NoError:
             break;

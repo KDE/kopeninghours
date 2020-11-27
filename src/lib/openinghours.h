@@ -97,6 +97,7 @@ public:
         MissingLocation, ///< evaluation requires location information and those aren't set
         IncompatibleMode, ///< expression mode doesn't match the expected mode
         UnsupportedFeature, ///< expression uses a feature that isn't implemented/supported (yet)
+        EvaluationError, ///< runtime error during evaluating the expression
     };
     Q_ENUM(Error)
 

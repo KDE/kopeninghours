@@ -34,6 +34,7 @@ RuleResult Rule::nextInterval(const QDateTime &dt, OpeningHoursPrivate *context,
     const auto resultMode = (recursionBudget == Rule::RecursionLimit && !isAdditional && m_state != Interval::Closed) ? RuleResult::Override : RuleResult::Merge;
 
     if (recursionBudget == 0) {
+        context->m_error = OpeningHours::EvaluationError;
         qCWarning(Log) << "Recursion limited reached!";
         return {{}, resultMode};
     }
