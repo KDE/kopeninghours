@@ -127,7 +127,12 @@ private Q_SLOTS:
         T("Oct: We[1]");
 
         // technically wrong but often found content in OSM for which we have error recovery
+        T("So");
+        T("Ph");
         T("9:00-12:00");
+        T("Mo-Fr 09:00-18:30;Sa 09:00-17:00");
+        T("08:00-12:00;");
+        T("14:00-20:00,");
 #undef T
     }
 

@@ -39,7 +39,7 @@ YEAR        [1-2][019][0-9][0-9]
 }
 {YEAR} { yylval->num = std::strtol(yytext, nullptr, 10); return T_YEAR; }
 
-"; " { return T_NORMAL_RULE_SEPARATOR; }
+;/. { return T_NORMAL_RULE_SEPARATOR; } // technically this should have space after the semicolon, but that is not always followed in OSM data
 ", " { return T_ADDITIONAL_RULE_SEPARATOR; }
 " || " { return T_FALLBACK_SEPARATOR; }
 
@@ -54,7 +54,9 @@ YEAR        [1-2][019][0-9][0-9]
 "-" { return T_MINUS; }
 "/" { return T_SLASH; }
 ":" { return T_COLON; }
-"," { return T_COMMA; }
+,/. { return T_COMMA; }
+
+[,;] {} // eat trailing commas/semicolons, while invalid those occur commonly in OSM data. Practically this is done indirectly in combination with the above rules as we cannot lookahead to EOF
 
 "dawn"    { yylval->time = { Time::Dawn,    0, 0 }; return T_EVENT; }
 "sunrise" { yylval->time = { Time::Sunrise, 0, 0 }; return T_EVENT; }
@@ -66,7 +68,7 @@ YEAR        [1-2][019][0-9][0-9]
 "(" { return T_LPAREN; }
 ")" { return T_RPAREN; }
 
-"PH" { return T_PH; }
+P[Hh] { return T_PH; } // "Ph" is technically wrong, but often found in OSM data
 "SH" { return T_SH; }
 
 " day" { return T_KEYWORD_DAY; }
@@ -82,7 +84,7 @@ YEAR        [1-2][019][0-9][0-9]
 "Th" { yylval->num = 4; return T_WEEKDAY; }
 "Fr" { yylval->num = 5; return T_WEEKDAY; }
 "Sa" { yylval->num = 6; return T_WEEKDAY; }
-"Su" { yylval->num = 7; return T_WEEKDAY; }
+Su|So { yylval->num = 7; return T_WEEKDAY; } // "So" is a common typo in OSM data for German language regions
 
 "Jan" { yylval->num = 1; return T_MONTH; }
 "Feb" { yylval->num = 2; return T_MONTH; }
