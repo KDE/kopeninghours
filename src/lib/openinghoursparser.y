@@ -324,7 +324,12 @@ Timespan:
     $$->end = $T2;
     $$->interval = $I;
   }
-// TODO interval in hour:min format
+| Time[T1] T_MINUS Time[T2] T_SLASH T_EXTENDED_HOUR_MINUTE[I] {
+    $$ = new Timespan;
+    $$->begin = $T1;
+    $$->end = $T2;
+    $$->interval = $I.hour * 60 + $I.minute;
+  }
 ;
 
 Time:

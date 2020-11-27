@@ -23,7 +23,8 @@ SPACE       [ \t\r\n]+
 INTEGER     [0-9]+
 COMMENT     ["][^"]*["]
 
-EXTENDED_HOUR_MINUTE [0-4][0-9]:[0-5][0-9]
+/* technically two hour digits are mandatory, but that isn't always followed in OSM data */
+EXTENDED_HOUR_MINUTE [0-4]?[0-9]:[0-5][0-9]
 YEAR        [1-2][019][0-9][0-9]
 
 %%

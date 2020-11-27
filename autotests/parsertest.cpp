@@ -43,6 +43,8 @@ private Q_SLOTS:
         T("PH off || 2020 open");
         T("Mo[1-2,4]");
         T("We[-1] + 2 days");
+        T("10:00-16:00/90");
+        T("10:00-16:00/1:30");
 
         // from https://wiki.openstreetmap.org/wiki/Key:opening_hours#Simple_examples
         T("Mo-Fr 08:00-17:30");
@@ -124,6 +126,8 @@ private Q_SLOTS:
         T("Mo-Su; We \"only after registration\"");
         T("Oct: We[1]");
 
+        // technically wrong but often found content in OSM for which we have error recovery
+        T("9:00-12:00");
 #undef T
     }
 
