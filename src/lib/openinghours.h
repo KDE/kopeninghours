@@ -103,19 +103,11 @@ public:
 
     /** Error status of this expression. */
     Error error() const;
-    // TODO
-    // errorString() const
-
-    // TODO human readable, translated description of the opening hours
-    // QString description() const
 
     /** Returns the interval containing @p dt. */
     Q_INVOKABLE KOpeningHours::Interval interval(const QDateTime &dt) const;
     /** Returns the interval immediately following @p interval. */
     Q_INVOKABLE KOpeningHours::Interval nextInterval(const KOpeningHours::Interval &interval) const;
-
-    // TODO point-in-time mode iteration API?
-    // nextPointInTime(QDateTime) const
 
     /** Convert opening hours in schema.org JSON-LD format.
      *  This supports the following formats:
