@@ -35,13 +35,16 @@ QDebug operator<<(QDebug debug, Time time)
 int Timespan::requiredCapabilities() const
 {
     int c = Capability::None;
-    if (interval > 0 || begin == end) {
+    if ((interval > 0 || begin == end) && !openEnd) {
         c |= Capability::PointInTime;
     } else {
         c |= Capability::Interval;
     }
     if (begin.event != Time::NoEvent || end.event != Time::NoEvent) {
         c |= Capability::Location;
+    }
+    if (openEnd) {
+        c |= Capability::NotImplemented;
     }
     return next ? (next->requiredCapabilities() | c) : c;
 }

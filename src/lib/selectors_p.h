@@ -97,6 +97,7 @@ public:
     Time begin = { Time::NoEvent, -1, -1 };
     Time end = { Time::NoEvent, -1, -1 };
     int interval = 0;
+    bool openEnd = false;
     std::unique_ptr<Timespan> next;
 };
 
