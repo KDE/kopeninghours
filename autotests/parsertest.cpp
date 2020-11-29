@@ -45,6 +45,7 @@ private Q_SLOTS:
         T("We[-1] + 2 days");
         T("10:00-16:00/90");
         T("10:00-16:00/1:30");
+        T("10:00-10:00");
 
         // from https://wiki.openstreetmap.org/wiki/Key:opening_hours#Simple_examples
         T("Mo-Fr 08:00-17:30");
@@ -201,7 +202,6 @@ private Q_SLOTS:
         QTest::newRow("time interval") << QByteArray("10:00-16:00/90") << OpeningHours::IncompatibleMode;
         QTest::newRow("week wrap") << QByteArray("week 45-13") << OpeningHours::UnsupportedFeature;
         QTest::newRow("single timepoint") << QByteArray("10:00") << OpeningHours::IncompatibleMode;
-        QTest::newRow("single timepoint range") << QByteArray("10:00-10:00") << OpeningHours::IncompatibleMode;
     }
 
     void testValidation()

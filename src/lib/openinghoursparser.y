@@ -311,11 +311,17 @@ Timespan:
     $$ = new Timespan;
     $$->begin = $T1;
     $$->end = $T2;
+    if ($$->begin == $$->end) {
+        $$->end.hour += 24;
+    }
   }
 | Time[T1] T_MINUS Time[T2] T_PLUS {
     $$ = new Timespan;
     $$->begin = $T1;
     $$->end = $T2;
+    if ($$->begin == $$->end) {
+        $$->end.hour += 24;
+    }
     // TODO open end flag
   }
 | Time[T1] T_MINUS Time[T2] T_SLASH T_INTEGER[I] {
