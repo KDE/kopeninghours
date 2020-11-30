@@ -44,14 +44,14 @@ void IntervalModelPrivate::repopulateModel()
         auto i = oh.interval(QDateTime(dt, {0, 0}));
 
         // clip intervals to the current day, makes displaying much easier
-        i.setBegin(std::max(i.begin(), QDateTime(dt, {0, 0})));
+        i.setBegin(i.hasOpenBegin() ? QDateTime(dt, {0, 0}) : std::max(i.begin(), QDateTime(dt, {0, 0})));
         dt = dt.addDays(1);
-        i.setEnd(std::min(i.end(), QDateTime(dt, {0, 0})));
+        i.setEnd(i.hasOpenEnd() ? QDateTime(dt, {0, 0}) : std::min(i.end(), QDateTime(dt, {0, 0})));
 
         dayData.intervals.push_back(i);
         while (i.isValid() && i.end() < QDateTime(dt, {0, 0})) {
             i = oh.nextInterval(i);
-            i.setEnd(std::min(i.end(), QDateTime(dt, {0, 0})));
+            i.setEnd(i.hasOpenEnd() ? QDateTime(dt, {0, 0}) : std::min(i.end(), QDateTime(dt, {0, 0})));
             dayData.intervals.push_back(i);
         }
 

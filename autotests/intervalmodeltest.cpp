@@ -41,6 +41,31 @@ private Q_SLOTS:
             QCOMPARE(intervals.back().end(), QDateTime(dt.addDays(1), {0, 0}));
         }
     }
+
+    void testModelOpenIntervals()
+    {
+        IntervalModel model;
+        QAbstractItemModelTester modelTest(&model);
+
+        OpeningHours oh("24/7");
+        QCOMPARE(oh.error(), OpeningHours::NoError);
+
+        model.setOpeningHours(oh);
+        model.setBeginDate({2020, 11, 2});
+        model.setEndDate({2020, 11, 9});
+
+        QCOMPARE(model.rowCount(), 7);
+        for (int i = 0; i < model.rowCount(); ++i) {
+            const auto idx = model.index(i, 0);
+            const auto dt = idx.data(IntervalModel::DateRole).toDate();
+            QCOMPARE(dt, QDate(2020, 11, 2).addDays(i));
+            const auto intervals = idx.data(IntervalModel::IntervalsRole).value<std::vector<Interval>>();
+            QCOMPARE(intervals.size(), 1);
+
+            QCOMPARE(intervals.front().begin(), QDateTime(dt, {0, 0}));
+            QCOMPARE(intervals.back().end(), QDateTime(dt.addDays(1), {0, 0}));
+        }
+    }
 };
 
 QTEST_GUILESS_MAIN(IntervalModelTest)
