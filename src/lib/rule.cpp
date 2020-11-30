@@ -29,6 +29,22 @@ int Rule::requiredCapabilities() const
     return c;
 }
 
+RuleResult Rule::nextInterval(const QDateTime &dt, OpeningHoursPrivate *context) const
+{
+    // handle time selectors spanning midnight
+    // consider e.g. "Tu 12:00-12:00" being evaluated with dt being Wednesday 08:00
+    // we need to look one day back to find a matching day selector and the correct start
+    // of the interval here
+    if (m_timeSelector && m_timeSelector->isMultiDay(dt.date(), context)) {
+        const auto res = nextInterval(dt.addDays(-1), context, RecursionLimit);
+        if (res.interval.contains(dt)) {
+            return res;
+        }
+    }
+
+    return nextInterval(dt, context, RecursionLimit);
+}
+
 RuleResult Rule::nextInterval(const QDateTime &dt, OpeningHoursPrivate *context, int recursionBudget) const
 {
     const auto resultMode = (recursionBudget == Rule::RecursionLimit && !isAdditional && m_state != Interval::Closed) ? RuleResult::Override : RuleResult::Merge;

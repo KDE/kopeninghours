@@ -59,6 +59,8 @@ private Q_SLOTS:
         QTest::newRow("day range max") << QByteArray("Mo-Su") << QDateTime({2020, 11, 2}, {0, 0}) << QDateTime({2020, 11, 9}, {0, 0});
 
         QTest::newRow("day and time") << QByteArray("Su 20:00-22:00") << QDateTime({2020, 11, 8}, {20, 0}) << QDateTime({2020, 11, 8}, {22, 0});
+        QTest::newRow("day and 24h time after") << QByteArray("Tu-Fr 12:00-12:00") << QDateTime({2020, 11, 10}, {12, 0}) << QDateTime({2020, 11, 11}, {12, 0});
+        QTest::newRow("day and 24h time before") << QByteArray("Fr 19:00-19:00") << QDateTime({2020, 11, 6}, {19, 0}) << QDateTime({2020, 11, 7}, {19, 0});
 
         QTest::newRow("24/7") << QByteArray("24/7") << QDateTime() << QDateTime();
 

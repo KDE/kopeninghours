@@ -186,7 +186,7 @@ Interval OpeningHours::interval(const QDateTime &dt) const
         if (rule->m_state == Interval::Closed) {
             continue;
         }
-        const auto res = rule->nextInterval(alignedTime, d.data(), Rule::RecursionLimit);
+        const auto res = rule->nextInterval(alignedTime, d.data());
         if (!res.interval.isValid()) {
             continue;
         }
@@ -211,7 +211,7 @@ Interval OpeningHours::interval(const QDateTime &dt) const
         if (rule->m_state != Interval::Closed) {
             continue;
         }
-        const auto j = rule->nextInterval(i.begin(), d.data(), Rule::RecursionLimit).interval;
+        const auto j = rule->nextInterval(i.begin(), d.data()).interval;
         if (!j.isValid() || !i.intersects(j)) {
             continue;
         }

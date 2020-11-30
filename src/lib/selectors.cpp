@@ -73,6 +73,17 @@ static QDateTime resolveTime(Time t, QDate date, OpeningHoursPrivate *context)
     return dt;
 }
 
+bool Timespan::isMultiDay(QDate date, OpeningHoursPrivate *context) const
+{
+    const auto beginDt = resolveTime(begin, date, context);
+    auto endDt = resolveTime(end, date, context);
+    if (endDt < beginDt || (end.hour >= 24 && begin.hour < 24)) {
+        return true;
+    }
+
+    return next ? next->isMultiDay(date, context) : false;
+}
+
 SelectorResult Timespan::nextInterval(const Interval &interval, const QDateTime &dt, OpeningHoursPrivate *context) const
 {
     const auto beginDt = resolveTime(begin, dt.date(), context);
@@ -85,13 +96,6 @@ SelectorResult Timespan::nextInterval(const Interval &interval, const QDateTime 
         auto i = interval;
         i.setBegin(beginDt);
         i.setEnd(endDt);
-        return i;
-    }
-
-    if (dt < endDt.addDays(-1)) {
-        auto i = interval;
-        i.setBegin(beginDt.addDays(-1));
-        i.setEnd(endDt.addDays(-1));
         return i;
     }
 

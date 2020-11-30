@@ -35,8 +35,7 @@ public:
     void setComment(const char *str, int len);
     int requiredCapabilities() const;
 
-    enum { RecursionLimit = 64 };
-    RuleResult nextInterval(const QDateTime &dt, OpeningHoursPrivate *context, int recursionBudget) const;
+    RuleResult nextInterval(const QDateTime &dt, OpeningHoursPrivate *context) const;
 
     QString m_comment;
     Interval::State m_state = Interval::Open;
@@ -47,6 +46,10 @@ public:
     std::unique_ptr<Week> m_weekSelector;
     std::unique_ptr<MonthdayRange> m_monthdaySelector;
     std::unique_ptr<YearRange> m_yearSelector;
+
+private:
+    enum { RecursionLimit = 64 };
+    RuleResult nextInterval(const QDateTime &dt, OpeningHoursPrivate *context, int recursionBudget) const;
 };
 
 }

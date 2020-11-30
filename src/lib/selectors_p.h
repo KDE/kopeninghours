@@ -92,6 +92,7 @@ class Timespan
 {
 public:
     int requiredCapabilities() const;
+    bool isMultiDay(QDate date, OpeningHoursPrivate *context) const;
     SelectorResult nextInterval(const Interval &interval, const QDateTime &dt, OpeningHoursPrivate *context) const;
 
     Time begin = { Time::NoEvent, -1, -1 };
