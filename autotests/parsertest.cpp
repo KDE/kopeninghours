@@ -134,6 +134,8 @@ private Q_SLOTS:
         T("Mo-Fr 09:00-18:30;Sa 09:00-17:00");
         T("08:00-12:00;");
         T("14:00-20:00,");
+        T("Mo 14:00-21:00; Tu-Th 10:00-21:00; Fr 10:00-18:00;Su, PH off|| \"Samstag zweimal im Monat, Details siehe Webseite\"");
+        T("we-mo 11:30-14:00, 17:30-22:00; tu off");
 #undef T
     }
 

@@ -41,7 +41,7 @@ YEAR        [1-2][019][0-9][0-9]
 
 ;/. { return T_NORMAL_RULE_SEPARATOR; } // technically this should have space after the semicolon, but that is not always followed in OSM data
 ", " { return T_ADDITIONAL_RULE_SEPARATOR; }
-" || " { return T_FALLBACK_SEPARATOR; }
+"||" { return T_FALLBACK_SEPARATOR; } // technically this should have a space on either side, but that is not always followed in OSM data
 
 "open"    { yylval->state = Interval::Open;    return T_STATE; }
 "closed"  { yylval->state = Interval::Closed;  return T_STATE; }
@@ -78,13 +78,14 @@ P[Hh] { return T_PH; } // "Ph" is technically wrong, but often found in OSM data
 
 {INTEGER} { yylval->num = std::strtol(yytext, nullptr, 10); return T_INTEGER; }
 
-"Mo" { yylval->num = 1; return T_WEEKDAY; }
-"Tu" { yylval->num = 2; return T_WEEKDAY; }
-"We" { yylval->num = 3; return T_WEEKDAY; }
-"Th" { yylval->num = 4; return T_WEEKDAY; }
-"Fr" { yylval->num = 5; return T_WEEKDAY; }
-"Sa" { yylval->num = 6; return T_WEEKDAY; }
-Su|So { yylval->num = 7; return T_WEEKDAY; } // "So" is a common typo in OSM data for German language regions
+ /* technically Camel-casing is required, but reality is more creative, so tolerate other casings too */
+[Mm][Oo] { yylval->num = 1; return T_WEEKDAY; }
+[Tt][Uu] { yylval->num = 2; return T_WEEKDAY; }
+[Ww][Ee] { yylval->num = 3; return T_WEEKDAY; }
+[Tt][Hh] { yylval->num = 4; return T_WEEKDAY; }
+[Ff][Rr] { yylval->num = 5; return T_WEEKDAY; }
+[Ss][Aa] { yylval->num = 6; return T_WEEKDAY; }
+[Ss][UuOo] { yylval->num = 7; return T_WEEKDAY; } // "So" is a common typo in OSM data for German language regions
 
 "Jan" { yylval->num = 1; return T_MONTH; }
 "Feb" { yylval->num = 2; return T_MONTH; }
