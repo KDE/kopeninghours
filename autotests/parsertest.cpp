@@ -127,6 +127,9 @@ private Q_SLOTS:
         T("Mo-Su; We \"only after registration\"");
         T("Oct: We[1]");
 
+        // from https://github.com/dfaure/DataNovaImportScripts/blob/master/saved_opening_hours
+        T("Mo-Tu,Th-Fr 09:30-12:00; 2020 Dec 28 off; 2020 Dec 22,2020 Dec 29 off; We 15:00-17:00; 2020 Dec 23,2020 Dec 30 off; 2020 Dec 24,2020 Dec 31 off; Sa 10:00-12:00; 2020 Dec 26,2021 Jan 02 off; PH off");
+
         // technically wrong but often found content in OSM for which we have error recovery
         T("So");
         T("Ph");
