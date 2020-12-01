@@ -48,6 +48,29 @@ void printInterval(const Interval &i)
     std::cout << std::endl;
 }
 
+static QString errorString(OpeningHours::Error error)
+{
+    switch (error) {
+    case OpeningHours::Null:
+        return QStringLiteral("Empty specification");
+    case OpeningHours::SyntaxError:
+        return QStringLiteral("Syntax error");
+    case OpeningHours::MissingLocation:
+        return QStringLiteral("Missing location");
+    case OpeningHours::MissingRegion:
+        return QStringLiteral("Missing region");
+    case OpeningHours::UnsupportedFeature:
+        return QStringLiteral("Unsupported feature");
+    case OpeningHours::IncompatibleMode:
+        return QStringLiteral("Incompatible mode");
+    case OpeningHours::EvaluationError:
+        return QStringLiteral("Evaluation error");
+    case OpeningHours::NoError:
+        break;
+    }
+    return {};
+}
+
 int main(int argc, char **argv)
 {
     QCoreApplication app(argc, argv);
@@ -63,17 +86,9 @@ int main(int argc, char **argv)
     }
 
     OpeningHours oh(parser.positionalArguments().at(0).toUtf8());
-    switch(oh.error()) {
-        case OpeningHours::Null:
-        case OpeningHours::SyntaxError:
-        case OpeningHours::MissingLocation:
-        case OpeningHours::MissingRegion:
-        case OpeningHours::UnsupportedFeature:
-        case OpeningHours::IncompatibleMode:
-        case OpeningHours::EvaluationError:
-            return 1;
-        case OpeningHours::NoError:
-            break;
+    if (oh.error() != OpeningHours::NoError) {
+        qWarning() << errorString(oh.error());
+        return 1;
     }
 
     auto interval = oh.interval(QDateTime::currentDateTime());
