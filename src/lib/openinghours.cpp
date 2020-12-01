@@ -21,6 +21,49 @@
 
 using namespace KOpeningHours;
 
+void OpeningHoursPrivate::autocorrect()
+{
+    if (m_rules.size() <= 1) {
+        return;
+    }
+
+    // find incomplete additional rules, and merge them with the preceding rule
+    // example: "Mo, We, Fr 06:30-21:30" becomes "Mo,We,Fr 06:30-21:30"
+    // this matters as those two variants have widely varying semantics, and often occur technically wrong in the wild
+    // the other case is "Mo-Fr 06:30-12:00, 13:00-18:00", which should become "Mo-Fr 06:30-12:00, 13:00-18:00"
+
+    for (auto it = std::next(m_rules.begin()); it != m_rules.end(); ++it) {
+        auto rule = (*it).get();
+        auto prevRule = (*(std::prev(it))).get();
+
+        if (!rule->isAdditional) {
+            continue;
+        }
+
+        const auto prevRuleWeekayOnly = prevRule->m_weekdaySelector && !prevRule->m_yearSelector && !prevRule->m_monthdaySelector && !prevRule->m_weekSelector && !prevRule->m_timeSelector;
+        const auto curRuleTimeOnly = rule->m_timeSelector && !rule->m_yearSelector && !rule->m_monthdaySelector && !rule->m_weekSelector && !rule->m_weekdaySelector;
+        if (!prevRuleWeekayOnly && !curRuleTimeOnly) {
+            continue;
+        }
+
+        // the previous rule only has a weekday selector, so we fold that into the current rule
+        if (prevRuleWeekayOnly && rule->m_weekdaySelector) {
+            auto tmp = std::move(rule->m_weekdaySelector);
+            rule->m_weekdaySelector = std::move(prevRule->m_weekdaySelector);
+            rule->m_weekdaySelector->append(std::move(tmp));
+            std::swap(*it, *std::prev(it));
+            it = std::prev(m_rules.erase(it));
+        }
+
+        // the current rule only has a time selector, so we append that to the previous rule
+        else if (curRuleTimeOnly && prevRule->m_timeSelector) {
+            prevRule->m_timeSelector->append(std::move(rule->m_timeSelector));
+            it = std::prev(m_rules.erase(it));
+        }
+    }
+
+}
+
 void OpeningHoursPrivate::validate()
 {
     if (m_error == OpeningHours::SyntaxError) {
@@ -98,6 +141,7 @@ OpeningHours::OpeningHours(const QByteArray &openingHours, Modes modes)
     }
 
     yy_delete_buffer(state, scanner);
+    d->autocorrect();
     d->validate();
 }
 

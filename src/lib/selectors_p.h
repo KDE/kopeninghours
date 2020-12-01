@@ -95,6 +95,11 @@ public:
     bool isMultiDay(QDate date, OpeningHoursPrivate *context) const;
     SelectorResult nextInterval(const Interval &interval, const QDateTime &dt, OpeningHoursPrivate *context) const;
 
+    inline void append(std::unique_ptr<Timespan> &&n)
+    {
+        next ? next->append(std::move(n)) : (void)(next = std::move(n));
+    }
+
     Time begin = { Time::NoEvent, -1, -1 };
     Time end = { Time::NoEvent, -1, -1 };
     int interval = 0;
@@ -109,6 +114,11 @@ public:
     int requiredCapabilities() const;
     SelectorResult nextInterval(const Interval &interval, const QDateTime &dt, OpeningHoursPrivate *context) const;
     SelectorResult nextIntervalLocal(const Interval &interval, const QDateTime &dt, OpeningHoursPrivate *context) const;
+
+    inline void append(std::unique_ptr<WeekdayRange> &&n)
+    {
+        next ? next->append(std::move(n)) : (void)(next = std::move(n));
+    }
 
     uint8_t beginDay = 0;
     uint8_t endDay = 0;

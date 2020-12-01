@@ -22,6 +22,7 @@
 namespace KOpeningHours {
 class OpeningHoursPrivate : public QSharedData {
 public:
+    void autocorrect();
     void validate();
 
     enum RuleType {
