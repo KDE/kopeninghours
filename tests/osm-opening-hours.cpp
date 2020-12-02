@@ -10,6 +10,7 @@
 #include <QCoreApplication>
 #include <QCommandLineParser>
 #include <QDateTime>
+#include <QTimeZone>
 
 #include <iostream>
 
@@ -78,6 +79,13 @@ int main(int argc, char **argv)
     parser.addHelpOption();
     parser.addVersionOption();
 
+    QCommandLineOption regionOpt({QStringLiteral("r"), QStringLiteral("region")}, QStringLiteral("ISO 3166-1/2 region code for public holidays"), QStringLiteral("region"));
+    parser.addOption(regionOpt);
+    QCommandLineOption coordOpt({QStringLiteral("c"), QStringLiteral("coordinate")}, QStringLiteral("Geographic coordinate"), QStringLiteral("lat/lon"));
+    parser.addOption(coordOpt);
+    QCommandLineOption tzOpt({QStringLiteral("t"), QStringLiteral("timezone")}, QStringLiteral("IANA timezone id"), QStringLiteral("tz"));
+    parser.addOption(tzOpt);
+
     parser.addPositionalArgument(QStringLiteral("expression"), QStringLiteral("OSM opening hours expression."));
     parser.process(app);
 
@@ -86,6 +94,20 @@ int main(int argc, char **argv)
     }
 
     OpeningHours oh(parser.positionalArguments().at(0).toUtf8());
+    if (parser.isSet(regionOpt)) {
+        oh.setRegion(parser.value(regionOpt));
+    }
+    if (parser.isSet(coordOpt)) {
+        const auto coords = parser.value(coordOpt).split(QLatin1Char('/'), Qt::SkipEmptyParts);
+        if (coords.size() != 2) {
+            parser.showHelp(1);
+        }
+        oh.setLocation(coords[0].toFloat(), coords[1].toFloat());
+    }
+    if (parser.isSet(tzOpt)) {
+        oh.setTimeZone(QTimeZone(parser.value(tzOpt).toUtf8()));
+    }
+
     if (oh.error() != OpeningHours::NoError) {
         qWarning() << errorString(oh.error());
         return 1;
