@@ -29,9 +29,10 @@ Kirigami.ApplicationWindow {
             Row {
                 id: row
                 QQC2.Label {
-                    text: dayData.display
+                    text: dayData.shortDayName
                     width: delegateRoot.ListView.view.labelWidth + Kirigami.Units.smallSpacing
                     Component.onCompleted: delegateRoot.ListView.view.labelWidth = Math.max(delegateRoot.ListView.view.labelWidth, implicitWidth)
+                    font.italic: dayData.isToday
                 }
                 Repeater {
                     model: dayData.intervals
@@ -199,6 +200,8 @@ Kirigami.ApplicationWindow {
                 IntervalModel {
                     id: intervalModel
                     openingHours: page.oh
+                    beginDate: intervalModel.beginOfWeek(new Date())
+                    endDate: new Date(intervalModel.beginDate.getTime() + 7 * 24 * 3600 * 1000)
                 }
 
                 ListView {
@@ -218,7 +221,7 @@ Kirigami.ApplicationWindow {
                         Repeater {
                             model: [3, 6, 9, 12, 15, 18, 21]
                             QQC2.Label {
-                                text: modelData + ":00" // TODO
+                                text: intervalModel.formatTimeColumnHeader(modelData, 0);
                                 width: intervalHeader.itemWidth
                                 horizontalAlignment: Qt.AlignHCenter
                             }

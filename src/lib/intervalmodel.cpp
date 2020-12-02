@@ -8,6 +8,8 @@
 
 #include <KOpeningHours/Interval>
 
+#include <QLocale>
+
 #include <vector>
 
 using namespace KOpeningHours;
@@ -62,7 +64,6 @@ IntervalModel::IntervalModel(QObject *parent)
     : QAbstractListModel(parent)
     , d(new IntervalModelPrivate)
 {
-    connect(this, &QAbstractItemModel::modelReset, this, &IntervalModel::setupChanged);
 }
 
 IntervalModel::~IntervalModel() = default;
@@ -74,8 +75,10 @@ OpeningHours IntervalModel::openingHours() const
 
 void IntervalModel::setOpeningHours(const OpeningHours &oh)
 {
-    beginResetModel();
     d->oh = oh;
+    emit openingHoursChanged();
+
+    beginResetModel();
     d->repopulateModel();
     endResetModel();
 }
@@ -91,8 +94,10 @@ void IntervalModel::setBeginDate(QDate beginDate)
         return;
     }
 
-    beginResetModel();
     d->beginDt = beginDate;
+    emit beginDateChanged();
+
+    beginResetModel();
     d->repopulateModel();
     endResetModel();
 }
@@ -109,8 +114,10 @@ void IntervalModel::setEndDate(QDate endDate)
         return;
     }
 
-    beginResetModel();
     d->endDt = endDate;
+    emit endDateChanged();
+
+    beginResetModel();
     d->repopulateModel();
     endResetModel();
 }
@@ -138,6 +145,10 @@ QVariant IntervalModel::data(const QModelIndex &index, int role) const
             return d->m_intervals[index.row()].day;
         case DayBeginTimeRole:
             return QDateTime(d->m_intervals[index.row()].day, {0, 0});
+        case ShortDayNameRole:
+             return QLocale().standaloneDayName(d->m_intervals[index.row()].day.dayOfWeek(), QLocale::ShortFormat);
+        case IsTodayRole:
+            return d->m_intervals[index.row()].day == QDate::currentDate();
     }
 
     return {};
@@ -149,7 +160,26 @@ QHash<int, QByteArray> IntervalModel::roleNames() const
     n.insert(IntervalsRole, "intervals");
     n.insert(DateRole, "date");
     n.insert(DayBeginTimeRole, "dayBegin");
+    n.insert(ShortDayNameRole, "shortDayName");
+    n.insert(IsTodayRole, "isToday");
     return n;
+}
+
+QDate IntervalModel::beginOfWeek(const QDateTime& dt) const
+{
+    auto d = dt.date();
+    const auto start = QLocale().firstDayOfWeek();
+    if (start < d.dayOfWeek()) {
+        d = d.addDays(start - d.dayOfWeek());
+    } else {
+        d = d.addDays(start - d.dayOfWeek() - 7);
+    }
+    return d;
+}
+
+QString IntervalModel::formatTimeColumnHeader(int hour, int minute) const
+{
+    return QLocale().toString(QTime(hour, minute), QLocale::NarrowFormat);
 }
 
 #include "moc_intervalmodel.cpp"
