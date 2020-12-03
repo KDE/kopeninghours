@@ -20,6 +20,7 @@ add_library(KOpeningHours
     ${kopeninghours_srcs}
     ${BISON_openinghoursparser_OUTPUTS}
     ${FLEX_openinghoursscanner_OUTPUTS}
+    display.cpp
     easter.cpp
     holidaycache.cpp
     interval.cpp
@@ -40,10 +41,12 @@ target_link_libraries(KOpeningHours
         Qt5::Core
     PRIVATE
         KF5::Holidays
+        KF5::I18n
 )
 
 ecm_generate_headers(KOpeningHours_FORWARDING_HEADERS
     HEADER_NAMES
+        Display
         Interval
         IntervalModel
         OpeningHours

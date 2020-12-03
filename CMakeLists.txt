@@ -35,7 +35,7 @@ ecm_setup_version(PROJECT VARIABLE_PREFIX KOPENINGHOURS
 
 find_package(Qt5 5.14 REQUIRED COMPONENTS Core) # 5.14 for QCalendar
 find_package(Qt5 CONFIG QUIET OPTIONAL_COMPONENTS Qml)
-find_package(KF5 5.77 REQUIRED COMPONENTS Holidays)
+find_package(KF5 5.77 REQUIRED COMPONENTS Holidays I18n)
 
 if (BUILD_TESTING)
     find_package(Qt5 5.14 REQUIRED COMPONENTS Test)
@@ -74,3 +74,4 @@ install(FILES
 install(EXPORT KOpeningHoursTargets DESTINATION "${CMAKECONFIG_INSTALL_DIR}" FILE KOpeningHoursTargets.cmake)
 
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/kopeninghours_version.h DESTINATION ${KDE_INSTALL_INCLUDEDIR} COMPONENT Devel)
+ki18n_install(po)

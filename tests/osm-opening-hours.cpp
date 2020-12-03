@@ -4,6 +4,7 @@
     SPDX-License-Identifier: LGPL-2.0-or-later
 */
 
+#include <KOpeningHours/Display>
 #include <KOpeningHours/Interval>
 #include <KOpeningHours/OpeningHours>
 
@@ -112,6 +113,8 @@ int main(int argc, char **argv)
         qWarning() << errorString(oh.error());
         return 1;
     }
+
+    std::cout << qPrintable(Display::currentState(oh)) << std::endl << std::endl;
 
     auto interval = oh.interval(QDateTime::currentDateTime());
     printInterval(interval);

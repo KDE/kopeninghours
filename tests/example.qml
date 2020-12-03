@@ -92,37 +92,7 @@ Kirigami.ApplicationWindow {
                 tmp.setLocation(latitude.text, longitude.text);
                 tmp.region = region.currentText;
                 page.oh = tmp;
-
-                if (oh.error != OpeningHours.NoError) {
-                    currentState.text = "";
-                    return;
-                }
-
-                var s = "";
-                var i = oh.interval(new Date());
-                switch (i.state) {
-                    case Interval.Open:
-                        s += "Currently open";
-                        break;
-                    case Interval.Closed:
-                        s += "Currently closed";
-                        break;
-                    case Interval.Unknown:
-                        s += "Currently unknown";
-                        break;
-                    case Interval.Invalid:
-                        s += "evaluation error";
-                }
-
-                if (i.comment.length > 0) {
-                    s += " (" + i.comment + ")";
-                }
-
-                if (i.end) {
-                    s += ", for " + Math.round((i.end - Date.now())/60000) + " more minutes.";
-                }
-
-                currentState.text = s;
+                currentState.text = Qt.binding(function() { return intervalModel.currentState; });
             }
 
             ColumnLayout {

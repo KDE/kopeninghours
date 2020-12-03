@@ -6,6 +6,7 @@
 
 #include "intervalmodel.h"
 
+#include <KOpeningHours/Display>
 #include <KOpeningHours/Interval>
 
 #include <QLocale>
@@ -180,6 +181,11 @@ QDate IntervalModel::beginOfWeek(const QDateTime& dt) const
 QString IntervalModel::formatTimeColumnHeader(int hour, int minute) const
 {
     return QLocale().toString(QTime(hour, minute), QLocale::NarrowFormat);
+}
+
+QString IntervalModel::currentState() const
+{
+    return Display::currentState(d->oh);
 }
 
 #include "moc_intervalmodel.cpp"
