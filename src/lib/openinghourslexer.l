@@ -52,7 +52,7 @@ YEAR        [1-2][019][0-9][0-9]
 "24/7" { return T_24_7; }
 
 "+" { return T_PLUS; }
-"-" { return T_MINUS; }
+-|‒|–|—|― { return T_MINUS; }
 "/" { return T_SLASH; }
 ":" { return T_COLON; }
 ,/. { return T_COMMA; }

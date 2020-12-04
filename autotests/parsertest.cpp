@@ -148,6 +148,9 @@ private Q_SLOTS:
         T("(SUNrISE-01:00)-(SUnsET+01:00)");
         T("su,sh off");
         T("mo-fr CLOSED");
+
+        // Unicode symbols
+        T("Mo–Tu");
 #undef T
     }
 
