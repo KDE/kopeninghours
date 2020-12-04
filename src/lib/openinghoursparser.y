@@ -177,6 +177,11 @@ typedef void* yyscan_t;
     delete $$.monthdaySelector;
     delete $$.yearSelector;
 } <selectors>
+%destructor { delete $$; } <timespan>
+%destructor { delete $$; } <weekdayRange>
+%destructor { delete $$; } <week>
+%destructor { delete $$; } <monthdayRange>
+%destructor { delete $$; } <yearRange>
 
 // resolve SR conflict between the YearSelector and MonthdaySelector on T_YEAR T_MONTH
 %nonassoc T_YEAR
@@ -387,7 +392,10 @@ WeekdaySelector:
 
 WeekdaySequence:
   WeekdayRange[W] { $$ = $W; }
-| WeekdaySequence[S] T_COMMA WeekdayRange[W] { appendSelector($$, $W); }
+| WeekdaySequence[S] T_COMMA WeekdayRange[W] {
+    $$ = $S;
+    appendSelector($$, $W);
+  }
 ;
 
 WeekdayRange:
