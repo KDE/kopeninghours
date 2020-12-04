@@ -198,6 +198,7 @@ Ruleset:
 | Ruleset T_ADDITIONAL_RULE_SEPARATOR Rule[R] { parser->addRule($R, OpeningHoursPrivate::AdditionalRule); }
 | Ruleset T_FALLBACK_SEPARATOR Rule[R] {
     if (parser->m_fallbackRule) {
+        delete $R;
         YYABORT;
     }
     parser->addRule($R, OpeningHoursPrivate::FallbackRule);
@@ -623,6 +624,7 @@ YearRange:
     $$->begin = $Y1;
     $$->end = $Y2;
     if ($$->end < $$->begin) {
+        delete $$;
         YYABORT;
     }
   }
@@ -631,6 +633,7 @@ YearRange:
     $$->begin = $Y1;
     $$->end = $Y2;
     if ($$->end < $$->begin) {
+        delete $$;
         YYABORT;
     }
     $$->interval = $I;

@@ -111,6 +111,7 @@ void OpeningHoursPrivate::addRule(Rule *rule, RuleType type)
             break;
         case FallbackRule:
             m_fallbackRule.reset(rule);
+            break;
     }
 }
 
