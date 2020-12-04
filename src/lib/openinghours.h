@@ -36,7 +36,7 @@ class KOPENINGHOURS_EXPORT OpeningHours
     Q_PROPERTY(float latitude READ latitude WRITE setLatitude)
     Q_PROPERTY(float longitude READ longitude WRITE setLongitude)
     Q_PROPERTY(QString region READ region WRITE setRegion)
-    Q_PROPERTY(QString timezone READ timeZoneId WRITE setTimeZoneId)
+    Q_PROPERTY(QString timeZone READ timeZoneId WRITE setTimeZoneId)
 public:
     /** Evaluation modes for opening hours expressions. */
     enum Mode {
