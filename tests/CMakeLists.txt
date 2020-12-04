@@ -4,5 +4,5 @@
 add_executable(osm-opening-hours-validate osm-opening-hours-validate.cpp)
 target_link_libraries(osm-opening-hours-validate KOpeningHours)
 
-add_executable(osm-opening-hours osm-opening-hours.cpp)
-target_link_libraries(osm-opening-hours KOpeningHours)
+add_executable(osm-opening-hours-evaluate osm-opening-hours-evaluate.cpp)
+target_link_libraries(osm-opening-hours-evaluate KOpeningHours)
