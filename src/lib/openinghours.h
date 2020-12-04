@@ -62,6 +62,14 @@ public:
     OpeningHours& operator=(const OpeningHours&);
     OpeningHours& operator=(OpeningHours&&);
 
+    /** Parse OSM opening hours expression @p openingHours.
+     *  @param modes Specify whether time interval and/or point in time expressions are expected.
+     *  If @p openingHours doesn't match @p modes, error() return IncompatibleMode.
+     *  Prefer this over creating new instances if you are processing <b>many</b> expressions
+     *  at once.
+     */
+    void setExpression(const QByteArray &openingHours, Modes modes = IntervalMode);
+
     /** Geographic coordinate at which this expression should be evaluated.
      *  This is needed for expressions containing location-based variable time references,
      *  such as "sunset". If the expression requires a location, error() returns @c MissingLocation

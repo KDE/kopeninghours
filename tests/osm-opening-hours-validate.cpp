@@ -25,6 +25,7 @@ int main(int argc, char **argv)
     parser.process(app);
 
     if (parser.positionalArguments().isEmpty()) {
+        OpeningHours oh;
         QFile in;
         in.open(stdin, QFile::ReadOnly);
         int total = 0;
@@ -37,7 +38,7 @@ int main(int argc, char **argv)
                 continue;
             }
             ++total;
-            OpeningHours oh(expr);
+            oh.setExpression(expr);
             if (oh.error() == OpeningHours::SyntaxError) {
                 std::cerr << "Syntax error: " << expr.constData() << std::endl;
                 ++errors;

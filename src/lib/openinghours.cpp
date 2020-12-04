@@ -119,12 +119,29 @@ void OpeningHoursPrivate::addRule(Rule *rule, RuleType type)
 OpeningHours::OpeningHours()
     : d(new OpeningHoursPrivate)
 {
+    d->m_error = OpeningHours::Null;
 }
 
 OpeningHours::OpeningHours(const QByteArray &openingHours, Modes modes)
     : d(new OpeningHoursPrivate)
 {
+    setExpression(openingHours, modes);
+}
+
+OpeningHours::OpeningHours(const OpeningHours&) = default;
+OpeningHours::OpeningHours(OpeningHours&&) = default;
+OpeningHours::~OpeningHours() = default;
+
+OpeningHours& OpeningHours::operator=(const OpeningHours&) = default;
+OpeningHours& OpeningHours::operator=(OpeningHours&&) = default;
+
+void OpeningHours::setExpression(const QByteArray &openingHours, OpeningHours::Modes modes)
+{
     d->m_modes = modes;
+
+    d->m_error = OpeningHours::Null;
+    d->m_rules.clear();
+    d->m_fallbackRule.reset();
 
     yyscan_t scanner;
     if (yylex_init(&scanner)) {
@@ -144,14 +161,8 @@ OpeningHours::OpeningHours(const QByteArray &openingHours, Modes modes)
     yy_delete_buffer(state, scanner);
     d->autocorrect();
     d->validate();
+
 }
-
-OpeningHours::OpeningHours(const OpeningHours&) = default;
-OpeningHours::OpeningHours(OpeningHours&&) = default;
-OpeningHours::~OpeningHours() = default;
-
-OpeningHours& OpeningHours::operator=(const OpeningHours&) = default;
-OpeningHours& OpeningHours::operator=(OpeningHours&&) = default;
 
 void OpeningHours::setLocation(float latitude, float longitude)
 {
