@@ -9,6 +9,7 @@
 %}
 
 %option warn nodefault
+/* technically the case of all tokens is clearly defined, but reality ignores that in parts, so we do the same */
 %option caseless
 %option reentrant
 %option noyywrap
@@ -68,7 +69,7 @@ YEAR        [1-2][019][0-9][0-9]
 "(" { return T_LPAREN; }
 ")" { return T_RPAREN; }
 
-P[Hh] { return T_PH; } // "Ph" is technically wrong, but often found in OSM data
+"PH" { return T_PH; }
 "SH" { return T_SH; }
 
 " day" { return T_KEYWORD_DAY; }
@@ -78,7 +79,6 @@ P[Hh] { return T_PH; } // "Ph" is technically wrong, but often found in OSM data
 
 {INTEGER} { yylval->num = std::strtol(yytext, nullptr, 10); return T_INTEGER; }
 
- /* technically Camel-casing is required, but reality is more creative, so tolerate other casings too */
 Mo { yylval->num = 1; return T_WEEKDAY; }
 Tu { yylval->num = 2; return T_WEEKDAY; }
 We { yylval->num = 3; return T_WEEKDAY; }
