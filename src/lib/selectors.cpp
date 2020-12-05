@@ -141,6 +141,17 @@ SelectorResult Timespan::nextInterval(const Interval &interval, const QDateTime 
     return dt < beginDt ? dt.secsTo(beginDt) : dt.secsTo(beginDt.addDays(1));
 }
 
+static QByteArray intervalToExpression(int minutes)
+{
+    if (minutes < 60) {
+        return twoDigits(minutes);
+    } else {
+        const int hours = minutes / 60;
+        minutes -= hours * 60;
+        return twoDigits(hours) + ':' + twoDigits(minutes);
+    }
+}
+
 QByteArray Timespan::toExpression() const
 {
     QByteArray expr = begin.toExpression(false);
@@ -150,7 +161,7 @@ QByteArray Timespan::toExpression() const
         expr += '-' + end.toExpression(true);
     }
     if (interval) {
-        expr += '/' + QByteArray::number(interval);
+        expr += '/' + intervalToExpression(interval);
     }
     if (next) {
         expr += ',' + next->toExpression();

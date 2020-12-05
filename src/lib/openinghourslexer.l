@@ -35,7 +35,7 @@ YEAR        [1-2][019][0-9][0-9]
 {EXTENDED_HOUR_MINUTE} {
     yylval->time.event = Time::NoEvent;
     yylval->time.hour = strtol(yytext, nullptr, 10);
-    yylval->time.minute = strtol(yytext + 3, nullptr, 10);
+    yylval->time.minute = strtol(strchr(yytext, ':') + 1, nullptr, 10);
     return T_EXTENDED_HOUR_MINUTE;
 }
 {YEAR} { yylval->num = std::strtol(yytext, nullptr, 10); return T_YEAR; }

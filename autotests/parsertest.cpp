@@ -45,8 +45,9 @@ private Q_SLOTS:
         T("PH off || 2020 open");
         T("Mo[1-2,4]");
         T2("We[-1] + 2 days", "We[-1] +2 days");
-        T("10:00-16:00/90");
-        T("10:00-16:00/1:30");
+        T("10:00-16:00/15");
+        T2("10:00-16:00/90", "10:00-16:00/01:30");
+        T2("10:00-16:00/1:30", "10:00-16:00/01:30");
         T("10:00-10:00");
 
         // from https://wiki.openstreetmap.org/wiki/Key:opening_hours#Simple_examples
