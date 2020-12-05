@@ -9,6 +9,7 @@
 #include "holidaycache_p.h"
 #include "logging.h"
 #include "openinghours_p.h"
+#include "consecutiveaccumulator_p.h"
 
 #include <KHolidays/SunRiseSet>
 
@@ -131,8 +132,16 @@ SelectorResult Timespan::nextInterval(const Interval &interval, const QDateTime 
 QByteArray Timespan::toExpression() const
 {
     QByteArray expr = begin.toExpression();
-    if (!(end == begin)) {
+    if (openEnd) {
+        expr += '+';
+    } else if (!(end == begin)) {
         expr += '-' + end.toExpression();
+    }
+    if (interval) {
+        expr += '/' + QByteArray::number(interval);
+    }
+    if (next) {
+        expr += ',' + next->toExpression();
     }
     return expr;
 }
@@ -290,7 +299,7 @@ QByteArray WeekdayRange::toExpression() const
     case NoHoliday: {
         static const char* s_weekDays[] = { "ERROR", "Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"};
         expr = s_weekDays[beginDay];
-        if (endDay > beginDay) {
+        if (endDay != beginDay) {
             expr += '-';
             expr += s_weekDays[endDay];
         }
@@ -304,15 +313,15 @@ QByteArray WeekdayRange::toExpression() const
         break;
     }
     if (nthMask > 0) {
-        expr += '[';
+        ConsecutiveAccumulator accu([](int i) { return QByteArray::number(i); });
         for (int i = 1; i <= 10; ++i) {
             if ((nthMask & (1 << i)) == 0) {
                 continue;
             }
             const auto n = (i % 2) ? (-5 + (i / 2)) : (i / 2);
-            expr += QByteArray::number(n);
+            accu.add(n);
         }
-        expr += ']';
+        expr += '[' + accu.result() + ']';
     }
     if (offset > 0) {
         expr += " +" + QByteArray::number(offset) + ' ' + (offset > 1 ? "days" : "day");
@@ -320,8 +329,10 @@ QByteArray WeekdayRange::toExpression() const
         expr += " -" + QByteArray::number(-offset) + ' ' + (offset < -1 ? "days" : "day");
     }
     if (next) {
-        expr += ',';
-        expr += next->toExpression();
+        expr += ',' + next->toExpression();
+    }
+    if (andSelector) {
+        expr += ' ' + andSelector->toExpression();
     }
     return expr;
 }
@@ -383,8 +394,18 @@ SelectorResult Week::nextInterval(const Interval &interval, const QDateTime &dt,
 
 QByteArray Week::toExpression() const
 {
-    QByteArray expr;
-    // TODO
+    QByteArray expr = "week " + twoDigits(beginWeek);
+    if (endWeek != beginWeek) {
+        expr += '-';
+        expr += twoDigits(endWeek);
+    }
+    if (interval > 1) {
+        expr += '/';
+        expr += QByteArray::number(interval);
+    }
+    if (next) {
+        expr += ',' + next->toExpression();
+    }
     return expr;
 }
 
@@ -417,7 +438,7 @@ QByteArray Date::toExpression(const Date &refDate) const
         }
         if (day && day != refDate.day) {
             maybeSpace();
-            expr += QByteArray::number(day);
+            expr += twoDigits(day);
         }
         break;
     case Date::Easter:
@@ -528,6 +549,9 @@ QByteArray MonthdayRange::toExpression() const
     if (end != begin) {
         expr += '-' + end.toExpression(begin);
     }
+    if (next) {
+        expr += ',' + next->toExpression();
+    }
     return expr;
 }
 
@@ -586,6 +610,9 @@ QByteArray YearRange::toExpression() const
     if (interval > 1) {
         expr += '/';
         expr += QByteArray::number(interval);
+    }
+    if (next) {
+        expr += ',' + next->toExpression();
     }
     return expr;
 }
