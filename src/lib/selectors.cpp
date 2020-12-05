@@ -45,12 +45,11 @@ static QByteArray twoDigits(int n)
 QByteArray Time::toExpression(bool end) const
 {
     QByteArray expr;
-    QByteArray hhmm = twoDigits(hour % 24) + ':' + twoDigits(minute);
     switch (event) {
     case Time::NoEvent:
         if (hour % 24 == 0 && minute == 0 && end)
             return "24:00";
-        return hhmm;
+        return twoDigits(hour % 24) + ':' + twoDigits(minute);
     case Time::Dawn:
         expr = "dawn";
         break;
@@ -66,6 +65,7 @@ QByteArray Time::toExpression(bool end) const
     }
     const int minutes = hour * 60 + minute;
     if (minutes != 0) {
+        const QByteArray hhmm = twoDigits(qAbs(hour) % 24) + ':' + twoDigits(qAbs(minute));
         expr = '(' + expr + (minutes > 0 ? '+' : '-') + hhmm + ')';
     }
     return expr;

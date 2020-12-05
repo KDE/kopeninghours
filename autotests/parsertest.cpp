@@ -100,14 +100,15 @@ private Q_SLOTS:
         T("Mo-Fr 00:00-24:00; PH off");
         T("sunrise-sunset open \"Beware of sunburn!\"; PH off");
         T("sunset-sunrise open \"Beware of vampires!\"; PH off");
-        T("(sunset+01:00)-24:00 || closed \"No drink before sunset!\"; PH off");
+        T("(sunrise-00:30)-(sunrise+00:30)");
+        T2("(sunset+01:00)-24:00 || closed \"No drink before sunset!\"; PH off", "(sunset+01:00)-24:00 || off \"No drink before sunset!\"; PH off");
         T("22:00+; PH off");
         T("Tu,PH 23:59-22:59");
         T("We-Mo,PH 23:59-22:59");
         T2("week 2-52/2 We 00:00-24:00; week 1-53/2 Sa 00:00-24:00; PH off", "week 02-52/2 We 00:00-24:00; week 01-53/2 Sa 00:00-24:00; PH off");
         T2("week 4-16 We 00:00-24:00; week 38-42 Sa 00:00-24:00; PH off", "week 04-16 We 00:00-24:00; week 38-42 Sa 00:00-24:00; PH off");
 //         T("2012 easter -2 days-2012 easter +2 days: open \"Around easter\"; PH off");
-        T("24/7 closed \"always closed\"");
+        T2("24/7 closed \"always closed\"", "24/7 off \"always closed\"");
         T("Jan 23-Feb 11,Feb 12 00:00-24:00; PH off");
         T("Apr-Oct Su[2] 14:00-18:00; Aug Su[-1] -1 day 10:00-18:00; Aug Su[-1] 10:00-18:00; PH off");
         T("Mo-Fr 08:00-12:00, We 14:00-18:00; Su,PH off"); // open We morning too
@@ -140,8 +141,8 @@ private Q_SLOTS:
         T2("Mo-Fr 09:00-18:30;Sa 09:00-17:00", "Mo-Fr 09:00-18:30; Sa 09:00-17:00");
         T2("08:00-12:00;", "08:00-12:00");
         T2("14:00-20:00,", "14:00-20:00");
-        T("Mo 14:00-21:00; Tu-Th 10:00-21:00; Fr 10:00-18:00;Su, PH off|| \"Samstag zweimal im Monat, Details siehe Webseite\"");
-        T2("we-mo 11:30-14:00, 17:30-22:00; tu off", "We-Mo 11:30-14:00, 17:30-22:00; Tu off");
+        T2("Mo 14:00-21:00; Tu-Th 10:00-21:00; Fr 10:00-18:00;Su, PH off|| \"Samstag zweimal im Monat, Details siehe Webseite\"", "Mo 14:00-21:00; Tu-Th 10:00-21:00; Fr 10:00-18:00; Su,PH off || \"Samstag zweimal im Monat, Details siehe Webseite\"");
+        T2("we-mo 11:30-14:00, 17:30-22:00; tu off", "We-Mo 11:30-14:00,17:30-22:00; Tu off");
 
         // Tolerance for incorrect casing
         T2("mo-fr 10:00-20:00", "Mo-Fr 10:00-20:00");
@@ -153,7 +154,7 @@ private Q_SLOTS:
         T2("mo-fr CLOSED", "Mo-Fr off");
 
         // Unicode symbols
-        T("Mo–Tu");
+        T2("Mo–Tu", "Mo-Tu");
 #undef T
     }
 
