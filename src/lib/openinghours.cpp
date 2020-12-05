@@ -175,7 +175,7 @@ QByteArray OpeningHours::normalizedExpression() const
     QByteArray ret;
     for (const auto &rule : d->m_rules) {
         if (!ret.isEmpty()) {
-            ret += "; ";
+            ret += rule->isAdditional ? ", " : "; ";
         }
         ret += rule->toExpression(singleRule);
     }

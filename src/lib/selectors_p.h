@@ -68,7 +68,7 @@ private:
 class Time
 {
 public:
-    QByteArray toExpression() const;
+    QByteArray toExpression(bool end) const;
 
     enum Event {
         NoEvent,

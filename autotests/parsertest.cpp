@@ -65,7 +65,7 @@ private Q_SLOTS:
         T("Mo-Sa 10:00-20:00; Tu 10:00-14:00");
         T("sunrise-sunset");
         T("Su 10:00+");
-        T("week 1-53/2 Fr 09:00-12:00; week 2-52/2 We 09:00-12:00");
+        T2("week 1-53/2 Fr 09:00-12:00; week 2-52/2 We 09:00-12:00", "week 01-53/2 Fr 09:00-12:00; week 02-52/2 We 09:00-12:00");
         T("Mo-Sa 08:00-13:00,14:00-17:00 || \"by appointment\"");
         T("Su-Tu 11:00-01:00, We-Th 11:00-03:00, Fr 11:00-06:00, Sa 11:00-07:00");
         T("Mo-Su,PH 15:00-03:00; easter -2 days off");
@@ -104,8 +104,8 @@ private Q_SLOTS:
         T("22:00+; PH off");
         T("Tu,PH 23:59-22:59");
         T("We-Mo,PH 23:59-22:59");
-        T("week 2-52/2 We 00:00-24:00; week 1-53/2 Sa 00:00-24:00; PH off");
-        T("week 4-16 We 00:00-24:00; week 38-42 Sa 00:00-24:00; PH off");
+        T2("week 2-52/2 We 00:00-24:00; week 1-53/2 Sa 00:00-24:00; PH off", "week 02-52/2 We 00:00-24:00; week 01-53/2 Sa 00:00-24:00; PH off");
+        T2("week 4-16 We 00:00-24:00; week 38-42 Sa 00:00-24:00; PH off", "week 04-16 We 00:00-24:00; week 38-42 Sa 00:00-24:00; PH off");
 //         T("2012 easter -2 days-2012 easter +2 days: open \"Around easter\"; PH off");
         T("24/7 closed \"always closed\"");
         T("Jan 23-Feb 11,Feb 12 00:00-24:00; PH off");

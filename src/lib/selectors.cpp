@@ -42,21 +42,33 @@ static QByteArray twoDigits(int n)
     return ret;
 }
 
-QByteArray Time::toExpression() const
+QByteArray Time::toExpression(bool end) const
 {
+    QByteArray expr;
+    QByteArray hhmm = twoDigits(hour % 24) + ':' + twoDigits(minute);
     switch (event) {
-        case Time::NoEvent:
-            return twoDigits(hour % 24) + ':' + twoDigits(minute);
-        case Time::Dawn:
-            return "dawn";
-        case Time::Sunrise:
-            return "sunrise";
-        case Time::Dusk:
-            return "dusk";
-        case Time::Sunset:
-            return "sunset";
+    case Time::NoEvent:
+        if (hour % 24 == 0 && minute == 0 && end)
+            return "24:00";
+        return hhmm;
+    case Time::Dawn:
+        expr = "dawn";
+        break;
+    case Time::Sunrise:
+        expr = "sunrise";
+        break;
+    case Time::Dusk:
+        expr = "dusk";
+        break;
+    case Time::Sunset:
+        expr = "sunset";
+        break;
     }
-    return {};
+    const int minutes = hour * 60 + minute;
+    if (minutes != 0) {
+        expr = '(' + expr + (minutes > 0 ? '+' : '-') + hhmm + ')';
+    }
+    return expr;
 }
 
 int Timespan::requiredCapabilities() const
@@ -131,11 +143,11 @@ SelectorResult Timespan::nextInterval(const Interval &interval, const QDateTime 
 
 QByteArray Timespan::toExpression() const
 {
-    QByteArray expr = begin.toExpression();
+    QByteArray expr = begin.toExpression(false);
     if (openEnd) {
         expr += '+';
     } else if (!(end == begin)) {
-        expr += '-' + end.toExpression();
+        expr += '-' + end.toExpression(true);
     }
     if (interval) {
         expr += '/' + QByteArray::number(interval);
