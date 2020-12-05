@@ -51,6 +51,7 @@ void OpeningHoursPrivate::autocorrect()
             auto tmp = std::move(rule->m_weekdaySelector);
             rule->m_weekdaySelector = std::move(prevRule->m_weekdaySelector);
             rule->m_weekdaySelector->append(std::move(tmp));
+            rule->isAdditional = prevRule->isAdditional;
             std::swap(*it, *std::prev(it));
             it = std::prev(m_rules.erase(it));
         }

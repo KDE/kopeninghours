@@ -143,7 +143,9 @@ private Q_SLOTS:
         T2("08:00-12:00;", "08:00-12:00");
         T2("14:00-20:00,", "14:00-20:00");
         T2("Mo 14:00-21:00; Tu-Th 10:00-21:00; Fr 10:00-18:00;Su, PH off|| \"Samstag zweimal im Monat, Details siehe Webseite\"", "Mo 14:00-21:00; Tu-Th 10:00-21:00; Fr 10:00-18:00; Su,PH off || \"Samstag zweimal im Monat, Details siehe Webseite\"");
+        T2("Mo-Fr 06:30-12:00, 13:00-18:00", "Mo-Fr 06:30-12:00,13:00-18:00"); // see autocorrect()
         T2("we-mo 11:30-14:00, 17:30-22:00; tu off", "We-Mo 11:30-14:00,17:30-22:00; Tu off");
+        T2("Mo, We, Fr 06:30-21:30; Tu, Th 09:00-21:30; Sa 09:00-17:00; Su 09:00-14:00", "Mo,We,Fr 06:30-21:30; Tu,Th 09:00-21:30; Sa 09:00-17:00; Su 09:00-14:00"); // autocorrect3
 
         // Tolerance for incorrect casing
         T2("mo-fr 10:00-20:00", "Mo-Fr 10:00-20:00");
