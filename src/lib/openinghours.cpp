@@ -30,7 +30,7 @@ void OpeningHoursPrivate::autocorrect()
     // find incomplete additional rules, and merge them with the preceding rule
     // example: "Mo, We, Fr 06:30-21:30" becomes "Mo,We,Fr 06:30-21:30"
     // this matters as those two variants have widely varying semantics, and often occur technically wrong in the wild
-    // the other case is "Mo-Fr 06:30-12:00, 13:00-18:00", which should become "Mo-Fr 06:30-12:00, 13:00-18:00"
+    // the other case is "Mo-Fr 06:30-12:00, 13:00-18:00", which should become "Mo-Fr 06:30-12:00,13:00-18:00"
 
     for (auto it = std::next(m_rules.begin()); it != m_rules.end(); ++it) {
         auto rule = (*it).get();
