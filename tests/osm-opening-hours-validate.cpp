@@ -49,6 +49,7 @@ int main(int argc, char **argv)
         return errors;
     } else {
         OpeningHours oh(parser.positionalArguments().at(0).toUtf8());
+        std::cout << oh.normalizedExpression().constData() << std::endl;
         return oh.error() != OpeningHours::SyntaxError ? 0 : 1;
     }
 }
