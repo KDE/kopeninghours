@@ -456,7 +456,7 @@ NthEntry:
 | T_INTEGER[N1] T_MINUS T_INTEGER[N2] {
     if ($N1 < 1 || $N1 > 5 || $N2 < 1 || $N2 > 5 || $N2 <= $N1) { YYABORT; }
     $$ = 0;
-    for (int i = $N1; i < $N2; ++i) {
+    for (int i = $N1; i <= $N2; ++i) {
         $$ |= (1 << (2 * i));
     }
   }
