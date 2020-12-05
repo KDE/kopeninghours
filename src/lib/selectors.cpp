@@ -32,6 +32,32 @@ QDebug operator<<(QDebug debug, Time time)
     return debug;
 }
 
+static QByteArray twoDigits(int n)
+{
+    QByteArray ret = QByteArray::number(n);
+    if (ret.size() < 2) {
+        ret.prepend('0');
+    }
+    return ret;
+}
+
+QByteArray Time::toExpression() const
+{
+    switch (event) {
+        case Time::NoEvent:
+            return twoDigits(hour % 24) + ':' + twoDigits(minute);
+        case Time::Dawn:
+            return "dawn";
+        case Time::Sunrise:
+            return "sunrise";
+        case Time::Dusk:
+            return "dusk";
+        case Time::Sunset:
+            return "sunset";
+    }
+    return {};
+}
+
 int Timespan::requiredCapabilities() const
 {
     int c = Capability::None;
@@ -100,6 +126,15 @@ SelectorResult Timespan::nextInterval(const Interval &interval, const QDateTime 
     }
 
     return dt < beginDt ? dt.secsTo(beginDt) : dt.secsTo(beginDt.addDays(1));
+}
+
+QByteArray Timespan::toExpression() const
+{
+    QByteArray expr = begin.toExpression();
+    if (!(end == begin)) {
+        expr += '-' + end.toExpression();
+    }
+    return expr;
 }
 
 QDebug operator<<(QDebug debug, const Timespan *timeSpan)
@@ -248,6 +283,49 @@ SelectorResult WeekdayRange::nextIntervalLocal(const Interval &interval, const Q
     return {};
 }
 
+QByteArray WeekdayRange::toExpression() const
+{
+    QByteArray expr;
+    switch (holiday) {
+    case NoHoliday: {
+        static const char* s_weekDays[] = { "ERROR", "Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"};
+        expr = s_weekDays[beginDay];
+        if (endDay > beginDay) {
+            expr += '-';
+            expr += s_weekDays[endDay];
+        }
+        break;
+    }
+    case PublicHoliday:
+        expr = "PH";
+        break;
+    case SchoolHoliday:
+        expr = "SH";
+        break;
+    }
+    if (nthMask > 0) {
+        expr += '[';
+        for (int i = 1; i <= 10; ++i) {
+            if ((nthMask & (1 << i)) == 0) {
+                continue;
+            }
+            const auto n = (i % 2) ? (-5 + (i / 2)) : (i / 2);
+            expr += QByteArray::number(n);
+        }
+        expr += ']';
+    }
+    if (offset > 0) {
+        expr += " +" + QByteArray::number(offset) + ' ' + (offset > 1 ? "days" : "day");
+    } else if (offset < 0) {
+        expr += " -" + QByteArray::number(-offset) + ' ' + (offset < -1 ? "days" : "day");
+    }
+    if (next) {
+        expr += ',';
+        expr += next->toExpression();
+    }
+    return expr;
+}
+
 QDebug operator<<(QDebug debug, const WeekdayRange *weekdayRange)
 {
     debug << "WD" << weekdayRange->beginDay << weekdayRange->endDay << weekdayRange->nthMask << weekdayRange->offset << weekdayRange->holiday;
@@ -303,6 +381,13 @@ SelectorResult Week::nextInterval(const Interval &interval, const QDateTime &dt,
     return i;
 }
 
+QByteArray Week::toExpression() const
+{
+    QByteArray expr;
+    // TODO
+    return expr;
+}
+
 QDebug operator<<(QDebug debug, const Week *week)
 {
     debug.nospace() << "W " << week->beginWeek << '-' << week->endWeek << '/' << week->interval;
@@ -310,6 +395,53 @@ QDebug operator<<(QDebug debug, const Week *week)
         debug << ", " << week->next.get();
     }
     return debug;
+}
+
+QByteArray Date::toExpression(const Date &refDate) const
+{
+    QByteArray expr;
+    auto maybeSpace = [&]() {
+        if (!expr.isEmpty()) {
+            expr += ' ';
+        }
+    };
+    switch (variableDate) {
+    case FixedDate:
+        if (year && year != refDate.year) {
+            expr += QByteArray::number(year);
+        }
+        if (month && month != refDate.month) {
+            static const char* s_monthName[] = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
+            maybeSpace();
+            expr += s_monthName[month-1];
+        }
+        if (day && day != refDate.day) {
+            maybeSpace();
+            expr += QByteArray::number(day);
+        }
+        break;
+    case Date::Easter:
+        expr = "easter";
+        break;
+    }
+    if (dayOffset > 0) {
+        expr += " +" + QByteArray::number(dayOffset) + ' ' + (dayOffset > 1 ? "days" : "day");
+    } else if (dayOffset < 0) {
+        expr += " -" + QByteArray::number(-dayOffset) + ' ' + (dayOffset < -1 ? "days" : "day");
+    }
+    return expr;
+}
+
+bool Date::operator==(const Date &other) const
+{
+    if (variableDate != other.variableDate)
+        return false;
+    if (variableDate == FixedDate && other.variableDate == FixedDate) {
+        if (!(year == other.year && month == other.month && day == other.day)) {
+            return false;
+        }
+    }
+    return weekdayOffset == other.weekdayOffset && dayOffset == other.dayOffset;
 }
 
 QDebug operator<<(QDebug debug, Date date)
@@ -390,6 +522,15 @@ SelectorResult MonthdayRange::nextInterval(const Interval &interval, const QDate
     return i;
 }
 
+QByteArray MonthdayRange::toExpression() const
+{
+    QByteArray expr = begin.toExpression({});
+    if (end != begin) {
+        expr += '-' + end.toExpression(begin);
+    }
+    return expr;
+}
+
 QDebug operator<<(QDebug debug, const MonthdayRange *monthdayRange)
 {
     debug.nospace() << "M " << monthdayRange->begin << '-' << monthdayRange->end;
@@ -431,6 +572,22 @@ SelectorResult YearRange::nextInterval(const Interval &interval, const QDateTime
         i.setEnd(end > 0 ? QDateTime({end + 1, 1, 1}, {0, 0}) : QDateTime());
     }
     return i;
+}
+
+QByteArray YearRange::toExpression() const
+{
+    QByteArray expr = QByteArray::number(begin);
+    if (end == 0) {
+        expr += '+';
+    } else if (end != begin) {
+        expr += '-';
+        expr += QByteArray::number(end);
+    }
+    if (interval > 1) {
+        expr += '/';
+        expr += QByteArray::number(interval);
+    }
+    return expr;
 }
 
 QDebug operator<<(QDebug debug, const YearRange *yearRange)

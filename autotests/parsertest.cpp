@@ -17,12 +17,14 @@ private Q_SLOTS:
     void testSuccess_data()
     {
         QTest::addColumn<QByteArray>("input");
+        QTest::addColumn<QByteArray>("expectedOutput");
 
-#define T(x) QTest::newRow(x) << QByteArray(x)
+#define T(x) QTest::newRow(x) << QByteArray(x) << QByteArray(x)
+#define T2(x, y) QTest::newRow(x) << QByteArray(x) << QByteArray(y)
         T("24/7");
         T("24/7 \"comment\"");
-        T("24/7 closed");
-        T("24/7 unknown \"comment\"");
+        T2("24/7 closed", "24/7 off");
+        T2("24/7 unknown \"comment\"", "unknown \"comment\"");
         T("Dec off");
         T("Dec 25 off");
         T("Dec 25-26 off");
@@ -35,11 +37,11 @@ private Q_SLOTS:
         T("2020-2021");
         T("1970-2022/2");
         T("2020+");
-        T("PH off || open");
+        T("PH off || open"); // https://openingh.openstreetmap.de/evaluation_tool/ says this means always open... bug in opening.js?
         T("PH off || unknown \"foo\"");
         T("2020 Jan-Apr");
         T("1980-2030/4");
-        T("\"comment\"");
+        T2("\"comment\"", "unknown \"comment\"");
         T("PH off || 2020 open");
         T("Mo[1-2,4]");
         T("We[-1] + 2 days");
@@ -131,23 +133,23 @@ private Q_SLOTS:
         T("Mo-Tu,Th-Fr 09:30-12:00; 2020 Dec 28 off; 2020 Dec 22,2020 Dec 29 off; We 15:00-17:00; 2020 Dec 23,2020 Dec 30 off; 2020 Dec 24,2020 Dec 31 off; Sa 10:00-12:00; 2020 Dec 26,2021 Jan 02 off; PH off");
 
         // technically wrong but often found content in OSM for which we have error recovery
-        T("So");
-        T("Ph");
-        T("9:00-12:00");
-        T("Mo-Fr 09:00-18:30;Sa 09:00-17:00");
-        T("08:00-12:00;");
-        T("14:00-20:00,");
+        T2("So", "Su");
+        T2("Ph", "PH");
+        T2("9:00-12:00", "09:00-12:00");
+        T2("Mo-Fr 09:00-18:30;Sa 09:00-17:00", "Mo-Fr 09:00-18:30; Sa 09:00-17:00");
+        T2("08:00-12:00;", "08:00-12:00");
+        T2("14:00-20:00,", "14:00-20:00");
         T("Mo 14:00-21:00; Tu-Th 10:00-21:00; Fr 10:00-18:00;Su, PH off|| \"Samstag zweimal im Monat, Details siehe Webseite\"");
-        T("we-mo 11:30-14:00, 17:30-22:00; tu off");
+        T2("we-mo 11:30-14:00, 17:30-22:00; tu off", "We-Mo 11:30-14:00, 17:30-22:00; Tu off");
 
         // Tolerance for incorrect casing
-        T("mo-fr 10:00-20:00");
-        T("jan-feb 10:00-20:00");
-        T("jan-feb,aug 10:00-20:00");
-        T("SUNRISE-SUNSET");
-        T("(SUNrISE-01:00)-(SUnsET+01:00)");
-        T("su,sh off");
-        T("mo-fr CLOSED");
+        T2("mo-fr 10:00-20:00", "Mo-Fr 10:00-20:00");
+        T2("jan-feb 10:00-20:00", "Jan-Feb 10:00-20:00");
+        T2("jan-feb,aug 10:00-20:00", "Jan-Feb,Aug 10:00-20:00");
+        T2("SUNRISE-SUNSET", "sunrise-sunset");
+        T2("(SUNrISE-01:00)-(SUnsET+01:00)", "(sunrise-01:00)-(sunset+01:00)");
+        T2("su,sh off", "Su,SH off");
+        T2("mo-fr CLOSED", "Mo-Fr off");
 
         // Unicode symbols
         T("Mo–Tu");
@@ -157,8 +159,10 @@ private Q_SLOTS:
     void testSuccess()
     {
         QFETCH(QByteArray, input);
+        QFETCH(QByteArray, expectedOutput);
         OpeningHours oh(input);
         QVERIFY(oh.error() != OpeningHours::SyntaxError);
+        //QCOMPARE(oh.normalizedExpression(), expectedOutput);
     }
 
     void testFail_data()
@@ -217,8 +221,11 @@ private Q_SLOTS:
         QTest::newRow("PH") << QByteArray("PH off") << OpeningHours::MissingRegion;
         QTest::newRow("SH") << QByteArray("SH off") << OpeningHours::UnsupportedFeature;
         QTest::newRow("time interval") << QByteArray("10:00-16:00/90") << OpeningHours::IncompatibleMode;
+        QTest::newRow("time interval 2") << QByteArray("10:00-16:00/1:30") << OpeningHours::IncompatibleMode;
         QTest::newRow("week wrap") << QByteArray("week 45-13") << OpeningHours::UnsupportedFeature;
+        QTest::newRow("unsupported") << QByteArray("Su 10:00+") << OpeningHours::UnsupportedFeature;
         QTest::newRow("single timepoint") << QByteArray("10:00") << OpeningHours::IncompatibleMode;
+        QTest::newRow("month timepoint") << QByteArray("Dec 08:00") << OpeningHours::IncompatibleMode;
     }
 
     void testValidation()

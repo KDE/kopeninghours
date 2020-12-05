@@ -164,6 +164,27 @@ void OpeningHours::setExpression(const QByteArray &openingHours, OpeningHours::M
 
 }
 
+QByteArray OpeningHours::normalizedExpression() const
+{
+    if (d->m_error == SyntaxError) {
+        return {};
+    }
+
+    const bool singleRule = d->m_rules.size() == 1 && !d->m_fallbackRule;
+
+    QByteArray ret;
+    for (const auto &rule : d->m_rules) {
+        if (!ret.isEmpty()) {
+            ret += "; ";
+        }
+        ret += rule->toExpression(singleRule);
+    }
+    if (d->m_fallbackRule) {
+        ret += " || " + d->m_fallbackRule->toExpression(false);
+    }
+    return ret;
+}
+
 void OpeningHours::setLocation(float latitude, float longitude)
 {
     d->m_latitude = latitude;

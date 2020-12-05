@@ -68,6 +68,8 @@ private:
 class Time
 {
 public:
+    QByteArray toExpression() const;
+
     enum Event {
         NoEvent,
         Dawn,
@@ -94,6 +96,7 @@ public:
     int requiredCapabilities() const;
     bool isMultiDay(QDate date, OpeningHoursPrivate *context) const;
     SelectorResult nextInterval(const Interval &interval, const QDateTime &dt, OpeningHoursPrivate *context) const;
+    QByteArray toExpression() const;
 
     inline void append(std::unique_ptr<Timespan> &&n)
     {
@@ -114,6 +117,7 @@ public:
     int requiredCapabilities() const;
     SelectorResult nextInterval(const Interval &interval, const QDateTime &dt, OpeningHoursPrivate *context) const;
     SelectorResult nextIntervalLocal(const Interval &interval, const QDateTime &dt, OpeningHoursPrivate *context) const;
+    QByteArray toExpression() const;
 
     inline void append(std::unique_ptr<WeekdayRange> &&n)
     {
@@ -140,6 +144,7 @@ class Week
 public:
     int requiredCapabilities() const;
     SelectorResult nextInterval(const Interval &interval, const QDateTime &dt, OpeningHoursPrivate *context) const;
+    QByteArray toExpression() const;
 
     uint8_t beginWeek = 0;
     uint8_t endWeek = 0;
@@ -151,6 +156,10 @@ public:
 class Date
 {
 public:
+    QByteArray toExpression(const Date &refDate) const;
+    bool operator==(const Date &other) const;
+    bool operator!=(const Date &other) const { return !operator==(other); }
+
     int year;
     int month;
     int day;
@@ -169,6 +178,7 @@ class MonthdayRange
 public:
     int requiredCapabilities() const;
     SelectorResult nextInterval(const Interval &interval, const QDateTime &dt, OpeningHoursPrivate *context) const;
+    QByteArray toExpression() const;
 
     Date begin = { 0, 0, 0, Date::FixedDate, 0, 0 };
     Date end = { 0, 0, 0, Date::FixedDate, 0, 0 };
@@ -181,6 +191,7 @@ class YearRange
 public:
     int requiredCapabilities() const;
     SelectorResult nextInterval(const Interval &interval, const QDateTime &dt, OpeningHoursPrivate *context) const;
+    QByteArray toExpression() const;
 
     int begin = 0;
     int end = 0;

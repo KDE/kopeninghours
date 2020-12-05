@@ -70,6 +70,13 @@ public:
      */
     void setExpression(const QByteArray &openingHours, Modes modes = IntervalMode);
 
+    /** Returns the OSM opening hours expression reconstructed from this object.
+     * In many cases it will be the same as the expression given to the constructor
+     * or to setExpression, but some normalization can happen as well, especially in
+     * case of non-conform input.
+     */
+    QByteArray normalizedExpression() const;
+
     /** Geographic coordinate at which this expression should be evaluated.
      *  This is needed for expressions containing location-based variable time references,
      *  such as "sunset". If the expression requires a location, error() returns @c MissingLocation

@@ -36,6 +36,7 @@ public:
     int requiredCapabilities() const;
 
     RuleResult nextInterval(const QDateTime &dt, OpeningHoursPrivate *context) const;
+    QByteArray toExpression(bool singleRule) const;
 
     QString m_comment;
     Interval::State m_state = Interval::Open;
