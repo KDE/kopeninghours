@@ -257,7 +257,7 @@ Interval OpeningHours::interval(const QDateTime &dt) const
     Interval i;
     // first try to find the nearest open interval, and afterwards check closed rules
     for (const auto &rule : d->m_rules) {
-        if (rule->m_state == Interval::Closed) {
+        if (rule->state() == Interval::Closed) {
             continue;
         }
         if (i.isValid() && i.contains(dt) && rule->m_ruleType == Rule::FallbackRule) {
@@ -293,7 +293,7 @@ Interval OpeningHours::interval(const QDateTime &dt) const
     QDateTime closeEnd = i.begin(), closeBegin = i.end();
     Interval closedInterval;
     for (const auto &rule : d->m_rules) {
-        if (rule->m_state != Interval::Closed) {
+        if (rule->state() != Interval::Closed) {
             continue;
         }
         const auto j = rule->nextInterval(i.begin(), d.data()).interval;
@@ -361,7 +361,7 @@ static Rule* openingHoursSpecToRule(const QJsonObject &obj)
     }
 
     auto r = new Rule;
-    r->m_state = Interval::Open;
+    r->setState(Interval::Open);
     // ### is name or description used for comments?
 
     r->m_timeSelector.reset(new Timespan);

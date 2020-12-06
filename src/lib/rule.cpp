@@ -12,6 +12,19 @@
 
 using namespace KOpeningHours;
 
+Interval::State Rule::state() const
+{
+    if (m_state == Interval::Invalid) { // implicitly defined state
+        return m_comment.isEmpty() ? Interval::Open : Interval::Unknown;
+    }
+    return m_state;
+}
+
+void Rule::setState(Interval::State state)
+{
+    m_state = state;
+}
+
 void Rule::setComment(const char *str, int len)
 {
     m_comment = QString::fromUtf8(str, len);
@@ -49,7 +62,7 @@ QByteArray Rule::toExpression(bool singleRule) const
 {
     QByteArray expr;
     if (!m_timeSelector && !m_weekdaySelector && !m_monthdaySelector && !m_weekSelector && !m_yearSelector) {
-        if (singleRule && m_state != Interval::Unknown) {
+        if (singleRule) {
             expr = "24/7";
         }
     }
@@ -79,10 +92,8 @@ QByteArray Rule::toExpression(bool singleRule) const
     }
     switch (m_state) {
     case Interval::Open:
-        if (!singleRule && expr.isEmpty()) { // ### or fallback
-            maybeSpace();
-            expr += "open";
-        }
+        maybeSpace();
+        expr += "open";
         break;
     case Interval::Closed:
         maybeSpace();
@@ -106,7 +117,7 @@ QByteArray Rule::toExpression(bool singleRule) const
 
 RuleResult Rule::nextInterval(const QDateTime &dt, OpeningHoursPrivate *context, int recursionBudget) const
 {
-    const auto resultMode = (recursionBudget == Rule::RecursionLimit && m_ruleType == NormalRule && m_state != Interval::Closed) ? RuleResult::Override : RuleResult::Merge;
+    const auto resultMode = (recursionBudget == Rule::RecursionLimit && m_ruleType == NormalRule && state() != Interval::Closed) ? RuleResult::Override : RuleResult::Merge;
 
     if (recursionBudget == 0) {
         context->m_error = OpeningHours::EvaluationError;
@@ -115,7 +126,7 @@ RuleResult Rule::nextInterval(const QDateTime &dt, OpeningHoursPrivate *context,
     }
 
     Interval i;
-    i.setState(m_state);
+    i.setState(state());
     i.setComment(m_comment);
     if (!m_timeSelector && !m_weekdaySelector && !m_monthdaySelector && !m_weekSelector && !m_yearSelector) {
         // 24/7 has no selectors

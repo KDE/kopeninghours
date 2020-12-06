@@ -217,28 +217,27 @@ Rule:
   }
 | SelectorSequence[S] T_STATE[T] {
     $$ = new Rule;
-    $$->m_state = $T;
+    $$->setState($T);
     applySelectors($S, $$);
   }
 | SelectorSequence[S] T_STATE[T] T_COMMENT[C] {
     $$ = new Rule;
     $$->setComment($C.str, $C.len);
-    $$->m_state = $T;
+    $$->setState($T);
     applySelectors($S, $$);
   }
 | T_COMMENT[C] {
     $$ = new Rule;
     $$->setComment($C.str, $C.len);
-    $$->m_state = Interval::Unknown;
   }
 | T_STATE[T] {
     $$ = new Rule;
-    $$->m_state = $T;
+    $$->setState($T);
   }
 | T_STATE[T] T_COMMENT[C] {
     $$ = new Rule;
     $$->setComment($C.str, $C.len);
-    $$->m_state = $T;
+    $$->setState($T);
   }
 ;
 

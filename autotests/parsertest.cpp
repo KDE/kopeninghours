@@ -24,7 +24,7 @@ private Q_SLOTS:
         T("24/7");
         T("24/7 \"comment\"");
         T2("24/7 closed", "24/7 off");
-        T2("24/7 unknown \"comment\"", "unknown \"comment\"");
+        T("24/7 unknown \"comment\"");
         T("Dec off");
         T("Dec 25 off");
         T("Dec 25-26 off");
@@ -41,7 +41,7 @@ private Q_SLOTS:
         T("PH off || unknown \"foo\"");
         T("2020 Jan-Apr");
         T("1980-2030/4");
-        T2("\"comment\"", "unknown \"comment\"");
+        T("\"comment\"");
         T("PH off || 2020 open");
         T("Mo[1-2,4]");
         T2("We[-1] + 2 days", "We[-1] +2 days");

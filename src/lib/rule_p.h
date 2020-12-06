@@ -38,6 +38,8 @@ public:
         FallbackRule,
     };
 
+    Interval::State state() const;
+    void setState(Interval::State state);
     void setComment(const char *str, int len);
     int requiredCapabilities() const;
 
@@ -45,8 +47,6 @@ public:
     QByteArray toExpression(bool singleRule) const;
 
     QString m_comment;
-    Interval::State m_state = Interval::Open;
-    Type m_ruleType = NormalRule;
 
     std::unique_ptr<Timespan> m_timeSelector;
     std::unique_ptr<WeekdayRange> m_weekdaySelector;
@@ -54,7 +54,11 @@ public:
     std::unique_ptr<MonthdayRange> m_monthdaySelector;
     std::unique_ptr<YearRange> m_yearSelector;
 
+    Type m_ruleType = NormalRule;
+
 private:
+    Interval::State m_state = Interval::Invalid;
+
     enum { RecursionLimit = 64 };
     RuleResult nextInterval(const QDateTime &dt, OpeningHoursPrivate *context, int recursionBudget) const;
 };
