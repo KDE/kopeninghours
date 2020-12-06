@@ -36,7 +36,7 @@ void OpeningHoursPrivate::autocorrect()
         auto rule = (*it).get();
         auto prevRule = (*(std::prev(it))).get();
 
-        if (!rule->isAdditional) {
+        if (rule->m_ruleType != Rule::AdditionalRule) {
             continue;
         }
 
@@ -51,7 +51,7 @@ void OpeningHoursPrivate::autocorrect()
             auto tmp = std::move(rule->m_weekdaySelector);
             rule->m_weekdaySelector = std::move(prevRule->m_weekdaySelector);
             rule->m_weekdaySelector->append(std::move(tmp));
-            rule->isAdditional = prevRule->isAdditional;
+            rule->m_ruleType = prevRule->m_ruleType;
             std::swap(*it, *std::prev(it));
             it = std::prev(m_rules.erase(it));
         }
@@ -101,19 +101,9 @@ void OpeningHoursPrivate::validate()
     m_error = OpeningHours::NoError;
 }
 
-void OpeningHoursPrivate::addRule(Rule *rule, RuleType type)
+void OpeningHoursPrivate::addRule(Rule *rule)
 {
-    switch (type) {
-        case AdditionalRule:
-            rule->isAdditional = true;
-            [[fallthrough]];
-        case NormalRule:
-            m_rules.push_back(std::unique_ptr<Rule>(rule));
-            break;
-        case FallbackRule:
-            m_fallbackRule.reset(rule);
-            break;
-    }
+    m_rules.push_back(std::unique_ptr<Rule>(rule));
 }
 
 
@@ -142,7 +132,6 @@ void OpeningHours::setExpression(const QByteArray &openingHours, OpeningHours::M
 
     d->m_error = OpeningHours::Null;
     d->m_rules.clear();
-    d->m_fallbackRule.reset();
 
     yyscan_t scanner;
     if (yylex_init(&scanner)) {
@@ -171,17 +160,24 @@ QByteArray OpeningHours::normalizedExpression() const
         return {};
     }
 
-    const bool singleRule = d->m_rules.size() == 1 && !d->m_fallbackRule;
+    const bool singleRule = d->m_rules.size() == 1;
 
     QByteArray ret;
     for (const auto &rule : d->m_rules) {
         if (!ret.isEmpty()) {
-            ret += rule->isAdditional ? ", " : "; ";
+            switch (rule->m_ruleType) {
+                case Rule::NormalRule:
+                    ret += "; ";
+                    break;
+                case Rule::AdditionalRule:
+                    ret += ", ";
+                    break;
+                case Rule::FallbackRule:
+                    ret += " || ";
+                    break;
+            }
         }
         ret += rule->toExpression(singleRule);
-    }
-    if (d->m_fallbackRule) {
-        ret += " || " + d->m_fallbackRule->toExpression(false);
     }
     return ret;
 }
@@ -264,7 +260,10 @@ Interval OpeningHours::interval(const QDateTime &dt) const
         if (rule->m_state == Interval::Closed) {
             continue;
         }
-        const auto res = rule->nextInterval(alignedTime, d.data());
+        if (i.isValid() && i.contains(dt) && rule->m_ruleType == Rule::FallbackRule) {
+            continue;
+        }
+        auto res = rule->nextInterval(alignedTime, d.data());
         if (!res.interval.isValid()) {
             continue;
         }
@@ -279,7 +278,15 @@ Interval OpeningHours::interval(const QDateTime &dt) const
                 i = res.interval;
             }
         } else {
-            i = i.isValid() ? std::min(i, res.interval) : res.interval;
+            if (!i.isValid()) {
+                i = res.interval;
+            } else {
+                // fallback rule intervals needs to be capped to the next occurrence of one of its preceding rules
+                if (rule->m_ruleType == Rule::FallbackRule) {
+                    res.interval.setEnd(res.interval.hasOpenEnd() ? i.begin() : std::min(res.interval.end(), i.begin()));
+                }
+                i = i.isValid() ? std::min(i, res.interval) : res.interval;
+            }
         }
     }
 
@@ -321,12 +328,7 @@ Interval OpeningHours::interval(const QDateTime &dt) const
     }
 
     Interval i2;
-    if (d->m_fallbackRule) {
-        i2.setState(d->m_fallbackRule->m_state);
-        i2.setComment(d->m_fallbackRule->m_comment);
-    } else {
-        i2.setState(Interval::Closed);
-    }
+    i2.setState(Interval::Closed);
     i2.setBegin(dt);
     i2.setEnd(i.begin());
     // TODO do we need to intersect this with closed rules as well?

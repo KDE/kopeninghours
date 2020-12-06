@@ -24,16 +24,9 @@ class OpeningHoursPrivate : public QSharedData {
 public:
     void autocorrect();
     void validate();
-
-    enum RuleType {
-        NormalRule,
-        AdditionalRule,
-        FallbackRule,
-    };
-    void addRule(Rule *rule, RuleType type);
+    void addRule(Rule *rule);
 
     std::vector<std::unique_ptr<Rule>> m_rules;
-    std::unique_ptr<Rule> m_fallbackRule;
     OpeningHours::Modes m_modes = OpeningHours::IntervalMode;
     OpeningHours::Error m_error = OpeningHours::NoError;
 

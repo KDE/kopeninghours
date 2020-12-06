@@ -32,6 +32,12 @@ public:
 class Rule
 {
 public:
+    enum Type {
+        NormalRule,
+        AdditionalRule,
+        FallbackRule,
+    };
+
     void setComment(const char *str, int len);
     int requiredCapabilities() const;
 
@@ -40,7 +46,7 @@ public:
 
     QString m_comment;
     Interval::State m_state = Interval::Open;
-    bool isAdditional = false;
+    Type m_ruleType = NormalRule;
 
     std::unique_ptr<Timespan> m_timeSelector;
     std::unique_ptr<WeekdayRange> m_weekdaySelector;

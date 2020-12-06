@@ -193,15 +193,15 @@ typedef void* yyscan_t;
 // see https://wiki.openstreetmap.org/wiki/Key:opening_hours/specification
 
 Ruleset:
-  Rule[R] { parser->addRule($R, OpeningHoursPrivate::NormalRule); }
-| Ruleset T_NORMAL_RULE_SEPARATOR Rule[R] { parser->addRule($R, OpeningHoursPrivate::NormalRule); }
-| Ruleset T_ADDITIONAL_RULE_SEPARATOR Rule[R] { parser->addRule($R, OpeningHoursPrivate::AdditionalRule); }
+  Rule[R] { parser->addRule($R); }
+| Ruleset T_NORMAL_RULE_SEPARATOR Rule[R] { parser->addRule($R); }
+| Ruleset T_ADDITIONAL_RULE_SEPARATOR Rule[R] {
+    $R->m_ruleType = Rule::AdditionalRule;
+    parser->addRule($R);
+  }
 | Ruleset T_FALLBACK_SEPARATOR Rule[R] {
-    if (parser->m_fallbackRule) {
-        delete $R;
-        YYABORT;
-    }
-    parser->addRule($R, OpeningHoursPrivate::FallbackRule);
+    $R->m_ruleType = Rule::FallbackRule;
+    parser->addRule($R);
   }
 ;
 

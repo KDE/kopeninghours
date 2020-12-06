@@ -106,7 +106,7 @@ QByteArray Rule::toExpression(bool singleRule) const
 
 RuleResult Rule::nextInterval(const QDateTime &dt, OpeningHoursPrivate *context, int recursionBudget) const
 {
-    const auto resultMode = (recursionBudget == Rule::RecursionLimit && !isAdditional && m_state != Interval::Closed) ? RuleResult::Override : RuleResult::Merge;
+    const auto resultMode = (recursionBudget == Rule::RecursionLimit && m_ruleType == NormalRule && m_state != Interval::Closed) ? RuleResult::Override : RuleResult::Merge;
 
     if (recursionBudget == 0) {
         context->m_error = OpeningHours::EvaluationError;
