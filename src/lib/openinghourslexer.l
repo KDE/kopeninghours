@@ -36,9 +36,12 @@ YEAR        [1-2][019][0-9][0-9]
 {EXTENDED_HOUR_MINUTE} {
     yylval->time.event = Time::NoEvent;
     yylval->time.hour = strtol(yytext, nullptr, 10);
-    const char* separator = strchr(yytext, ':');
-    if (!separator) {
-        separator = strchr(yytext, 'h');
+    const char *separator = nullptr;
+    for (const auto sep : {':', 'h', 'H'}) {
+        separator = strchr(yytext, sep);
+        if (separator) {
+            break;
+        }
     }
     Q_ASSERT(separator);
     yylval->time.minute = strtol(separator + 1, nullptr, 10);

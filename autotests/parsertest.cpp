@@ -160,6 +160,7 @@ private Q_SLOTS:
         // Time correction
         T2("9h00-12h00", "09:00-12:00");
         T2("9h-12h", "09:00-12:00");
+        T2("5H", "05:00");
 
         // Unicode symbols
         T2("Mo–Tu", "Mo-Tu");
