@@ -25,7 +25,8 @@ INTEGER     [0-9]+
 COMMENT     ["][^"]*["]
 
 /* technically two hour digits are mandatory, but that isn't always followed in OSM data */
-EXTENDED_HOUR_MINUTE [0-4]?[0-9]:[0-5][0-9]
+/* 'h' instead of ':', and possibly missing minutes, is also non-standard tolerance */
+EXTENDED_HOUR_MINUTE [0-4]?[0-9](:[0-5][0-9]|h([0-5][0-9])?)
 YEAR        [1-2][019][0-9][0-9]
 
 %%
@@ -35,7 +36,12 @@ YEAR        [1-2][019][0-9][0-9]
 {EXTENDED_HOUR_MINUTE} {
     yylval->time.event = Time::NoEvent;
     yylval->time.hour = strtol(yytext, nullptr, 10);
-    yylval->time.minute = strtol(strchr(yytext, ':') + 1, nullptr, 10);
+    const char* separator = strchr(yytext, ':');
+    if (!separator) {
+        separator = strchr(yytext, 'h');
+    }
+    Q_ASSERT(separator);
+    yylval->time.minute = strtol(separator + 1, nullptr, 10);
     return T_EXTENDED_HOUR_MINUTE;
 }
 {YEAR} { yylval->num = std::strtol(yytext, nullptr, 10); return T_YEAR; }

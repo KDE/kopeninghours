@@ -156,6 +156,10 @@ private Q_SLOTS:
         T2("su,sh off", "Su,SH off");
         T2("mo-fr CLOSED", "Mo-Fr off");
 
+        // Time correction
+        T2("9h00-12h00", "09:00-12:00");
+        T2("9h-12h", "09:00-12:00");
+
         // Unicode symbols
         T2("Mo–Tu", "Mo-Tu");
 #undef T
