@@ -115,6 +115,7 @@ private Q_SLOTS:
         T("Apr-Oct Su[2] 14:00-18:00; Aug Su[-1] -1 day 10:00-18:00; Aug Su[-1] 10:00-18:00; PH off");
         T("Mo-Fr 08:00-12:00, We 14:00-18:00; Su,PH off"); // open We morning too
         T("Mo-Fr 08:00-12:00; We 14:00-18:00; Su,PH off"); // closed We morning
+        T2("April-September; Mo-Fr 09:00-13:00, 14:00-18:00, Sa 10:00-13:00", "Apr-Sep; Mo-Fr 09:00-13:00, 14:00-18:00, Sa 10:00-13:00");
 
         T("We; PH off");
         T("PH");
@@ -151,6 +152,7 @@ private Q_SLOTS:
         T2("02:00-22:00,\n", "02:00-22:00");
         T2("Friday 08:00-12:00", "Fr 08:00-12:00");
         T2("Sat", "Sa");
+        T2("december", "Dec");
 
         // Tolerance for incorrect casing
         T2("mo-fr 10:00-20:00", "Mo-Fr 10:00-20:00");
@@ -206,7 +208,6 @@ private Q_SLOTS:
         T("08.00-16.00, public room till 03.00 a.m");
         T("09:00-21:00 TEL/072(360)3200");
         T("10:00 - 13:30 / 17:00 - 20:30");
-        T("April-September; Mo-Fr 09:00-13:00, 14:00-18:00, Sa 10:00-13:00");
         T("Dining in: 6am to 11pm; Drive thru: 24/7");
         T("MWThF: 1200-1800; SaSu: 1200-1700");
         T("BAR: Su-Mo 18:00-02:00; Tu-Th 18:00-03:00; Fr-Sa 18:00-04:00; CLUB: Tu-Th 20:00-03:00; Fr-Sa 20:00-04:00");

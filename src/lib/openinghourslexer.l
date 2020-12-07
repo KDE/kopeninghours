@@ -108,6 +108,19 @@ Sun? { yylval->num = 7; return T_WEEKDAY; }
  /* localized day names (technically not allowed, but present in reality) */
 So { yylval->num = 7; return T_WEEKDAY; }
 
+ /* same for month names, technically those should be three letter English abbreviations */
+"January" { yylval->num = 1; return T_MONTH; }
+"February" { yylval->num = 2; return T_MONTH; }
+"March" { yylval->num = 3; return T_MONTH; }
+"April" { yylval->num = 4; return T_MONTH; }
+"June" { yylval->num = 6; return T_MONTH; }
+"July" { yylval->num = 7; return T_MONTH; }
+"August" { yylval->num = 8; return T_MONTH; }
+"September" { yylval->num = 9; return T_MONTH; }
+"October" { yylval->num = 10; return T_MONTH; }
+"November" { yylval->num = 11; return T_MONTH; }
+"December" { yylval->num = 12; return T_MONTH; }
+
 "Jan" { yylval->num = 1; return T_MONTH; }
 "Feb" { yylval->num = 2; return T_MONTH; }
 "Mar" { yylval->num = 3; return T_MONTH; }
