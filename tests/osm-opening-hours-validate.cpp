@@ -10,6 +10,7 @@
 #include <QCommandLineParser>
 #include <QFile>
 
+#include <cstring>
 #include <iostream>
 
 using namespace KOpeningHours;
@@ -29,6 +30,7 @@ int main(int argc, char **argv)
         QFile in;
         in.open(stdin, QFile::ReadOnly);
         int total = 0;
+        int normalized = 0;
         int errors = 0;
         char line[4096];
         while (!in.atEnd()) {
@@ -44,10 +46,16 @@ int main(int argc, char **argv)
             if (oh.error() == OpeningHours::SyntaxError) {
                 std::cerr << "Syntax error: " << QByteArray(line, size).constData() << std::endl;
                 ++errors;
+            } else {
+                const auto n = oh.normalizedExpression();
+                if (n.size() != size || std::strncmp(line, n.constData(), size) != 0) {
+                    ++normalized;
+                    std::cerr << "Expression " << QByteArray(line, size).constData() << " normalized to " << n.constData() << std::endl;
+                }
             }
         }
 
-        std::cerr << total << " expressions checked, " << errors << " invalid" << std::endl;
+        std::cerr << total << " expressions checked, " << errors << " invalid, " << normalized << " not in normal form" << std::endl;
         return errors;
     } else {
         OpeningHours oh(parser.positionalArguments().at(0).toUtf8());
