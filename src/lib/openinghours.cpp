@@ -145,6 +145,13 @@ void OpeningHours::setExpression(const char *openingHours, std::size_t size, Mod
     d->m_error = OpeningHours::Null;
     d->m_rules.clear();
 
+    // trim trailing spaces
+    // the parser would handle most of this by itself, but fails if a trailing space would produce a trailing rule separator
+    // so it's easier to just clean this here
+    while (size > 0 && std::isspace(openingHours[size - 1])) {
+        --size;
+    }
+
     yyscan_t scanner;
     if (yylex_init(&scanner)) {
         qCWarning(Log) << "Failed to initialize scanner?!";

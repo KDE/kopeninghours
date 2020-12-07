@@ -35,12 +35,10 @@ int main(int argc, char **argv)
         char line[4096];
         while (!in.atEnd()) {
             auto size = in.readLine(line, sizeof(line));
-            while (size > 0 && (std::isspace(line[size-1]))) {
-                --size;
-            }
-            if (size <= 0) {
+            if (size <= 1) {
                 continue;
             }
+            --size; // trailing linebreak
             ++total;
             oh.setExpression(line, size);
             if (oh.error() == OpeningHours::SyntaxError) {
