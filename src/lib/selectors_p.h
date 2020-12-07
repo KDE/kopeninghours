@@ -64,6 +64,21 @@ private:
 
 // see https://wiki.openstreetmap.org/wiki/Key:opening_hours/specification, the below names/types follow that
 
+template <typename T>
+void appendSelector(T* firstSelector, std::unique_ptr<T> &&selector)
+{
+    while(firstSelector->next) {
+        firstSelector = firstSelector->next.get();
+    }
+    firstSelector->next = std::move(selector);
+}
+
+template <typename T>
+void appendSelector(T* firstSelector, T* selector)
+{
+    return appendSelector(firstSelector, std::unique_ptr<T>(selector));
+}
+
 /** Time */
 class Time
 {
@@ -98,11 +113,6 @@ public:
     SelectorResult nextInterval(const Interval &interval, const QDateTime &dt, OpeningHoursPrivate *context) const;
     QByteArray toExpression() const;
 
-    inline void append(std::unique_ptr<Timespan> &&n)
-    {
-        next ? next->append(std::move(n)) : (void)(next = std::move(n));
-    }
-
     Time begin = { Time::NoEvent, -1, -1 };
     Time end = { Time::NoEvent, -1, -1 };
     int interval = 0;
@@ -118,11 +128,6 @@ public:
     SelectorResult nextInterval(const Interval &interval, const QDateTime &dt, OpeningHoursPrivate *context) const;
     SelectorResult nextIntervalLocal(const Interval &interval, const QDateTime &dt, OpeningHoursPrivate *context) const;
     QByteArray toExpression() const;
-
-    inline void append(std::unique_ptr<WeekdayRange> &&n)
-    {
-        next ? next->append(std::move(n)) : (void)(next = std::move(n));
-    }
 
     uint8_t beginDay = 0;
     uint8_t endDay = 0;

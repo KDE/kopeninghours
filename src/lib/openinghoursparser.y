@@ -37,14 +37,6 @@ static void applySelectors(const Selectors &sels, Rule *rule)
     rule->m_yearSelector.reset(sels.yearSelector);
 }
 
-template <typename T> void appendSelector(T* firstSelector, T* selector)
-{
-    while(firstSelector->next) {
-        firstSelector = firstSelector->next.get();
-    }
-    firstSelector->next.reset(selector);
-}
-
 %}
 
 %code requires {
