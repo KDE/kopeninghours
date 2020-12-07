@@ -88,13 +88,25 @@ YEAR        [1-2][019][0-9][0-9]
 
 {INTEGER} { yylval->num = std::strtol(yytext, nullptr, 10); return T_INTEGER; }
 
-Mo { yylval->num = 1; return T_WEEKDAY; }
-Tu { yylval->num = 2; return T_WEEKDAY; }
-We { yylval->num = 3; return T_WEEKDAY; }
-Th { yylval->num = 4; return T_WEEKDAY; }
-Fr { yylval->num = 5; return T_WEEKDAY; }
-Sa { yylval->num = 6; return T_WEEKDAY; }
-S[uo] { yylval->num = 7; return T_WEEKDAY; } // "So" is a common typo in OSM data for German language regions
+ /* technically weekday names should be two letter English abbreviations, but reality is more creative */
+"Monday"    { yylval->num = 1; return T_WEEKDAY; }
+"Tuesday"   { yylval->num = 2; return T_WEEKDAY; }
+"Wednesday" { yylval->num = 3; return T_WEEKDAY; }
+"Thursday"  { yylval->num = 4; return T_WEEKDAY; }
+"Friday"    { yylval->num = 5; return T_WEEKDAY; }
+"Saturday"  { yylval->num = 6; return T_WEEKDAY; }
+"Sunday"    { yylval->num = 7; return T_WEEKDAY; }
+
+Mon? { yylval->num = 1; return T_WEEKDAY; }
+Tue? { yylval->num = 2; return T_WEEKDAY; }
+Wed? { yylval->num = 3; return T_WEEKDAY; }
+Thu? { yylval->num = 4; return T_WEEKDAY; }
+Fri? { yylval->num = 5; return T_WEEKDAY; }
+Sat? { yylval->num = 6; return T_WEEKDAY; }
+Sun? { yylval->num = 7; return T_WEEKDAY; }
+
+ /* localized day names (technically not allowed, but present in reality) */
+So { yylval->num = 7; return T_WEEKDAY; }
 
 "Jan" { yylval->num = 1; return T_MONTH; }
 "Feb" { yylval->num = 2; return T_MONTH; }
