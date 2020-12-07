@@ -413,13 +413,6 @@ OpeningHours OpeningHours::fromJsonLd(const QJsonObject &obj)
     }
 
     std::vector<std::unique_ptr<Rule>> rules;
-    const auto sohs = obj.value(QLatin1String("specialOpeningHoursSpecification")).toArray();
-    for (const auto &ohsV : sohs) {
-        const auto r = openingHoursSpecToRule(ohsV.toObject());
-        if (r) {
-            rules.push_back(std::unique_ptr<Rule>(r));
-        }
-    }
     const auto ohs = obj.value(QLatin1String("openingHoursSpecification")).toArray();
     for (const auto &ohsV : ohs) {
         const auto r = openingHoursSpecToRule(ohsV.toObject());
@@ -427,11 +420,15 @@ OpeningHours OpeningHours::fromJsonLd(const QJsonObject &obj)
             rules.push_back(std::unique_ptr<Rule>(r));
         }
     }
-    if (!rules.empty()) {
-        std::swap(result.d->m_rules, rules);
-        for (auto &r : rules) {
-            result.d->m_rules.push_back(std::move(r));
+    const auto sohs = obj.value(QLatin1String("specialOpeningHoursSpecification")).toArray();
+    for (const auto &ohsV : sohs) {
+        const auto r = openingHoursSpecToRule(ohsV.toObject());
+        if (r) {
+            rules.push_back(std::unique_ptr<Rule>(r));
         }
+    }
+    for (auto &r : rules) {
+        result.d->m_rules.push_back(std::move(r));
     }
 
     result.d->validate();
