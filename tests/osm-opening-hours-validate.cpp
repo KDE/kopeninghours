@@ -30,17 +30,19 @@ int main(int argc, char **argv)
         in.open(stdin, QFile::ReadOnly);
         int total = 0;
         int errors = 0;
+        char line[4096];
         while (!in.atEnd()) {
-            auto expr = in.readLine();
-            expr.replace('\n', "");
-            expr.replace('\r', "");
-            if (expr.isEmpty()) {
+            auto size = in.readLine(line, sizeof(line));
+            while (size > 0 && (std::isspace(line[size-1]))) {
+                --size;
+            }
+            if (size <= 0) {
                 continue;
             }
             ++total;
-            oh.setExpression(expr);
+            oh.setExpression(line, size);
             if (oh.error() == OpeningHours::SyntaxError) {
-                std::cerr << "Syntax error: " << expr.constData() << std::endl;
+                std::cerr << "Syntax error: " << QByteArray(line, size).constData() << std::endl;
                 ++errors;
             }
         }

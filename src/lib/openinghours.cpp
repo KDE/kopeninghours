@@ -116,8 +116,15 @@ OpeningHours::OpeningHours()
 OpeningHours::OpeningHours(const QByteArray &openingHours, Modes modes)
     : d(new OpeningHoursPrivate)
 {
-    setExpression(openingHours, modes);
+    setExpression(openingHours.constData(), openingHours.size(), modes);
 }
+
+OpeningHours::OpeningHours(const char *openingHours, std::size_t size, Modes modes)
+    : d(new OpeningHoursPrivate)
+{
+    setExpression(openingHours, size, modes);
+}
+
 
 OpeningHours::OpeningHours(const OpeningHours&) = default;
 OpeningHours::OpeningHours(OpeningHours&&) = default;
@@ -127,6 +134,11 @@ OpeningHours& OpeningHours::operator=(const OpeningHours&) = default;
 OpeningHours& OpeningHours::operator=(OpeningHours&&) = default;
 
 void OpeningHours::setExpression(const QByteArray &openingHours, OpeningHours::Modes modes)
+{
+    setExpression(openingHours.constData(), openingHours.size(), modes);
+}
+
+void OpeningHours::setExpression(const char *openingHours, std::size_t size, Modes modes)
 {
     d->m_modes = modes;
 
@@ -142,7 +154,7 @@ void OpeningHours::setExpression(const QByteArray &openingHours, OpeningHours::M
     const auto lexerCleanup = qScopeGuard([&scanner]{ yylex_destroy(scanner); });
 
     YY_BUFFER_STATE state;
-    state = yy_scan_string(openingHours.constData(), scanner);
+    state = yy_scan_bytes(openingHours, size, scanner);
     if (yyparse(d.data(), scanner)) {
         d->m_error = SyntaxError;
         return;

@@ -54,6 +54,11 @@ public:
      *  If @p openingHours doesn't match @p modes, error() return IncompatibleMode.
      */
     explicit OpeningHours(const QByteArray &openingHours, Modes modes = IntervalMode);
+    /** Parse OSM opening hours expression @p openingHours.
+     *  @param modes Specify whether time interval and/or point in time expressions are expected.
+     *  If @p openingHours doesn't match @p modes, error() return IncompatibleMode.
+     */
+    explicit OpeningHours(const char *openingHours, std::size_t size, Modes modes = IntervalMode);
 
     OpeningHours(const OpeningHours&);
     OpeningHours(OpeningHours&&);
@@ -69,6 +74,13 @@ public:
      *  at once.
      */
     void setExpression(const QByteArray &openingHours, Modes modes = IntervalMode);
+    /** Parse OSM opening hours expression @p openingHours.
+     *  @param modes Specify whether time interval and/or point in time expressions are expected.
+     *  If @p openingHours doesn't match @p modes, error() return IncompatibleMode.
+     *  Prefer this over creating new instances if you are processing <b>many</b> expressions
+     *  at once.
+     */
+    void setExpression(const char *openingHours, std::size_t size, Modes modes = IntervalMode);
 
     /** Returns the OSM opening hours expression reconstructed from this object.
      * In many cases it will be the same as the expression given to the constructor
