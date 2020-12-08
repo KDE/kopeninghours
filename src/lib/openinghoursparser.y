@@ -85,7 +85,7 @@ typedef void* yyscan_t;
 %union {
     int num;
     StringRef strRef;
-    Interval::State state;
+    State state;
     Rule *rule;
     Time time;
     Selectors selectors;

@@ -53,10 +53,10 @@ YEAR        [1-2][019][0-9][0-9]
 ", " { return T_ADDITIONAL_RULE_SEPARATOR; }
 "||" { return T_FALLBACK_SEPARATOR; } // technically this should have a space on either side, but that is not always followed in OSM data
 
-"open"    { yylval->state = Interval::Open;    return T_STATE; }
-"closed"  { yylval->state = Interval::Closed;  return T_STATE; }
-"off"     { yylval->state = Interval::Closed;  return T_STATE; }
-"unknown" { yylval->state = Interval::Unknown; return T_STATE; }
+"open"    { yylval->state = State::Open;    return T_STATE; }
+"closed"  { yylval->state = State::Closed;  return T_STATE; }
+"off"     { yylval->state = State::Off;  return T_STATE; }
+"unknown" { yylval->state = State::Unknown; return T_STATE; }
 
 "24/7" { return T_24_7; }
 

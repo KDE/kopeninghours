@@ -16,6 +16,14 @@
 
 namespace KOpeningHours {
 
+enum class State { // must be in same order as Interval::State
+    Invalid,
+    Open,
+    Closed,
+    Unknown,
+    Off // extension, not in Interval::State
+};
+
 /** Result of a rule evalution. */
 class RuleResult
 {
@@ -32,14 +40,18 @@ public:
 class Rule
 {
 public:
-    enum Type {
+    enum Type : short {
         NormalRule,
         AdditionalRule,
         FallbackRule,
     };
+    enum StateFlags : char {
+        NoFlags,
+        Off // "off" was used rather than "closed"
+    };
 
     Interval::State state() const;
-    void setState(Interval::State state);
+    void setState(State state);
     void setComment(const char *str, int len);
     int requiredCapabilities() const;
 
@@ -55,6 +67,7 @@ public:
     std::unique_ptr<YearRange> m_yearSelector;
     bool m_seen_24_7 = false;
 
+    StateFlags m_stateFlags = NoFlags;
     Type m_ruleType = NormalRule;
 
 private:

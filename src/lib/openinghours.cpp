@@ -378,7 +378,7 @@ static Rule* openingHoursSpecToRule(const QJsonObject &obj)
     }
 
     auto r = new Rule;
-    r->setState(Interval::Open);
+    r->setState(State::Open);
     // ### is name or description used for comments?
 
     r->m_timeSelector.reset(new Timespan);

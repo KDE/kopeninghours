@@ -20,9 +20,14 @@ Interval::State Rule::state() const
     return m_state;
 }
 
-void Rule::setState(Interval::State state)
+void Rule::setState(State state)
 {
-    m_state = state;
+    if (state == State::Off) {
+        m_state = Interval::Closed;
+        m_stateFlags = Off;
+    } else {
+        m_state = static_cast<Interval::State>(state);
+    }
 }
 
 void Rule::setComment(const char *str, int len)
@@ -97,7 +102,7 @@ QByteArray Rule::toExpression() const
         break;
     case Interval::Closed:
         maybeSpace();
-        expr += "off"; // or closed, but off is more common
+        expr += m_stateFlags & Off ? "off" : "closed";
         break;
     case Interval::Unknown:
         maybeSpace();
