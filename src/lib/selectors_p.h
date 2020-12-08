@@ -83,6 +83,7 @@ void appendSelector(T* firstSelector, T* selector)
 class Time
 {
 public:
+    static Time parse(const char *begin, const char *end);
     QByteArray toExpression(bool end) const;
 
     enum Event {
@@ -95,6 +96,7 @@ public:
     Event event;
     int hour;
     int minute;
+
 };
 
 inline constexpr bool operator==(Time lhs, Time rhs)

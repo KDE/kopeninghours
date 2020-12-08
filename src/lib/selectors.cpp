@@ -16,6 +16,8 @@
 #include <QCalendar>
 #include <QDateTime>
 
+#include <cstdlib>
+
 using namespace KOpeningHours;
 
 static int daysInMonth(int month)
@@ -40,6 +42,25 @@ static QByteArray twoDigits(int n)
         ret.prepend('0');
     }
     return ret;
+}
+
+Time Time::parse(const char *begin, const char *end)
+{
+    Time t{ Time::NoEvent, 0, 0 };
+
+    char *it = nullptr;
+    t.hour = std::strtol(begin, &it, 10);
+
+    for (const auto sep : {':', 'h', 'H'}) {
+        if (*it == sep) {
+            ++it;
+            break;
+        }
+    }
+    if (it != end) {
+        t.minute = std::strtol(it, nullptr, 10);
+    }
+    return t;
 }
 
 QByteArray Time::toExpression(bool end) const

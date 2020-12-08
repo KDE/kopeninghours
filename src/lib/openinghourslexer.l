@@ -29,24 +29,33 @@ COMMENT     ["][^"]*["]
 EXTENDED_HOUR_MINUTE [0-4]?[0-9](:[0-5][0-9]|h([0-5][0-9])?)
 YEAR        [1-2][019][0-9][0-9]
 
+AM_TIME [01]?[0-9](:[0-5][0-9])?(\ ?a\.?m\.?|a)
+PM_TIME [01]?[0-9](:[0-5][0-9])?(\ ?p\.?m\.?|p)
+
 %%
 
 {SPACE} {}
 
 {EXTENDED_HOUR_MINUTE} {
-    yylval->time.event = Time::NoEvent;
-    yylval->time.hour = strtol(yytext, nullptr, 10);
-    const char *separator = nullptr;
-    for (const auto sep : {':', 'h', 'H'}) {
-        separator = strchr(yytext, sep);
-        if (separator) {
-            break;
-        }
-    }
-    Q_ASSERT(separator);
-    yylval->time.minute = strtol(separator + 1, nullptr, 10);
+    yylval->time = Time::parse(yytext, yytext + yyleng);
     return T_EXTENDED_HOUR_MINUTE;
 }
+ /* Compatibility with am/pm formats, technically invalid but occur in reality */
+{AM_TIME} {
+    yylval->time = Time::parse(yytext, yytext + yyleng);
+    if (yylval->time.hour == 12) {
+        yylval->time.hour = 0;
+    }
+    return T_EXTENDED_HOUR_MINUTE;
+}
+{PM_TIME} {
+    yylval->time = Time::parse(yytext, yytext + yyleng);
+    if (yylval->time.hour < 12) {
+        yylval->time.hour += 12;
+    }
+    return T_EXTENDED_HOUR_MINUTE;
+}
+
 {YEAR} { yylval->num = std::strtol(yytext, nullptr, 10); return T_YEAR; }
 
 ;/. { return T_NORMAL_RULE_SEPARATOR; } // technically this should have space after the semicolon, but that is not always followed in OSM data
