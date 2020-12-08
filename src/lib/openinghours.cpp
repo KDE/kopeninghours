@@ -179,8 +179,6 @@ QByteArray OpeningHours::normalizedExpression() const
         return {};
     }
 
-    const bool singleRule = d->m_rules.size() == 1;
-
     QByteArray ret;
     for (const auto &rule : d->m_rules) {
         if (!ret.isEmpty()) {
@@ -196,7 +194,7 @@ QByteArray OpeningHours::normalizedExpression() const
                     break;
             }
         }
-        ret += rule->toExpression(singleRule);
+        ret += rule->toExpression();
     }
     return ret;
 }

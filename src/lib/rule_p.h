@@ -44,7 +44,7 @@ public:
     int requiredCapabilities() const;
 
     RuleResult nextInterval(const QDateTime &dt, OpeningHoursPrivate *context) const;
-    QByteArray toExpression(bool singleRule) const;
+    QByteArray toExpression() const;
 
     QString m_comment;
 
@@ -53,6 +53,7 @@ public:
     std::unique_ptr<Week> m_weekSelector;
     std::unique_ptr<MonthdayRange> m_monthdaySelector;
     std::unique_ptr<YearRange> m_yearSelector;
+    bool m_seen_24_7 = false;
 
     Type m_ruleType = NormalRule;
 

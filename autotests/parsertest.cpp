@@ -25,6 +25,8 @@ private Q_SLOTS:
         T("24/7 \"comment\"");
         T2("24/7 closed", "24/7 off");
         T("24/7 unknown \"comment\"");
+        T("unknown \"comment\"");
+        T("off");
         T("Dec off");
         T("Dec 25 off");
         T("Dec 25-26 off");
@@ -115,7 +117,7 @@ private Q_SLOTS:
         T("Apr-Oct Su[2] 14:00-18:00; Aug Su[-1] -1 day 10:00-18:00; Aug Su[-1] 10:00-18:00; PH off");
         T("Mo-Fr 08:00-12:00, We 14:00-18:00; Su,PH off"); // open We morning too
         T("Mo-Fr 08:00-12:00; We 14:00-18:00; Su,PH off"); // closed We morning
-        T2("April-September; Mo-Fr 09:00-13:00, 14:00-18:00, Sa 10:00-13:00", "Apr-Sep; Mo-Fr 09:00-13:00, 14:00-18:00, Sa 10:00-13:00");
+        T2("April-September; Mo-Fr 09:00-13:00, 14:00-18:00, Sa 10:00-13:00", "Apr-Sep; Mo-Fr 09:00-13:00,14:00-18:00, Sa 10:00-13:00");
 
         T("We; PH off");
         T("PH");
@@ -179,7 +181,7 @@ private Q_SLOTS:
         QFETCH(QByteArray, expectedOutput);
         OpeningHours oh(input);
         QVERIFY(oh.error() != OpeningHours::SyntaxError);
-        //QCOMPARE(oh.normalizedExpression(), expectedOutput);
+        QCOMPARE(oh.normalizedExpression(), expectedOutput);
     }
 
     void testFail_data()

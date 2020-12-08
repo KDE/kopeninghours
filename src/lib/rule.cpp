@@ -58,11 +58,11 @@ RuleResult Rule::nextInterval(const QDateTime &dt, OpeningHoursPrivate *context)
     return nextInterval(dt, context, RecursionLimit);
 }
 
-QByteArray Rule::toExpression(bool singleRule) const
+QByteArray Rule::toExpression() const
 {
     QByteArray expr;
     if (!m_timeSelector && !m_weekdaySelector && !m_monthdaySelector && !m_weekSelector && !m_yearSelector) {
-        if (singleRule) {
+        if (m_seen_24_7) {
             expr = "24/7";
         }
     }

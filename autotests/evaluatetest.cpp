@@ -194,7 +194,7 @@ private Q_SLOTS:
         QVERIFY(!i.isValid());
     }
 
-    void test247()
+    void test247Closed()
     {
         OpeningHours oh("24/7 closed \"always closed\"");
         QCOMPARE(oh.error(), OpeningHours::NoError);
@@ -202,6 +202,17 @@ private Q_SLOTS:
         QVERIFY(i.isValid());
         QCOMPARE(i.state(), Interval::Closed);
         QCOMPARE(i.comment(), QLatin1String("always closed"));
+        QVERIFY(!i.begin().isValid());
+        QVERIFY(!i.end().isValid());
+    }
+
+    void test247Open()
+    {
+        OpeningHours oh("24/7");
+        QCOMPARE(oh.error(), OpeningHours::NoError);
+        const auto i = oh.interval(QDateTime({2020, 11, 7}, {18, 0}));
+        QVERIFY(i.isValid());
+        QCOMPARE(i.state(), Interval::Open);
         QVERIFY(!i.begin().isValid());
         QVERIFY(!i.end().isValid());
     }
