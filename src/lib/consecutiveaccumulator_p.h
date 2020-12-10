@@ -17,8 +17,8 @@ class ConsecutiveAccumulator
 public:
     // The std::function is usually QByteArray::number
     // but it could be also 1->Mo, 2->Tu etc. if we need that one day.
-    explicit ConsecutiveAccumulator(std::function<QByteArray(int)> f)
-        : func(f) {}
+    explicit ConsecutiveAccumulator(std::function<QByteArray(int)> &&f)
+        : func(std::move(f)) {}
 
     void add(int value)
     {
