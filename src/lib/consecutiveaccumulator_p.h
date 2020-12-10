@@ -3,6 +3,10 @@
 
     SPDX-License-Identifier: LGPL-2.0-or-later
 */
+
+#ifndef KOPENINGHOURS_CONSECUTIVEACCUMULATOR_P_H
+#define KOPENINGHOURS_CONSECUTIVEACCUMULATOR_P_H
+
 #include <functional>
 #include <QByteArray>
 
@@ -52,3 +56,5 @@ private:
     QByteArray expr;
     std::function<QByteArray(int)> func;
 };
+
+#endif
