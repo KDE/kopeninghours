@@ -462,7 +462,7 @@ QDebug operator<<(QDebug debug, const Week *week)
     return debug;
 }
 
-QByteArray Date::toExpression(const Date &refDate) const
+QByteArray Date::toExpression(Date refDate) const
 {
     QByteArray expr;
     auto maybeSpace = [&]() {
@@ -497,7 +497,7 @@ QByteArray Date::toExpression(const Date &refDate) const
     return expr;
 }
 
-bool Date::operator==(const Date &other) const
+bool Date::operator==(Date other) const
 {
     if (variableDate != other.variableDate)
         return false;

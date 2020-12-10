@@ -163,9 +163,9 @@ public:
 class Date
 {
 public:
-    QByteArray toExpression(const Date &refDate) const;
-    bool operator==(const Date &other) const;
-    bool operator!=(const Date &other) const { return !operator==(other); }
+    QByteArray toExpression(Date refDate) const;
+    bool operator==(Date other) const;
+    bool operator!=(Date other) const { return !operator==(other); }
 
     int year;
     int month;
