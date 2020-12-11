@@ -9,8 +9,6 @@
 
 #include "interval.h"
 
-#include <QDebug>
-
 #include <memory>
 
 namespace KOpeningHours {
@@ -206,13 +204,5 @@ public:
     std::unique_ptr<YearRange> next;
 };
 }
-
-QDebug operator<<(QDebug debug, KOpeningHours::Time time);
-QDebug operator<<(QDebug debug, const KOpeningHours::Timespan *timeSpan);
-QDebug operator<<(QDebug debug, const KOpeningHours::WeekdayRange *weekdayRange);
-QDebug operator<<(QDebug debug, const KOpeningHours::Week *week);
-QDebug operator<<(QDebug debug, KOpeningHours::Date date);
-QDebug operator<<(QDebug debug, const KOpeningHours::MonthdayRange *monthdayRange);
-QDebug operator<<(QDebug debug, const KOpeningHours::YearRange *yearRange);
 
 #endif // KOPENINGHOURS_SELECTORS_P_H

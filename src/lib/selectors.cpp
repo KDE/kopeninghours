@@ -25,16 +25,6 @@ static int daysInMonth(int month)
     return QCalendar(QCalendar::System::Gregorian).daysInMonth(month);
 }
 
-QDebug operator<<(QDebug debug, Time time)
-{
-    QDebugStateSaver saver(debug);
-    debug.nospace() << time.hour << ':' << time.minute;
-    if (time.event != Time::NoEvent) {
-        debug.nospace() << "[Event" << time.event << ']';
-    }
-    return debug;
-}
-
 static QByteArray twoDigits(int n)
 {
     QByteArray ret = QByteArray::number(n);
@@ -188,16 +178,6 @@ QByteArray Timespan::toExpression() const
         expr += ',' + next->toExpression();
     }
     return expr;
-}
-
-QDebug operator<<(QDebug debug, const Timespan *timeSpan)
-{
-    QDebugStateSaver saver(debug);
-    debug.nospace() << "T " << timeSpan->begin << '-' << timeSpan->end << '/' << timeSpan->interval;
-    if (timeSpan->next) {
-        debug.nospace() << ", " << timeSpan->next.get();
-    }
-    return debug;
 }
 
 int WeekdayRange::requiredCapabilities() const
@@ -381,18 +361,6 @@ QByteArray WeekdayRange::toExpression() const
     return expr;
 }
 
-QDebug operator<<(QDebug debug, const WeekdayRange *weekdayRange)
-{
-    debug << "WD" << weekdayRange->beginDay << weekdayRange->endDay << weekdayRange->nthMask << weekdayRange->offset << weekdayRange->holiday;
-    if (weekdayRange->next) {
-        debug << "  " << weekdayRange->next.get();
-    }
-    if (weekdayRange->andSelector) {
-        debug << " AND " << weekdayRange->andSelector.get();
-    }
-    return debug;
-}
-
 int Week::requiredCapabilities() const
 {
     if (endWeek < beginWeek) { // is this even officially allowed?
@@ -453,15 +421,6 @@ QByteArray Week::toExpression() const
     return expr;
 }
 
-QDebug operator<<(QDebug debug, const Week *week)
-{
-    debug.nospace() << "W " << week->beginWeek << '-' << week->endWeek << '/' << week->interval;
-    if (week->next) {
-        debug << ", " << week->next.get();
-    }
-    return debug;
-}
-
 QByteArray Date::toExpression(Date refDate) const
 {
     QByteArray expr;
@@ -507,19 +466,6 @@ bool Date::operator==(Date other) const
         }
     }
     return weekdayOffset == other.weekdayOffset && dayOffset == other.dayOffset;
-}
-
-QDebug operator<<(QDebug debug, Date date)
-{
-    switch (date.variableDate) {
-        case Date::FixedDate:
-            debug.nospace() << date.year << '-' << date.month << '-' << date.day;
-            break;
-        case Date::Easter:
-            debug << "easter";
-            break;
-    }
-    return debug;
 }
 
 int MonthdayRange::requiredCapabilities() const
@@ -599,15 +545,6 @@ QByteArray MonthdayRange::toExpression() const
     return expr;
 }
 
-QDebug operator<<(QDebug debug, const MonthdayRange *monthdayRange)
-{
-    debug.nospace() << "M " << monthdayRange->begin << '-' << monthdayRange->end;
-    if (monthdayRange->next) {
-        debug << ", " << monthdayRange->next.get();
-    }
-    return debug;
-}
-
 int YearRange::requiredCapabilities() const
 {
     return Capability::None;
@@ -659,14 +596,4 @@ QByteArray YearRange::toExpression() const
         expr += ',' + next->toExpression();
     }
     return expr;
-}
-
-QDebug operator<<(QDebug debug, const YearRange *yearRange)
-{
-    QDebugStateSaver saver(debug);
-    debug.nospace() << "Y " << yearRange->begin << '-' << yearRange->end << '/' << yearRange->interval;
-    if (yearRange->next) {
-        debug << ", " << yearRange->next.get();
-    }
-    return debug;
 }
