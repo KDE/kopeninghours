@@ -84,10 +84,12 @@ void OpeningHoursPrivate::validate()
         m_error = OpeningHours::MissingLocation;
         return;
     }
+#ifndef KOPENINGHOURS_VALIDATOR_ONLY
     if (c & Capability::PublicHoliday && !m_region.isValid()) {
         m_error = OpeningHours::MissingRegion;
         return;
     }
+#endif
     if (((c & Capability::PointInTime) && (m_modes & OpeningHours::PointInTimeMode) == 0)
      || ((c & Capability::Interval) && (m_modes & OpeningHours::IntervalMode) == 0)) {
         m_error = OpeningHours::IncompatibleMode;
@@ -228,6 +230,7 @@ void OpeningHours::setLongitude(float longitude)
     d->validate();
 }
 
+#ifndef KOPENINGHOURS_VALIDATOR_ONLY
 QString OpeningHours::region() const
 {
     return d->m_region.regionCode();
@@ -238,6 +241,7 @@ void OpeningHours::setRegion(QStringView region)
     d->m_region = HolidayCache::resolveRegion(region);
     d->validate();
 }
+#endif
 
 QTimeZone OpeningHours::timeZone() const
 {
@@ -264,6 +268,7 @@ OpeningHours::Error OpeningHours::error() const
     return d->m_error;
 }
 
+#ifndef KOPENINGHOURS_VALIDATOR_ONLY
 Interval OpeningHours::interval(const QDateTime &dt) const
 {
     if (d->m_error != NoError) {
@@ -363,6 +368,7 @@ Interval OpeningHours::nextInterval(const Interval &interval) const
     }
     return {};
 }
+#endif
 
 static Rule* openingHoursSpecToRule(const QJsonObject &obj)
 {

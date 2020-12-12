@@ -35,7 +35,9 @@ class KOPENINGHOURS_EXPORT OpeningHours
     Q_PROPERTY(Error error READ error)
     Q_PROPERTY(float latitude READ latitude WRITE setLatitude)
     Q_PROPERTY(float longitude READ longitude WRITE setLongitude)
+#ifndef KOPENINGHOURS_VALIDATOR_ONLY
     Q_PROPERTY(QString region READ region WRITE setRegion)
+#endif
     Q_PROPERTY(QString timeZone READ timeZoneId WRITE setTimeZoneId)
 public:
     /** Evaluation modes for opening hours expressions. */
@@ -101,6 +103,7 @@ public:
     float longitude() const;
     void setLongitude(float longitude);
 
+#ifndef KOPENINGHOURS_VALIDATOR_ONLY
     /** ISO 3166-2 region or ISO 316-1 country in which this expression should be evaluated.
      *  This is needed for expressions containing public holiday references ("PH").
      *  If the expression references a public holiday, error() returns @c MissingRegion
@@ -108,6 +111,7 @@ public:
      */
     void setRegion(QStringView region);
     QString region() const;
+#endif
 
     /** Timezone in which this expression should be evaluated.
      *  If not specified, this assumes local time.
@@ -131,10 +135,12 @@ public:
     /** Error status of this expression. */
     Error error() const;
 
+#ifndef KOPENINGHOURS_VALIDATOR_ONLY
     /** Returns the interval containing @p dt. */
     Q_INVOKABLE KOpeningHours::Interval interval(const QDateTime &dt) const;
     /** Returns the interval immediately following @p interval. */
     Q_INVOKABLE KOpeningHours::Interval nextInterval(const KOpeningHours::Interval &interval) const;
+#endif
 
     /** Convert opening hours in schema.org JSON-LD format.
      *  This supports the following formats:

@@ -33,12 +33,21 @@ ecm_setup_version(PROJECT VARIABLE_PREFIX KOPENINGHOURS
     SOVERSION 1
 )
 
-find_package(Qt5 5.14 REQUIRED COMPONENTS Core) # 5.14 for QCalendar
-find_package(Qt5 CONFIG QUIET OPTIONAL_COMPONENTS Qml)
-find_package(KF5 5.77 REQUIRED COMPONENTS Holidays I18n)
+option(VALIDATOR_ONLY "Build only the validator, not the evaluator. This removes the kholidays and ki18n dependencies." OFF)
+if (VALIDATOR_ONLY)
+    set(REQUIRED_QT_VERSION 5.9)
+else()
+    set(REQUIRED_QT_VERSION 5.14) # 5.14 for QCalendar
+endif()
+
+find_package(Qt5 ${REQUIRED_QT_VERSION} REQUIRED COMPONENTS Core) # 5.14 for QCalendar
+find_package(Qt5 ${REQUIRED_QT_VERSION} CONFIG QUIET OPTIONAL_COMPONENTS Qml)
+if (NOT VALIDATOR_ONLY)
+    find_package(KF5 5.77 REQUIRED COMPONENTS Holidays I18n)
+endif()
 
 if (BUILD_TESTING)
-    find_package(Qt5 5.14 REQUIRED COMPONENTS Test)
+    find_package(Qt5 ${REQUIRED_QT_VERSION} REQUIRED COMPONENTS Test)
 endif()
 
 find_package(FLEX REQUIRED)
@@ -74,4 +83,6 @@ install(FILES
 install(EXPORT KOpeningHoursTargets DESTINATION "${CMAKECONFIG_INSTALL_DIR}" FILE KOpeningHoursTargets.cmake)
 
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/kopeninghours_version.h DESTINATION ${KDE_INSTALL_INCLUDEDIR} COMPONENT Devel)
-ki18n_install(po)
+if (NOT VALIDATOR_ONLY)
+    ki18n_install(po)
+endif()

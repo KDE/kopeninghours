@@ -10,7 +10,9 @@
 #include "openinghours.h"
 #include "rule_p.h"
 
+#ifndef KOPENINGHOURS_VALIDATOR_ONLY
 #include <KHolidays/HolidayRegion>
+#endif
 
 #include <QSharedData>
 #include <QTimeZone>
@@ -32,7 +34,9 @@ public:
 
     float m_latitude = NAN;
     float m_longitude = NAN;
+#ifndef KOPENINGHOURS_VALIDATOR_ONLY
     KHolidays::HolidayRegion m_region;
+#endif
     QTimeZone m_timezone = QTimeZone::systemTimeZone();
 };
 

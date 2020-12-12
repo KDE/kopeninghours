@@ -16,19 +16,26 @@ bison_target(openinghoursparser
 add_flex_bison_dependency(openinghoursscanner openinghoursparser)
 set_source_files_properties(${BISON_openinghoursparser_OUTPUTS} ${FLEX_openinghoursscanner_OUTPUTS} PROPERTIES SKIP_AUTOMOC ON)
 
+if (NOT VALIDATOR_ONLY)
+    list(APPEND kopeninghours_srcs
+        display.cpp
+        easter.cpp
+        evaluator.cpp
+        holidaycache.cpp
+        intervalmodel.cpp
+    )
+endif()
+
 add_library(KOpeningHours
     ${kopeninghours_srcs}
     ${BISON_openinghoursparser_OUTPUTS}
     ${FLEX_openinghoursscanner_OUTPUTS}
-    display.cpp
-    easter.cpp
-    holidaycache.cpp
     interval.cpp
-    intervalmodel.cpp
     openinghours.cpp
     rule.cpp
     selectors.cpp
 )
+
 generate_export_header(KOpeningHours BASE_NAME KOpeningHours)
 
 set_target_properties(KOpeningHours PROPERTIES
@@ -39,10 +46,16 @@ set_target_properties(KOpeningHours PROPERTIES
 target_link_libraries(KOpeningHours
     PUBLIC
         Qt5::Core
-    PRIVATE
-        KF5::Holidays
-        KF5::I18n
 )
+if (VALIDATOR_ONLY)
+    target_compile_definitions(KOpeningHours PUBLIC KOPENINGHOURS_VALIDATOR_ONLY)
+else()
+    target_link_libraries(KOpeningHours
+        PRIVATE
+            KF5::Holidays
+            KF5::I18n
+    )
+endif()
 
 ecm_generate_headers(KOpeningHours_FORWARDING_HEADERS
     HEADER_NAMES

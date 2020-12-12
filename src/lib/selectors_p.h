@@ -15,7 +15,7 @@ namespace KOpeningHours {
 
 class OpeningHoursPrivate;
 
-namespace  Capability {
+namespace Capability {
     enum RequiredCapabilities {
         None = 0,
         PublicHoliday = 1,

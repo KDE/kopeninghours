@@ -255,7 +255,11 @@ private Q_SLOTS:
         QTest::addColumn<OpeningHours::Error>("error");
 
         QTest::newRow("location") << QByteArray("sunrise-sunset") << OpeningHours::MissingLocation;
+#ifdef KOPENINGHOURS_VALIDATOR_ONLY
+        QTest::newRow("PH") << QByteArray("PH off") << OpeningHours::NoError;
+#else
         QTest::newRow("PH") << QByteArray("PH off") << OpeningHours::MissingRegion;
+#endif
         QTest::newRow("SH") << QByteArray("SH off") << OpeningHours::UnsupportedFeature;
         QTest::newRow("time interval") << QByteArray("10:00-16:00/90") << OpeningHours::IncompatibleMode;
         QTest::newRow("time interval 2") << QByteArray("10:00-16:00/1:30") << OpeningHours::IncompatibleMode;
