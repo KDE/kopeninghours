@@ -42,9 +42,9 @@ if (BUILD_TESTING)
 endif()
 
 find_package(FLEX REQUIRED)
-set_package_properties(FLEX PROPERTIES PURPOSE "MapCSS parser for indoor map rendering.")
+set_package_properties(FLEX PROPERTIES PURPOSE "Lexer generator for parsing opening hours expressions")
 find_package(BISON REQUIRED)
-set_package_properties(BISON PROPERTIES PURPOSE "MapCSS parser for indoor map rendering.")
+set_package_properties(BISON PROPERTIES PURPOSE "Grammar generator for parsing opening hours expressions")
 
 add_definitions(-DQT_DISABLE_DEPRECATED_BEFORE=0x050d00)
 add_definitions(-DKF_DISABLE_DEPRECATED_BEFORE_AND_AT=0x054400)
