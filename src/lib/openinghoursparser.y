@@ -82,6 +82,9 @@ typedef void* yyscan_t;
 %parse-param { KOpeningHours::OpeningHoursPrivate *parser }
 %parse-param { yyscan_t scanner }
 
+%glr-parser
+%expect 3
+
 %union {
     int num;
     StringRef strRef;
@@ -105,7 +108,6 @@ typedef void* yyscan_t;
 %token <state> T_STATE
 
 %token T_24_7
-%token <time> T_EXTENDED_HOUR_MINUTE
 %token <num> T_YEAR
 
 %token T_PLUS
@@ -113,6 +115,11 @@ typedef void* yyscan_t;
 %token T_SLASH
 %token T_COLON
 %token T_COMMA
+
+%token T_ALT_TIME_SEP
+%token T_ALT_TIME_SEP_OR_SUFFIX
+%token <num> T_ALT_TIME_AM
+%token <num> T_ALT_TIME_PM
 
 %token <time> T_EVENT
 
@@ -149,6 +156,7 @@ typedef void* yyscan_t;
 %type <timespan> Timespan
 %type <time> Time
 %type <time> VariableTime
+%type <time> ExtendedHourMinute
 %type <weekdayRange> WeekdaySequence
 %type <weekdayRange> WeekdayRange
 %type <weekdayRange> HolidySequence
@@ -331,7 +339,7 @@ Timespan:
     $$->end = $T2;
     $$->interval = $I;
   }
-| Time[T1] T_MINUS Time[T2] T_SLASH T_EXTENDED_HOUR_MINUTE[I] {
+| Time[T1] T_MINUS Time[T2] T_SLASH ExtendedHourMinute[I] {
     $$ = new Timespan;
     $$->begin = $T1;
     $$->end = $T2;
@@ -340,18 +348,18 @@ Timespan:
 ;
 
 Time:
-  T_EXTENDED_HOUR_MINUTE[T] { $$ = $T; }
+  ExtendedHourMinute[T] { $$ = $T; }
 | VariableTime[T] { $$ = $T; }
 ;
 
 VariableTime:
   T_EVENT[E] { $$ = $E; }
-| T_LPAREN T_EVENT[E] T_PLUS T_EXTENDED_HOUR_MINUTE[O] T_RPAREN {
+| T_LPAREN T_EVENT[E] T_PLUS ExtendedHourMinute[O] T_RPAREN {
     $$ = $E;
     $$.hour = $O.hour;
     $$.minute = $O.minute;
   }
-| T_LPAREN T_EVENT[E] T_MINUS T_EXTENDED_HOUR_MINUTE[O] T_RPAREN {
+| T_LPAREN T_EVENT[E] T_MINUS ExtendedHourMinute[O] T_RPAREN {
     $$ = $E;
     $$.hour = -$O.hour;
     $$.minute = -$O.minute;
@@ -636,4 +644,44 @@ YearRange:
     $$ = new YearRange;
     $$->begin = $Y;
   }
+
+// basic building blocks
+ExtendedHourMinute:
+  T_INTEGER[H] T_COLON T_INTEGER[M] {
+    $$ = { Time::NoEvent, $H, $M };
+    if (!Time::isValid($$)) { YYERROR; }
+  }
+| T_INTEGER[H] T_ALT_TIME_SEP T_INTEGER[M] {
+    $$ = { Time::NoEvent, $H, $M };
+    if (!Time::isValid($$)) { YYERROR; }
+  }
+| T_INTEGER[H] T_ALT_TIME_SEP_OR_SUFFIX T_INTEGER[M] {
+    $$ = { Time::NoEvent, $H, $M };
+    if (!Time::isValid($$)) { YYERROR; }
+  }
+| T_INTEGER[H] T_ALT_TIME_SEP_OR_SUFFIX {
+    $$ = { Time::NoEvent, $H, 0 };
+    if (!Time::isValid($$)) { YYERROR; }
+  }
+| T_INTEGER[H] T_COLON T_ALT_TIME_AM[M] {
+    $$ = { Time::NoEvent, $H, $M };
+    Time::convertFromAm($$);
+    if (!Time::isValid($$)) { YYERROR; }
+  }
+| T_INTEGER[H] T_COLON T_ALT_TIME_PM[M] {
+    $$ = { Time::NoEvent, $H, $M };
+    Time::convertFromPm($$);
+    if (!Time::isValid($$)) { YYERROR; }
+  }
+| T_ALT_TIME_AM[H] {
+    $$ = { Time::NoEvent, $H, 0 };
+    Time::convertFromAm($$);
+    if (!Time::isValid($$)) { YYERROR; }
+  }
+| T_ALT_TIME_PM[H] {
+    $$ = { Time::NoEvent, $H, 0 };
+    Time::convertFromPm($$);
+    if (!Time::isValid($$)) { YYERROR; }
+  }
+;
 %%

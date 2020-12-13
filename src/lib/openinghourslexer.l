@@ -24,9 +24,6 @@ SPACE       [ \t\r\n]+
 INTEGER     [0-9]+
 COMMENT     ["][^"]*["]
 
-/* technically two hour digits are mandatory, but that isn't always followed in OSM data */
-/* 'h' instead of ':', and possibly missing minutes, is also non-standard tolerance */
-EXTENDED_HOUR_MINUTE [0-4]?[0-9](:[0-5][0-9]|h([0-5][0-9])?)
 YEAR        [1-2][019][0-9][0-9]
 
 AM_TIME [01]?[0-9](:[0-5][0-9])?(\ ?a\.?m\.?|a)
@@ -35,26 +32,6 @@ PM_TIME [01]?[0-9](:[0-5][0-9])?(\ ?p\.?m\.?|p)
 %%
 
 {SPACE} {}
-
-{EXTENDED_HOUR_MINUTE} {
-    yylval->time = Time::parse(yytext, yytext + yyleng);
-    return T_EXTENDED_HOUR_MINUTE;
-}
- /* Compatibility with am/pm formats, technically invalid but occur in reality */
-{AM_TIME} {
-    yylval->time = Time::parse(yytext, yytext + yyleng);
-    if (yylval->time.hour == 12) {
-        yylval->time.hour = 0;
-    }
-    return T_EXTENDED_HOUR_MINUTE;
-}
-{PM_TIME} {
-    yylval->time = Time::parse(yytext, yytext + yyleng);
-    if (yylval->time.hour < 12) {
-        yylval->time.hour += 12;
-    }
-    return T_EXTENDED_HOUR_MINUTE;
-}
 
 {YEAR} { yylval->num = std::strtol(yytext, nullptr, 10); return T_YEAR; }
 
@@ -94,6 +71,10 @@ PM_TIME [01]?[0-9](:[0-5][0-9])?(\ ?p\.?m\.?|p)
 " days" { return T_KEYWORD_DAY; }
 "week" { return T_KEYWORD_WEEK; }
 "easter" { return T_EASTER; }
+
+  /* am/pm time format support, non-standard and has to appear before the generic number token. */
+[0-5]?[0-9](\ ?a\.?m\.?|a) { yylval->num = std::strtol(yytext, nullptr, 10); return T_ALT_TIME_AM; }
+[0-5]?[0-9](\ ?p\.?m\.?|p) { yylval->num = std::strtol(yytext, nullptr, 10); return T_ALT_TIME_PM; }
 
 {INTEGER} { yylval->num = std::strtol(yytext, nullptr, 10); return T_INTEGER; }
 
@@ -148,6 +129,10 @@ So { yylval->num = 7; return T_WEEKDAY; }
     yylval->strRef.len = yyleng - 2;
     return T_COMMENT;
 }
+
+  /* alternative time formats */
+：|︓|ː { return T_ALT_TIME_SEP; }
+h { return T_ALT_TIME_SEP_OR_SUFFIX; }
 
 . {
     printf("unexpected character: %s at %d:%d\n", yytext, yylloc->first_line, yylloc->first_column);

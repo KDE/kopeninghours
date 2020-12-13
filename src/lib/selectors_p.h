@@ -81,6 +81,9 @@ void appendSelector(T* firstSelector, T* selector)
 class Time
 {
 public:
+    static bool isValid(Time t);
+    static void convertFromAm(Time &t);
+    static void convertFromPm(Time &t);
     static Time parse(const char *begin, const char *end);
     QByteArray toExpression(bool end) const;
 

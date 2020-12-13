@@ -23,6 +23,25 @@ static QByteArray twoDigits(int n)
     return ret;
 }
 
+bool Time::isValid(Time t)
+{
+    return t.hour >= 0 && t.hour <= 48 && t.minute >= 0 && t.minute < 60;
+}
+
+void Time::convertFromAm(Time &t)
+{
+    if (t.hour == 12) {
+        t.hour = 0;
+    }
+}
+
+void Time::convertFromPm(Time &t)
+{
+    if (t.hour < 12) {
+        t.hour += 12;
+    }
+}
+
 Time Time::parse(const char *begin, const char *end)
 {
     Time t{ Time::NoEvent, 0, 0 };

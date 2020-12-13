@@ -189,9 +189,11 @@ private Q_SLOTS:
         T2("9:00 am - 12:00 am", "09:00-24:00");
         T2("9 am - 12 am", "09:00-24:00");
         T2("11:00 am - 11:00 pm", "11:00-23:00");
+        T2("09 : 00 - 12 : 00 , 13 : 00 - 19 : 00", "09:00-12:00,13:00-19:00");
 
         // Unicode symbols
         T2("Mo–Tu", "Mo-Tu");
+        T2("13：41", "13:41");
 #undef T
     }
 
@@ -222,6 +224,9 @@ private Q_SLOTS:
         T("Tu[-6]");
         T("Mo[0-5]");
         T("We[4-2]");
+        T("49:00");
+        T("12:61");
+        T("60p");
 
         // from https://wiki.openstreetmap.org/wiki/Key:opening_hours#Common_mistakes
         T("7/8-23");
