@@ -198,6 +198,9 @@ private Q_SLOTS:
         // Unicode symbols
         T2("Mo–Tu", "Mo-Tu");
         T2("13：41", "13:41");
+
+        // non-English
+        T2("Domingo de 9: 00 am. a 1:00 pm", "Su 09:00-13:00");
 #undef T
     }
 

@@ -79,13 +79,16 @@ PM_TIME [01]?[0-9](:[0-5][0-9])?(\ ?p\.?m\.?|p)
 {INTEGER} { yylval->num = std::strtol(yytext, nullptr, 10); return T_INTEGER; }
 
  /* technically weekday names should be two letter English abbreviations, but reality is more creative */
-"Monday"    { yylval->num = 1; return T_WEEKDAY; }
-"Tuesday"   { yylval->num = 2; return T_WEEKDAY; }
-"Wednesday" { yylval->num = 3; return T_WEEKDAY; }
-"Thursday"  { yylval->num = 4; return T_WEEKDAY; }
-"Friday"    { yylval->num = 5; return T_WEEKDAY; }
-"Saturday"  { yylval->num = 6; return T_WEEKDAY; }
-"Sunday"    { yylval->num = 7; return T_WEEKDAY; }
+Mondays?    { yylval->num = 1; return T_WEEKDAY; }
+Tuesdays?   { yylval->num = 2; return T_WEEKDAY; }
+Wednesdays? { yylval->num = 3; return T_WEEKDAY; }
+Thursdays?  { yylval->num = 4; return T_WEEKDAY; }
+Fridays?    { yylval->num = 5; return T_WEEKDAY; }
+Saturdays?  { yylval->num = 6; return T_WEEKDAY; }
+Sundays?    { yylval->num = 7; return T_WEEKDAY; }
+
+Tues  { yylval->num = 2; return T_WEEKDAY; }
+Thurs? { yylval->num = 4; return T_WEEKDAY; }
 
 Mon? { yylval->num = 1; return T_WEEKDAY; }
 Tue? { yylval->num = 2; return T_WEEKDAY; }
@@ -94,9 +97,6 @@ Thu? { yylval->num = 4; return T_WEEKDAY; }
 Fri? { yylval->num = 5; return T_WEEKDAY; }
 Sat? { yylval->num = 6; return T_WEEKDAY; }
 Sun? { yylval->num = 7; return T_WEEKDAY; }
-
- /* localized day names (technically not allowed, but present in reality) */
-So { yylval->num = 7; return T_WEEKDAY; }
 
  /* same for month names, technically those should be three letter English abbreviations */
 "January" { yylval->num = 1; return T_MONTH; }
@@ -138,6 +138,50 @@ h { return T_ALT_TIME_SEP_OR_SUFFIX; }
 
   /* alternative range separators */
 ~|～|to|à|bis|a|ás|às|as|au { return T_ALT_RANGE_SEP; }
+
+  /* localized state names */
+ferm(e|é)|geschlossen { yylval->state = State::Closed;  return T_STATE; }
+
+ /* German localized day names. */
+Montags?     { yylval->num = 1; return T_WEEKDAY; }
+Dienstags?   { yylval->num = 2; return T_WEEKDAY; }
+Mittwochs?   { yylval->num = 3; return T_WEEKDAY; }
+Donnerstags? { yylval->num = 4; return T_WEEKDAY; }
+Freitags?    { yylval->num = 5; return T_WEEKDAY; }
+Samstags?    { yylval->num = 6; return T_WEEKDAY; }
+Sonntags?    { yylval->num = 7; return T_WEEKDAY; }
+
+ /* "Di" conflicts with French... */
+So { yylval->num = 7; return T_WEEKDAY; }
+
+  /* French localized day names. */
+Lundi    { yylval->num = 1; return T_WEEKDAY; }
+Mardi    { yylval->num = 2; return T_WEEKDAY; }
+Mercrdi  { yylval->num = 3; return T_WEEKDAY; }
+Jeudi    { yylval->num = 4; return T_WEEKDAY; }
+Vendredi { yylval->num = 5; return T_WEEKDAY; }
+Samedi   { yylval->num = 6; return T_WEEKDAY; }
+Dimanche { yylval->num = 7; return T_WEEKDAY; }
+
+  /* Spanish localized day names */
+Lunes        { yylval->num = 1; return T_WEEKDAY; }
+Martes       { yylval->num = 2; return T_WEEKDAY; }
+Mi(é|e)rcoles { yylval->num = 3; return T_WEEKDAY; }
+Jueves       { yylval->num = 4; return T_WEEKDAY; }
+Viernes      { yylval->num = 5; return T_WEEKDAY; }
+S(á|a)bado    { yylval->num = 6; return T_WEEKDAY; }
+Domingo      { yylval->num = 7; return T_WEEKDAY; }
+
+  /* Portuguese localized day names */
+feira   { yylval->num = 1; return T_WEEKDAY; }
+segunda { yylval->num = 1; return T_WEEKDAY; }
+ter(ç|c)a   { yylval->num = 2; return T_WEEKDAY; }
+quarta  { yylval->num = 3; return T_WEEKDAY; }
+quinta  { yylval->num = 4; return T_WEEKDAY; }
+sexta   { yylval->num = 5; return T_WEEKDAY; }
+
+  /* skip filler words */
+from|von|du|de {}
 
 . {
     printf("unexpected character: %s at %d:%d\n", yytext, yylloc->first_line, yylloc->first_column);
