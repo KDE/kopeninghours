@@ -130,9 +130,14 @@ So { yylval->num = 7; return T_WEEKDAY; }
     return T_COMMENT;
 }
 
+  /* various alternative formats, none of this is remotely compliant with the specification, but appears in reality nevertheless */
+
   /* alternative time formats */
 ：|︓|ː { return T_ALT_TIME_SEP; }
 h { return T_ALT_TIME_SEP_OR_SUFFIX; }
+
+  /* alternative range separators */
+~|～|to|à|bis|a|ás|às|as|au { return T_ALT_RANGE_SEP; }
 
 . {
     printf("unexpected character: %s at %d:%d\n", yytext, yylloc->first_line, yylloc->first_column);

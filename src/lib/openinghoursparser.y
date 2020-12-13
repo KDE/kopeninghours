@@ -83,7 +83,7 @@ typedef void* yyscan_t;
 %parse-param { yyscan_t scanner }
 
 %glr-parser
-%expect 3
+%expect 4
 
 %union {
     int num;
@@ -120,6 +120,8 @@ typedef void* yyscan_t;
 %token T_ALT_TIME_SEP_OR_SUFFIX
 %token <num> T_ALT_TIME_AM
 %token <num> T_ALT_TIME_PM
+
+%token T_ALT_RANGE_SEP
 
 %token <time> T_EVENT
 
@@ -316,7 +318,7 @@ Timespan:
     $$->begin = $$->end = $T;
     $$->openEnd = true;
   }
-| Time[T1] T_MINUS Time[T2] {
+| Time[T1] RangeSeparator Time[T2] {
     $$ = new Timespan;
     $$->begin = $T1;
     $$->end = $T2;
@@ -324,7 +326,7 @@ Timespan:
         $$->end.hour += 24;
     }
   }
-| Time[T1] T_MINUS Time[T2] T_PLUS {
+| Time[T1] RangeSeparator Time[T2] T_PLUS {
     $$ = new Timespan;
     $$->begin = $T1;
     $$->end = $T2;
@@ -333,13 +335,13 @@ Timespan:
     }
     $$->openEnd = true;
   }
-| Time[T1] T_MINUS Time[T2] T_SLASH T_INTEGER[I] {
+| Time[T1] RangeSeparator Time[T2] T_SLASH T_INTEGER[I] {
     $$ = new Timespan;
     $$->begin = $T1;
     $$->end = $T2;
     $$->interval = $I;
   }
-| Time[T1] T_MINUS Time[T2] T_SLASH ExtendedHourMinute[I] {
+| Time[T1] RangeSeparator Time[T2] T_SLASH ExtendedHourMinute[I] {
     $$ = new Timespan;
     $$->begin = $T1;
     $$->end = $T2;
@@ -407,7 +409,7 @@ WeekdayRange:
     $$->beginDay = $D;
     $$->endDay = $D;
   }
-| T_WEEKDAY[D1] T_MINUS T_WEEKDAY[D2] {
+| T_WEEKDAY[D1] RangeSeparator T_WEEKDAY[D2] {
     $$ = new WeekdayRange;
     $$->beginDay = $D1;
     $$->endDay = $D2;
@@ -524,12 +526,12 @@ MonthdayRange:
     $$ = new MonthdayRange;
     $$->begin = $$->end = { $Y, $M, 0, Date::FixedDate, 0, 0 };
   }
-| T_MONTH[M1] T_MINUS T_MONTH[M2] {
+| T_MONTH[M1] RangeSeparator T_MONTH[M2] {
     $$ = new MonthdayRange;
     $$->begin = { 0, $M1, 0, Date::FixedDate, 0, 0 };
     $$->end = { 0, $M2, 0, Date::FixedDate, 0, 0 };
   }
-| T_YEAR[Y] T_MONTH[M1] T_MINUS T_MONTH[M2] {
+| T_YEAR[Y] T_MONTH[M1] RangeSeparator T_MONTH[M2] {
     $$ = new MonthdayRange;
     $$->begin = { $Y, $M1, 0, Date::FixedDate, 0, 0 };
     $$->end = { $Y, $M2, 0, Date::FixedDate, 0, 0 };
@@ -545,13 +547,13 @@ MonthdayRange:
     $$->begin.weekdayOffset = $O.weekdayOffset;
     $$->end = $$->begin;
   }
-| DateFrom[F] T_MINUS DateTo[T] {
+| DateFrom[F] RangeSeparator DateTo[T] {
     $$ = new MonthdayRange;
     $$->begin = $F;
     $$->end = $T;
     if ($$->end.month == 0) { $$->end.month = $$->begin.month; }
   }
-| DateFrom[F] DateOffset[OF] T_MINUS DateTo[T] {
+| DateFrom[F] DateOffset[OF] RangeSeparator DateTo[T] {
     $$ = new MonthdayRange;
     $$->begin = $F;
     $$->begin.dayOffset = $OF.dayOffset;
@@ -559,7 +561,7 @@ MonthdayRange:
     $$->end = $T;
     if ($$->end.month == 0) { $$->end.month = $$->begin.month; }
   }
-| DateFrom[F] T_MINUS DateTo[T] DateOffset[OT] {
+| DateFrom[F] RangeSeparator DateTo[T] DateOffset[OT] {
     $$ = new MonthdayRange;
     $$->begin = $F;
     $$->end = $T;
@@ -567,7 +569,7 @@ MonthdayRange:
     $$->end.dayOffset = $OT.dayOffset;
     $$->end.weekdayOffset = $OT.weekdayOffset;
   }
-| DateFrom[F] DateOffset[OF] T_MINUS DateTo[T] DateOffset[OT] {
+| DateFrom[F] DateOffset[OF] RangeSeparator DateTo[T] DateOffset[OT] {
     $$ = new MonthdayRange;
     $$->begin = $F;
     $$->begin.dayOffset = $OF.dayOffset;
@@ -621,7 +623,7 @@ YearRange:
     $$ = new YearRange;
     $$->begin = $$->end = $Y;
   }
-| T_YEAR[Y1] T_MINUS T_YEAR[Y2] {
+| T_YEAR[Y1] RangeSeparator T_YEAR[Y2] {
     $$ = new YearRange;
     $$->begin = $Y1;
     $$->end = $Y2;
@@ -630,7 +632,7 @@ YearRange:
         YYABORT;
     }
   }
-| T_YEAR[Y1] T_MINUS T_YEAR[Y2] T_SLASH T_INTEGER[I] {
+| T_YEAR[Y1] RangeSeparator T_YEAR[Y2] T_SLASH T_INTEGER[I] {
     $$ = new YearRange;
     $$->begin = $Y1;
     $$->end = $Y2;
@@ -684,4 +686,8 @@ ExtendedHourMinute:
     if (!Time::isValid($$)) { YYERROR; }
   }
 ;
+
+RangeSeparator:
+  T_MINUS
+| T_ALT_RANGE_SEP
 %%
