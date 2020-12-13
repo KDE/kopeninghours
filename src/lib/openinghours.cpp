@@ -16,8 +16,9 @@
 #include <QDateTime>
 #include <QJsonArray>
 #include <QJsonObject>
-#include <QScopeGuard>
 #include <QTimeZone>
+
+#include <memory>
 
 using namespace KOpeningHours;
 
@@ -160,7 +161,7 @@ void OpeningHours::setExpression(const char *openingHours, std::size_t size, Mod
         d->m_error = SyntaxError;
         return;
     }
-    const auto lexerCleanup = qScopeGuard([&scanner]{ yylex_destroy(scanner); });
+    const std::unique_ptr<void, decltype(&yylex_destroy)> lexerCleanup(scanner, &yylex_destroy);
 
     YY_BUFFER_STATE state;
     state = yy_scan_bytes(openingHours, size, scanner);
