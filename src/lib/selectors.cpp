@@ -17,6 +17,7 @@
 #include <QDateTime>
 
 #include <cstdlib>
+#include <cassert>
 
 using namespace KOpeningHours;
 

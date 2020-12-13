@@ -35,7 +35,10 @@ public:
     {
         // Finalize
         flush();
-        return expr.isEmpty() ? expr : expr.chopped(1);
+        if (!expr.isEmpty()) {
+            expr.chop(1);
+        }
+        return expr;
     }
 
 private:
