@@ -201,6 +201,7 @@ private Q_SLOTS:
 
         // non-English
         T2("Domingo de 9: 00 am. a 1:00 pm", "Su 09:00-13:00");
+        T2("Segunda a Sexta 08:00h a 16:00h", "Mo-Fr 08:00-16:00");
 #undef T
     }
 

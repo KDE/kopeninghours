@@ -657,6 +657,10 @@ ExtendedHourMinute:
     $$ = { Time::NoEvent, $H, $M };
     if (!Time::isValid($$)) { YYERROR; }
   }
+| T_INTEGER[H] T_COLON T_INTEGER[M] T_ALT_TIME_SEP_OR_SUFFIX {
+    $$ = { Time::NoEvent, $H, $M };
+    if (!Time::isValid($$)) { YYERROR; }
+  }
 | T_INTEGER[H] T_ALT_TIME_SEP_OR_SUFFIX T_INTEGER[M] {
     $$ = { Time::NoEvent, $H, $M };
     if (!Time::isValid($$)) { YYERROR; }
