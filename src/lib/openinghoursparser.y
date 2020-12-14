@@ -305,6 +305,11 @@ TimeSelector:
     $$ = $T1;
     appendSelector($$.timeSelector, $T2);
   }
+| TimeSelector[T] T_COMMA error {
+    $$ = $T;
+    parser->restartFrom(@3.first_column, Rule::AdditionalRule);
+    yyerrok;
+  }
 ;
 
 Timespan:

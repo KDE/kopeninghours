@@ -202,6 +202,11 @@ private Q_SLOTS:
         // non-English
         T2("Domingo de 9: 00 am. a 1:00 pm", "Su 09:00-13:00");
         T2("Segunda a Sexta 08:00h a 16:00h", "Mo-Fr 08:00-16:00");
+
+        // recovery from wrong rule separators
+        T2("Fr-Sa 10:00-02:00,Su 10:00-20:00", "Fr-Sa 10:00-02:00, Su 10:00-20:00");
+        T2("tu-sa 12:00-14:30,mo-sa 18:30-22:00", "Tu-Sa 12:00-14:30, Mo-Sa 18:30-22:00");
+        T2("Mo 07:00-12:00,Tu 15:00-20:00,We 07:00-12:00,Fr 15:00-20:00", "Mo 07:00-12:00, Tu 15:00-20:00, We 07:00-12:00, Fr 15:00-20:00");
 #undef T
     }
 

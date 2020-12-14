@@ -106,7 +106,17 @@ void OpeningHoursPrivate::validate()
 
 void OpeningHoursPrivate::addRule(Rule *rule)
 {
+    if (m_initialRuleType != Rule::NormalRule && rule->m_ruleType == Rule::NormalRule) {
+        rule->m_ruleType = m_initialRuleType;
+        m_initialRuleType = Rule::NormalRule;
+    }
     m_rules.push_back(std::unique_ptr<Rule>(rule));
+}
+
+void OpeningHoursPrivate::restartFrom(int pos, Rule::Type nextRuleType)
+{
+    m_restartPosition = pos;
+    m_recoveryRuleType = nextRuleType;
 }
 
 
@@ -155,22 +165,36 @@ void OpeningHours::setExpression(const char *openingHours, std::size_t size, Mod
         --size;
     }
 
-    yyscan_t scanner;
-    if (yylex_init(&scanner)) {
-        qCWarning(Log) << "Failed to initialize scanner?!";
-        d->m_error = SyntaxError;
-        return;
-    }
-    const std::unique_ptr<void, decltype(&yylex_destroy)> lexerCleanup(scanner, &yylex_destroy);
+    d->m_restartPosition = 0;
+    int offset = 0;
+    do {
+        yyscan_t scanner;
+        if (yylex_init(&scanner)) {
+            qCWarning(Log) << "Failed to initialize scanner?!";
+            d->m_error = SyntaxError;
+            return;
+        }
+        const std::unique_ptr<void, decltype(&yylex_destroy)> lexerCleanup(scanner, &yylex_destroy);
 
-    YY_BUFFER_STATE state;
-    state = yy_scan_bytes(openingHours, size, scanner);
-    if (yyparse(d.data(), scanner)) {
-        d->m_error = SyntaxError;
-        return;
-    }
+        YY_BUFFER_STATE state;
+        state = yy_scan_bytes(openingHours + offset, size - offset, scanner);
+        if (yyparse(d.data(), scanner)) {
+            if (d->m_restartPosition > 1 && d->m_restartPosition + offset < (int)size) {
+                offset += d->m_restartPosition - 1;
+                d->m_initialRuleType = d->m_recoveryRuleType;
+                d->m_recoveryRuleType = Rule::NormalRule;
+            } else {
+                d->m_error = SyntaxError;
+                return;
+            }
+        } else {
+            d->m_error = NoError;
+            offset = -1;
+        }
 
-    yy_delete_buffer(state, scanner);
+        yy_delete_buffer(state, scanner);
+    } while (offset > 0);
+
     d->autocorrect();
     d->validate();
 
