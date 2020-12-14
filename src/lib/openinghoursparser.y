@@ -13,9 +13,8 @@ using namespace KOpeningHours;
 
 void yyerror(YYLTYPE *loc, OpeningHoursPrivate *parser, yyscan_t scanner, char const* msg)
 {
-    Q_UNUSED(loc);
     Q_UNUSED(scanner);
-    qCDebug(Log) << "PARSER ERROR:" << msg;
+    qCDebug(Log) << "PARSER ERROR:" << msg << "at position" << loc->first_column;
     parser->m_error = OpeningHours::SyntaxError;
 }
 

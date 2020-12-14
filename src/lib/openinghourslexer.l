@@ -6,6 +6,8 @@
 
 #include "openinghoursparser_p.h"
 
+#define YY_USER_ACTION yylloc->first_column = yylloc->last_column; yylloc->last_column += yyleng;
+
 %}
 
 %option warn nodefault
