@@ -24,10 +24,12 @@
 namespace KOpeningHours {
 class OpeningHoursPrivate : public QSharedData {
 public:
+    void finalizeRecovery();
     void autocorrect();
     void validate();
     void addRule(Rule *rule);
     void restartFrom(int pos, Rule::Type nextRuleType);
+    bool isRecovering() const;
 
     std::vector<std::unique_ptr<Rule>> m_rules;
     OpeningHours::Modes m_modes = OpeningHours::IntervalMode;
@@ -38,6 +40,7 @@ public:
     int m_restartPosition = 0;
     Rule::Type m_initialRuleType = Rule::NormalRule;
     Rule::Type m_recoveryRuleType = Rule::NormalRule;
+    bool m_ruleSeparatorRecovery = false;
 #ifndef KOPENINGHOURS_VALIDATOR_ONLY
     KHolidays::HolidayRegion m_region;
 #endif

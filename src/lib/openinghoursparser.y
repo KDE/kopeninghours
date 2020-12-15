@@ -207,6 +207,15 @@ Ruleset:
     $R->m_ruleType = Rule::FallbackRule;
     parser->addRule($R);
   }
+| Ruleset error {
+    if (!parser->isRecovering()) {
+        parser->restartFrom(@2.first_column, Rule::NormalRule);
+        parser->m_ruleSeparatorRecovery = true;
+        yyerrok;
+    } else {
+        YYERROR;
+    }
+  }
 ;
 
 Rule:

@@ -22,9 +22,29 @@
 
 using namespace KOpeningHours;
 
+void OpeningHoursPrivate::finalizeRecovery()
+{
+    if (!m_ruleSeparatorRecovery || m_rules.size() <= 1 || m_error == OpeningHours::SyntaxError) {
+        return;
+    }
+
+    const auto hasSingleSelectorRule = std::any_of(m_rules.begin(), m_rules.end(), [](const auto &rule) {
+        int selectorCount = 0;
+        if (rule->m_yearSelector) ++selectorCount;
+        if (rule->m_weekSelector) ++selectorCount;
+        if (rule->m_weekdaySelector) ++selectorCount;
+        if (rule->m_monthdaySelector) ++selectorCount;
+        if (rule->m_timeSelector) ++selectorCount;
+        return selectorCount <= 1;
+    });
+    if (hasSingleSelectorRule) {
+        m_error = OpeningHours::SyntaxError;
+    }
+}
+
 void OpeningHoursPrivate::autocorrect()
 {
-    if (m_rules.size() <= 1) {
+    if (m_rules.size() <= 1 || m_error == OpeningHours::SyntaxError) {
         return;
     }
 
@@ -119,6 +139,11 @@ void OpeningHoursPrivate::restartFrom(int pos, Rule::Type nextRuleType)
     m_recoveryRuleType = nextRuleType;
 }
 
+bool OpeningHoursPrivate::isRecovering() const
+{
+    return m_restartPosition > 0;
+}
+
 
 OpeningHours::OpeningHours()
     : d(new OpeningHoursPrivate)
@@ -157,6 +182,9 @@ void OpeningHours::setExpression(const char *openingHours, std::size_t size, Mod
 
     d->m_error = OpeningHours::Null;
     d->m_rules.clear();
+    d->m_initialRuleType = Rule::NormalRule;
+    d->m_recoveryRuleType = Rule::NormalRule;
+    d->m_ruleSeparatorRecovery = false;
 
     // trim trailing spaces
     // the parser would handle most of this by itself, but fails if a trailing space would produce a trailing rule separator
@@ -195,6 +223,7 @@ void OpeningHours::setExpression(const char *openingHours, std::size_t size, Mod
         yy_delete_buffer(state, scanner);
     } while (offset > 0);
 
+    d->finalizeRecovery();
     d->autocorrect();
     d->validate();
 
