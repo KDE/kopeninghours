@@ -211,6 +211,7 @@ void OpeningHours::setExpression(const char *openingHours, std::size_t size, Mod
                 offset += d->m_restartPosition - 1;
                 d->m_initialRuleType = d->m_recoveryRuleType;
                 d->m_recoveryRuleType = Rule::NormalRule;
+                d->m_restartPosition = 0;
             } else {
                 d->m_error = SyntaxError;
                 return;
