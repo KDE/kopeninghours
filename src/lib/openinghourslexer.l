@@ -156,7 +156,7 @@ So { yylval->num = 7; return T_WEEKDAY; }
   /* French localized day names. */
 Lundi    { yylval->num = 1; return T_WEEKDAY; }
 Mardi    { yylval->num = 2; return T_WEEKDAY; }
-Mercrdi  { yylval->num = 3; return T_WEEKDAY; }
+Mercredi { yylval->num = 3; return T_WEEKDAY; }
 Jeudi    { yylval->num = 4; return T_WEEKDAY; }
 Vendredi { yylval->num = 5; return T_WEEKDAY; }
 Samedi   { yylval->num = 6; return T_WEEKDAY; }
