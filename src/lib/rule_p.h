@@ -58,6 +58,9 @@ public:
     RuleResult nextInterval(const QDateTime &dt, OpeningHoursPrivate *context) const;
     QByteArray toExpression() const;
 
+    /** Amount of selectors for this rule. */
+    int selectorCount() const;
+
     QString m_comment;
 
     std::unique_ptr<Timespan> m_timeSelector;

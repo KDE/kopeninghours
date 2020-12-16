@@ -22,26 +22,6 @@
 
 using namespace KOpeningHours;
 
-void OpeningHoursPrivate::finalizeRecovery()
-{
-    if (!m_ruleSeparatorRecovery || m_rules.size() <= 1 || m_error == OpeningHours::SyntaxError) {
-        return;
-    }
-
-    const auto hasSingleSelectorRule = std::any_of(m_rules.begin(), m_rules.end(), [](const auto &rule) {
-        int selectorCount = 0;
-        if (rule->m_yearSelector) ++selectorCount;
-        if (rule->m_weekSelector) ++selectorCount;
-        if (rule->m_weekdaySelector) ++selectorCount;
-        if (rule->m_monthdaySelector) ++selectorCount;
-        if (rule->m_timeSelector) ++selectorCount;
-        return selectorCount <= 1;
-    });
-    if (hasSingleSelectorRule) {
-        m_error = OpeningHours::SyntaxError;
-    }
-}
-
 void OpeningHoursPrivate::autocorrect()
 {
     if (m_rules.size() <= 1 || m_error == OpeningHours::SyntaxError) {
@@ -61,8 +41,8 @@ void OpeningHoursPrivate::autocorrect()
             continue;
         }
 
-        const auto prevRuleWeekayOnly = prevRule->m_weekdaySelector && !prevRule->m_yearSelector && !prevRule->m_monthdaySelector && !prevRule->m_weekSelector && !prevRule->m_timeSelector;
-        const auto curRuleTimeOnly = rule->m_timeSelector && !rule->m_yearSelector && !rule->m_monthdaySelector && !rule->m_weekSelector && !rule->m_weekdaySelector;
+        const auto prevRuleWeekayOnly = prevRule->m_weekdaySelector && prevRule->selectorCount() == 1;
+        const auto curRuleTimeOnly = rule->m_timeSelector && rule->selectorCount() == 1;
         if (!prevRuleWeekayOnly && !curRuleTimeOnly) {
             continue;
         }
@@ -130,7 +110,24 @@ void OpeningHoursPrivate::addRule(Rule *rule)
         rule->m_ruleType = m_initialRuleType;
         m_initialRuleType = Rule::NormalRule;
     }
-    m_rules.push_back(std::unique_ptr<Rule>(rule));
+
+    // error recovery after a missing rule separator
+    // only continue here if whatever we got is somewhat plausible
+    if (m_ruleSeparatorRecovery && !m_rules.empty() && rule->selectorCount() <= 1) {
+        // missing separator was actually between time selectors, not rules
+        if (m_rules.back()->m_timeSelector && rule->m_timeSelector && m_rules.back()->state() == rule->state()) {
+            appendSelector(m_rules.back()->m_timeSelector.get(), std::move(rule->m_timeSelector));
+            delete rule;
+            rule = nullptr;
+        } else {
+            m_error = OpeningHours::SyntaxError;
+        }
+    }
+    m_ruleSeparatorRecovery = false;
+
+    if (rule) {
+        m_rules.push_back(std::unique_ptr<Rule>(rule));
+    }
 }
 
 void OpeningHoursPrivate::restartFrom(int pos, Rule::Type nextRuleType)
@@ -216,18 +213,19 @@ void OpeningHours::setExpression(const char *openingHours, std::size_t size, Mod
                 d->m_error = SyntaxError;
                 return;
             }
-        } else {
             d->m_error = NoError;
+        } else {
+            if (d->m_error != SyntaxError) {
+                d->m_error = NoError;
+            }
             offset = -1;
         }
 
         yy_delete_buffer(state, scanner);
     } while (offset > 0);
 
-    d->finalizeRecovery();
     d->autocorrect();
     d->validate();
-
 }
 
 QByteArray OpeningHours::normalizedExpression() const

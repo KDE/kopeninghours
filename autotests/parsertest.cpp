@@ -191,7 +191,7 @@ private Q_SLOTS:
         T2("11:00 am - 11:00 pm", "11:00-23:00");
         T2("09 : 00 - 12 : 00 , 13 : 00 - 19 : 00", "09:00-12:00,13:00-19:00");
 
-        // alternative separators
+        // alternative range separators
         T2("Mo-Fri 10am to 7pm, Saturday 11am to 6pm, Sun 11am to 4pm", "Mo-Fr 10:00-19:00, Sa 11:00-18:00, Su 11:00-16:00");
         T2("Monday to Friday 8:00AM to 4:30PM", "Mo-Fr 08:00-16:30");
 
@@ -209,6 +209,9 @@ private Q_SLOTS:
         T2("Mo 07:00-12:00,Tu 15:00-20:00,We 07:00-12:00,Fr 15:00-20:00", "Mo 07:00-12:00, Tu 15:00-20:00, We 07:00-12:00, Fr 15:00-20:00");
         T2("Mo-Fr 09:00-17:00 Sa 09:00-14:00", "Mo-Fr 09:00-17:00; Sa 09:00-14:00");
         T2("Friday 11AM–2:30AM Saturday 10AM–3:30AM Sunday 9AM–4:30AM", "Fr 11:00-02:30; Sa 10:00-03:30; Su 09:00-04:30");
+
+        // recovery from wrong time selector separators
+        T2("Dimanche Fermé Lundi 08:00 – 12:30 14:00 – 19:00 Mardi 08:00 – 12:30 14:00 – 19:00 Mercredi 08:00 – 12:30 14:00 – 19:00 Jeudi 08:00 – 12:30 14:00 – 19:00 Vendredi 08:00 – 12:30 14:00 – 19:00 Samedi 08:00 – 12:30 14:30 – 18:00", "Su closed; Mo 08:00-12:30,14:00-19:00; Tu 08:00-12:30,14:00-19:00; We 08:00-12:30,14:00-19:00; Th 08:00-12:30,14:00-19:00; Fr 08:00-12:30,14:00-19:00; Sa 08:00-12:30,14:30-18:00");
 #undef T
     }
 

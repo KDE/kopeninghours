@@ -103,3 +103,9 @@ QByteArray Rule::toExpression() const
     }
     return expr;
 }
+
+int Rule::selectorCount() const
+{
+    const auto selectors = { (bool)m_yearSelector, (bool)m_monthdaySelector, (bool)m_weekSelector, (bool)m_weekdaySelector, (bool)m_timeSelector };
+    return std::count(std::begin(selectors), std::end(selectors), true);
+}
