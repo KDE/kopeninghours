@@ -179,6 +179,9 @@ quarta  { yylval->num = 3; return T_WEEKDAY; }
 quinta  { yylval->num = 4; return T_WEEKDAY; }
 sexta   { yylval->num = 5; return T_WEEKDAY; }
 
+  /* creative rule separators */
+、|and|et|y|und|& { return T_ADDITIONAL_RULE_SEPARATOR; }
+
   /* skip filler words */
 from|von|du|de {}
 

@@ -194,6 +194,11 @@ private Q_SLOTS:
         // alternative range separators
         T2("Mo-Fri 10am to 7pm, Saturday 11am to 6pm, Sun 11am to 4pm", "Mo-Fr 10:00-19:00, Sa 11:00-18:00, Su 11:00-16:00");
         T2("Monday to Friday 8:00AM to 4:30PM", "Mo-Fr 08:00-16:30");
+        T2("1pm-3pm and 7pm-11pm", "13:00-15:00,19:00-23:00");
+        T2("8h00 à 12h00 et 13h30 à 18h00", "08:00-12:00,13:30-18:00");
+        T2("Samedi et Dimanche 5h30 - 12h30 Lundi 13h45 - 15h15", "Sa,Su 05:30-12:30; Mo 13:45-15:15");
+        T2("Mo-Th 11:00-20:00 Friday & Saturday 11:00-21:00 Sunday 12:00-19:00", "Mo-Th 11:00-20:00; Fr,Sa 11:00-21:00; Su 12:00-19:00");
+        T2("11:30-14:00、16:30-22:00", "11:30-14:00,16:30-22:00");
 
         // Unicode symbols
         T2("Mo–Tu", "Mo-Tu");
