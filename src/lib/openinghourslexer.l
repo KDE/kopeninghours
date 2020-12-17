@@ -21,7 +21,7 @@
 %option bison-locations
 %option yylineno
 
-SPACE       [ \t\r\n]+
+SPACE       ([ \t\r\n]| )+
 
 INTEGER     [0-9]+
 COMMENT     ["][^"]*["]
@@ -46,7 +46,7 @@ YEAR        [1-2][019][0-9][0-9]
 "24/7" { return T_24_7; }
 
 "+" { return T_PLUS; }
--|‒|–|—|― { return T_MINUS; }
+-|‒|–|—|―|－|−|ー { return T_MINUS; }
 "/" { return T_SLASH; }
 ":" { return T_COLON; }
 ,/. { return T_COMMA; }
@@ -136,7 +136,7 @@ Sun? { yylval->num = 7; return T_WEEKDAY; }
 h { return T_ALT_TIME_SEP_OR_SUFFIX; }
 
   /* alternative range separators */
-~|～|to|à|bis|a|ás|às|as|au { return T_ALT_RANGE_SEP; }
+~|～|〜|to|à|bis|a|ás|às|as|au|→ { return T_ALT_RANGE_SEP; }
 
   /* localized state names */
 ferm(e|é)|geschlossen { yylval->state = State::Closed;  return T_STATE; }
