@@ -82,7 +82,7 @@ typedef void* yyscan_t;
 %parse-param { yyscan_t scanner }
 
 %glr-parser
-%expect 4
+%expect 9
 
 %union {
     int num;
@@ -207,6 +207,15 @@ Ruleset:
     $R->m_ruleType = Rule::FallbackRule;
     parser->addRule($R);
   }
+| Ruleset T_SLASH error {
+    if (!parser->isRecovering()) {
+        parser->restartFrom(@3.first_column, Rule::NormalRule);
+        parser->m_ruleSeparatorRecovery = true;
+        yyerrok;
+    } else {
+        YYERROR;
+    }
+  }
 | Ruleset error {
     if (!parser->isRecovering()) {
         parser->restartFrom(@2.first_column, Rule::NormalRule);
@@ -317,6 +326,11 @@ TimeSelector:
 | TimeSelector[T] T_COMMA error {
     $$ = $T;
     parser->restartFrom(@3.first_column, Rule::AdditionalRule);
+    yyerrok;
+  }
+| TimeSelector[T] T_SLASH Time[E] error { /* wrong use of slash as a timespan separator */
+    $$ = $T;
+    parser->restartFrom(@E.first_column, Rule::AdditionalRule);
     yyerrok;
   }
 ;
