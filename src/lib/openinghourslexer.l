@@ -21,7 +21,7 @@
 %option bison-locations
 %option yylineno
 
-SPACE       ([ \t\r\n]| )+
+SPACE       ([ \t\r\n]| | |　)+
 
 INTEGER     [0-9]+
 COMMENT     ["][^"]*["]
@@ -133,13 +133,13 @@ Sun? { yylval->num = 7; return T_WEEKDAY; }
 
   /* alternative time formats */
 ：|︓|ː|\. { return T_ALT_TIME_SEP; }
-h { return T_ALT_TIME_SEP_OR_SUFFIX; }
+h|時 { return T_ALT_TIME_SEP_OR_SUFFIX; }
 
   /* alternative range separators */
-~|～|〜|to|à|bis|a|ás|às|as|au|→ { return T_ALT_RANGE_SEP; }
+~|～|〜|to|à|bis|a|ás|às|as|au|→|до { return T_ALT_RANGE_SEP; }
 
   /* localized state names */
-ferm(e|é)|geschlossen { yylval->state = State::Closed;  return T_STATE; }
+ferm(e|é)|geschlossen|encerrado { yylval->state = State::Closed;  return T_STATE; }
 
  /* German localized day names. */
 Montags?     { yylval->num = 1; return T_WEEKDAY; }
@@ -179,11 +179,21 @@ quarta  { yylval->num = 3; return T_WEEKDAY; }
 quinta  { yylval->num = 4; return T_WEEKDAY; }
 sexta   { yylval->num = 5; return T_WEEKDAY; }
 
+  /* Japanese localized day names */
+月|月曜|月曜日 { yylval->num = 1; return T_WEEKDAY; }
+火|火曜|火曜日 { yylval->num = 2; return T_WEEKDAY; }
+水|水曜|水曜日 { yylval->num = 3; return T_WEEKDAY; }
+木|木曜|木曜日 { yylval->num = 4; return T_WEEKDAY; }
+金|金曜|金曜日 { yylval->num = 5; return T_WEEKDAY; }
+土|土曜|土曜日 { yylval->num = 6; return T_WEEKDAY; }
+日|日曜|日曜日 { yylval->num = 7; return T_WEEKDAY; }
+祝日 { return T_PH; }
+
   /* creative rule separators */
 、|and|et|y|und|& { return T_ADDITIONAL_RULE_SEPARATOR; }
 
   /* skip filler words */
-from|von|du|de {}
+from|von|du|de|das|分 {}
 
 . {
     //printf("unexpected character: %s at %d:%d\n", yytext, yylloc->first_line, yylloc->first_column);
