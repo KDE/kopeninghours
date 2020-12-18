@@ -82,7 +82,7 @@ typedef void* yyscan_t;
 %parse-param { yyscan_t scanner }
 
 %glr-parser
-%expect 9
+%expect 10
 
 %union {
     int num;
@@ -308,6 +308,10 @@ SmallRangeSelector:
   TimeSelector[T] { $$ = $T; }
 | WeekdaySelector[W] { $$ = $W; }
 | WeekdaySelector[W] TimeSelector[T] {
+    $$.timeSelector = $T.timeSelector;
+    $$.weekdaySelector = $W.weekdaySelector;
+  }
+| WeekdaySelector[W] T_COLON TimeSelector[T] {
     $$.timeSelector = $T.timeSelector;
     $$.weekdaySelector = $W.weekdaySelector;
   }

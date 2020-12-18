@@ -200,6 +200,11 @@ private Q_SLOTS:
         T2("Mo-Th 11:00-20:00 Friday & Saturday 11:00-21:00 Sunday 12:00-19:00", "Mo-Th 11:00-20:00; Fr,Sa 11:00-21:00; Su 12:00-19:00");
         T2("11:30-14:00、16:30-22:00", "11:30-14:00,16:30-22:00");
 
+        // (mis)use of colon as a small-range selector separator
+        T2("Fr: 17:00-19:00", "Fr 17:00-19:00");
+        T2("Tu-Su:07:00-00:00", "Tu-Su 07:00-24:00");
+        T2("Du lundi au vendredi : 9:00-18:00", "Mo-Fr 09:00-18:00");
+
         // Unicode symbols
         T2("Mo–Tu", "Mo-Tu");
         T2("13：41", "13:41");
