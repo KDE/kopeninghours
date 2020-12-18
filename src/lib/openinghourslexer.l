@@ -132,7 +132,7 @@ Sun? { yylval->num = 7; return T_WEEKDAY; }
   /* various alternative formats, none of this is remotely compliant with the specification, but appears in reality nevertheless */
 
   /* alternative time formats */
-：|︓|ː { return T_ALT_TIME_SEP; }
+：|︓|ː|\. { return T_ALT_TIME_SEP; }
 h { return T_ALT_TIME_SEP_OR_SUFFIX; }
 
   /* alternative range separators */

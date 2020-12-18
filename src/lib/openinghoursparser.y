@@ -705,7 +705,17 @@ ExtendedHourMinute:
     Time::convertFromAm($$);
     if (!Time::isValid($$)) { YYERROR; }
   }
+| T_INTEGER[H] T_ALT_TIME_SEP T_ALT_TIME_AM[M] {
+    $$ = { Time::NoEvent, $H, $M };
+    Time::convertFromAm($$);
+    if (!Time::isValid($$)) { YYERROR; }
+  }
 | T_INTEGER[H] T_COLON T_ALT_TIME_PM[M] {
+    $$ = { Time::NoEvent, $H, $M };
+    Time::convertFromPm($$);
+    if (!Time::isValid($$)) { YYERROR; }
+  }
+| T_INTEGER[H] T_ALT_TIME_SEP T_ALT_TIME_PM[M] {
     $$ = { Time::NoEvent, $H, $M };
     Time::convertFromPm($$);
     if (!Time::isValid($$)) { YYERROR; }

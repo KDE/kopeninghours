@@ -190,6 +190,7 @@ private Q_SLOTS:
         T2("9 am - 12 am", "09:00-24:00");
         T2("11:00 am - 11:00 pm", "11:00-23:00");
         T2("09 : 00 - 12 : 00 , 13 : 00 - 19 : 00", "09:00-12:00,13:00-19:00");
+        T2("10.30am - 4.30pm", "10:30-16:30");
 
         // alternative range separators
         T2("Mo-Fri 10am to 7pm, Saturday 11am to 6pm, Sun 11am to 4pm", "Mo-Fr 10:00-19:00, Sa 11:00-18:00, Su 11:00-16:00");
