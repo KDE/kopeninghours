@@ -186,7 +186,7 @@ sexta   { yylval->num = 5; return T_WEEKDAY; }
 from|von|du|de {}
 
 . {
-    printf("unexpected character: %s at %d:%d\n", yytext, yylloc->first_line, yylloc->first_column);
+    //printf("unexpected character: %s at %d:%d\n", yytext, yylloc->first_line, yylloc->first_column);
     return T_INVALID;
 }
 
