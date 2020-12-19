@@ -546,6 +546,21 @@ MonthdaySelector:
     $$ = $S;
     appendSelector($$.monthdaySelector, $M);
   }
+| MonthdaySelector[S] T_COMMA T_INTEGER[D] {
+    $$ = $S;
+    if ($$.monthdaySelector->begin.year == $$.monthdaySelector->end.year
+     && $$.monthdaySelector->begin.month == $$.monthdaySelector->end.month
+     && $$.monthdaySelector->begin.day < $D
+     && $$.monthdaySelector->end.day < $D)
+    {
+        auto sel = new MonthdayRange;
+        sel->begin = sel->end = $$.monthdaySelector->end;
+        sel->begin.day = sel->end.day = $D;
+        appendSelector($$.monthdaySelector, sel);
+    } else {
+        YYERROR;
+    }
+  }
 ;
 
 MonthdayRange:

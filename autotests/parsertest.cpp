@@ -30,6 +30,9 @@ private Q_SLOTS:
         T("Dec off");
         T("Dec 25 off");
         T("Dec 25-26 off");
+        T2("Dec 24-26,31 off", "Dec 24-26,Dec 31 off");
+        T2("Jan 1,6 off", "Jan 01,Jan 06 off");
+        T2("Dec 24,25,26", "Dec 24,Dec 25,Dec 26");
         T("Dec 08:00");
         T("Dec 08:00-14:00");
         T("easter off");
@@ -272,6 +275,10 @@ private Q_SLOTS:
         T("49:00");
         T("12:61");
         T("60p");
+
+        T("Dec 6,4");
+        T("Dec 24-Jan 1,6");
+        T("Dec 3,2,1");
 
         // from https://wiki.openstreetmap.org/wiki/Key:opening_hours#Common_mistakes
         T("7/8-23");
