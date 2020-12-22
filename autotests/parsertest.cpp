@@ -55,6 +55,7 @@ private Q_SLOTS:
         T2("10:00-16:00/1:30", "10:00-16:00/01:30");
         T("10:00-10:00");
         T("PH off || open || unknown");
+        T("10:00-12:00+");
 
         // from https://wiki.openstreetmap.org/wiki/Key:opening_hours#Simple_examples
         T("Mo-Fr 08:00-17:30");

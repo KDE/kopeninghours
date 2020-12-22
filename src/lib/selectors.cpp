@@ -121,10 +121,11 @@ static QByteArray intervalToExpression(int minutes)
 QByteArray Timespan::toExpression() const
 {
     QByteArray expr = begin.toExpression(false);
+    if (!(end == begin)) {
+        expr += '-' + end.toExpression(true);
+    }
     if (openEnd) {
         expr += '+';
-    } else if (!(end == begin)) {
-        expr += '-' + end.toExpression(true);
     }
     if (interval) {
         expr += '/' + intervalToExpression(interval);
