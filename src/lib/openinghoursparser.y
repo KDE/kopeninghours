@@ -547,6 +547,8 @@ MonthdaySelector:
     appendSelector($$.monthdaySelector, $M);
   }
 | MonthdaySelector[S] T_COMMA T_INTEGER[D] {
+    // month day sets, not covered the official grammar but in the
+    // description in https://wiki.openstreetmap.org/wiki/Key:opening_hours#Summary_syntax
     $$ = $S;
     if ($$.monthdaySelector->begin.year == $$.monthdaySelector->end.year
      && $$.monthdaySelector->begin.month == $$.monthdaySelector->end.month
