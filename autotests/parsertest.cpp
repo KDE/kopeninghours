@@ -143,6 +143,9 @@ private Q_SLOTS:
         // from https://github.com/dfaure/DataNovaImportScripts/blob/master/saved_opening_hours
         T("Mo-Tu,Th-Fr 09:30-12:00; 2020 Dec 28 off; 2020 Dec 22,2020 Dec 29 off; We 15:00-17:00; 2020 Dec 23,2020 Dec 30 off; 2020 Dec 24,2020 Dec 31 off; Sa 10:00-12:00; 2020 Dec 26,2021 Jan 02 off; PH off");
 
+        // real-world tests from Osmose that we were handling wrongly
+        T("Tu-Fr 11:30-14:30 open, 14:30-18:00 open \"pickup only\", 18:00-22:00 open");
+
         // technically wrong but often found content in OSM for which we have error recovery
         T2("So", "Su");
         T2("Ph", "PH");

@@ -37,7 +37,7 @@ void OpeningHoursPrivate::autocorrect()
         auto rule = (*it).get();
         auto prevRule = (*(std::prev(it))).get();
 
-        if (rule->m_ruleType != Rule::AdditionalRule) {
+        if (rule->m_ruleType != Rule::AdditionalRule || !rule->m_comment.isEmpty() || !prevRule->m_comment.isEmpty()) {
             continue;
         }
 
