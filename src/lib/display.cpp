@@ -99,9 +99,9 @@ QString Display::currentState(const OpeningHours &oh)
     // next change is further ahead than one week, or we are transitioning in a way we don't handle above
     switch (i.state()) {
         case Interval::Open:
-            return i.comment().isEmpty() ? i18n("Currently open") : i18n("Currently open (%2)", i.comment());
+            return i.comment().isEmpty() ? i18n("Currently open") : i18n("Currently open (%1)", i.comment());
         case Interval::Closed:
-            return i.comment().isEmpty() ? i18n("Currently closed") : i18n("Currently closed (%2)", i.comment());
+            return i.comment().isEmpty() ? i18n("Currently closed") : i18n("Currently closed (%1)", i.comment());
         case Interval::Unknown:
             return i.comment();
         case Interval::Invalid:
