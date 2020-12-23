@@ -252,7 +252,7 @@ QByteArray Date::toExpression(Date refDate) const
             maybeSpace();
             expr += s_monthName[month-1];
         }
-        if (day && day != refDate.day) {
+        if (day && *this != refDate) {
             maybeSpace();
             expr += twoDigits(day);
         }
