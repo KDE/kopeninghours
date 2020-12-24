@@ -95,13 +95,13 @@ private Q_SLOTS:
         T("Mo-Fr 08:00-11:00 || Tu-Th,PH open \"Emergency only\"");
         T("Tu-Th,We 22:00-23:00 open \"Hot meals\"; PH off");
         T("Mo 12:00-14:00 open \"female only\", Mo 14:00-16:00 open \"male only\"; PH off");
-        T2("Apr: 22:00-23:00; PH off", "Apr 22:00-23:00; PH off");
-        T2("Jul-Jan: 22:00-23:00; PH off", "Jul-Jan 22:00-23:00; PH off");
-        T2("Jan-Jul: 22:00-23:00; PH off", "Jan-Jul 22:00-23:00; PH off");
-        T2("Jul 23-Jan 3: \"needs reservation by phone\"; PH off", "Jul 23-Jan 03 \"needs reservation by phone\"; PH off");
-        T2("Jul 23-Jan 3: 22:00-23:00 \"Please make a reservation by phone.\"; PH off", "Jul 23-Jan 03 22:00-23:00 \"Please make a reservation by phone.\"; PH off");
-        T2("Jul 23-Jan 3: 08:00-11:00 \"Please make a reservation by phone.\"; PH off", "Jul 23-Jan 03 08:00-11:00 \"Please make a reservation by phone.\"; PH off");
-        T2("Jan 23-Jul 3: 22:00-23:00 \"Please make a reservation by phone.\"; PH off", "Jan 23-Jul 03 22:00-23:00 \"Please make a reservation by phone.\"; PH off");
+        T("Apr: 22:00-23:00; PH off");
+        T("Jul-Jan: 22:00-23:00; PH off");
+        T("Jan-Jul: 22:00-23:00; PH off");
+        T2("Jul 23-Jan 3: \"needs reservation by phone\"; PH off", "Jul 23-Jan 03: \"needs reservation by phone\"; PH off");
+        T2("Jul 23-Jan 3: 22:00-23:00 \"Please make a reservation by phone.\"; PH off", "Jul 23-Jan 03: 22:00-23:00 \"Please make a reservation by phone.\"; PH off");
+        T2("Jul 23-Jan 3: 08:00-11:00 \"Please make a reservation by phone.\"; PH off", "Jul 23-Jan 03: 08:00-11:00 \"Please make a reservation by phone.\"; PH off");
+        T2("Jan 23-Jul 3: 22:00-23:00 \"Please make a reservation by phone.\"; PH off", "Jan 23-Jul 03: 22:00-23:00 \"Please make a reservation by phone.\"; PH off");
 //         T("Mar Su[-1]-Dec Su[1] -2 days: 22:00-23:00; PH off");
         T("Sa[1],Sa[1] +1 day 10:00-12:00 open \"first weekend in the month\"; PH off");
         T("Sa[-1],Sa[-1] +1 day 10:00-12:00 open \"last weekend in the month\"; PH off");
@@ -139,7 +139,7 @@ private Q_SLOTS:
         T("Tu-Th");
         T("Fr-Mo");
         T("Mo-Su; We \"only after registration\"");
-        T2("Oct: We[1]", "Oct We[1]");
+        T("Oct: We[1]");
 
         // from https://github.com/dfaure/DataNovaImportScripts/blob/master/saved_opening_hours
         T("Mo-Tu,Th-Fr 09:30-12:00; 2020 Dec 28 off; 2020 Dec 22,2020 Dec 29 off; We 15:00-17:00; 2020 Dec 23,2020 Dec 30 off; 2020 Dec 24,2020 Dec 31 off; Sa 10:00-12:00; 2020 Dec 26,2021 Jan 02 off; PH off");

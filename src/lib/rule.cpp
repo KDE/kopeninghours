@@ -71,6 +71,9 @@ QByteArray Rule::toExpression() const
         maybeSpace();
         expr += m_weekSelector->toExpression();
     }
+    if (m_colonAfterWideRangeSelector) {
+        expr += ':';
+    }
     if (m_weekdaySelector) {
         maybeSpace();
         expr += m_weekdaySelector->toExpression();

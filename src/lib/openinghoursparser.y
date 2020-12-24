@@ -26,6 +26,7 @@ static void initSelectors(Selectors &sels)
     sels.monthdaySelector = nullptr;
     sels.yearSelector = nullptr;
     sels.seen_24_7 = false;
+    sels.colonAfterWideRangeSelector = false;
 }
 
 static void applySelectors(const Selectors &sels, Rule *rule)
@@ -36,6 +37,7 @@ static void applySelectors(const Selectors &sels, Rule *rule)
     rule->m_monthdaySelector.reset(sels.monthdaySelector);
     rule->m_yearSelector.reset(sels.yearSelector);
     rule->m_seen_24_7 = sels.seen_24_7;
+    rule->m_colonAfterWideRangeSelector = sels.colonAfterWideRangeSelector;
 }
 
 %}
@@ -59,6 +61,7 @@ struct Selectors {
     MonthdayRange *monthdaySelector;
     YearRange *yearSelector;
     bool seen_24_7;
+    bool colonAfterWideRangeSelector;
 };
 
 struct DateOffset {
@@ -267,7 +270,10 @@ SelectorSequence:
   T_24_7 { initSelectors($$); $$.seen_24_7 = true; }
 | SmallRangeSelector[S] { $$ = $S; }
 | WideRangeSelector[W] { $$ = $W; }
-| WideRangeSelector[W] T_COLON { $$ = $W; }
+| WideRangeSelector[W] T_COLON {
+    $$ = $W;
+    $$.colonAfterWideRangeSelector = true;
+  }
 | WideRangeSelector[W] SmallRangeSelector[S] {
     $$.timeSelector = $S.timeSelector;
     $$.weekdaySelector = $S.weekdaySelector;
@@ -277,6 +283,7 @@ SelectorSequence:
     $$.timeSelector = $S.timeSelector;
     $$.weekdaySelector = $S.weekdaySelector;
     $$.weekSelector = $W.weekSelector;
+    $$.colonAfterWideRangeSelector = true;
   }
 ;
 

@@ -69,6 +69,7 @@ public:
     std::unique_ptr<MonthdayRange> m_monthdaySelector;
     std::unique_ptr<YearRange> m_yearSelector;
     bool m_seen_24_7 = false;
+    bool m_colonAfterWideRangeSelector = false;
 
     StateFlags m_stateFlags = NoFlags;
     Type m_ruleType = NormalRule;
