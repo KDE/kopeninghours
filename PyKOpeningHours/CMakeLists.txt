@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: 2020 David Faure <faure@kde.org>
+# SPDX-License-Identifier: BSD-3-Clause
+
 # Without this, any build libraries automatically have names "lib{x}.so"
 set(CMAKE_SHARED_MODULE_PREFIX "")
 

@@ -1,7 +1,7 @@
 /*
     SPDX-FileCopyrightText: 2020 David Faure <faure@kde.org>
 
-    SPDX-License-Identifier: AGPL-3.0-or-later
+    SPDX-License-Identifier: LGPL-2.0-or-later
 */
 
 #ifndef PYTHON_QT_WRAPPERS_H
