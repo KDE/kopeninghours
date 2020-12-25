@@ -68,7 +68,9 @@ ecm_generate_headers(KOpeningHours_FORWARDING_HEADERS
 )
 
 install(TARGETS KOpeningHours EXPORT KOpeningHoursTargets ${INSTALL_TARGETS_DEFAULT_ARGS})
-install(FILES org_kde_kopeninghours.categories DESTINATION ${KDE_INSTALL_LOGGINGCATEGORIESDIR})
+if (KDE_INSTALL_LOGGINGCATEGORIESDIR) # added by ECM 5.59
+    install(FILES org_kde_kopeninghours.categories DESTINATION ${KDE_INSTALL_LOGGINGCATEGORIESDIR})
+endif()
 install(FILES
     ${KOpeningHours_FORWARDING_HEADERS}
     DESTINATION ${KDE_INSTALL_INCLUDEDIR}/KOpeningHours
