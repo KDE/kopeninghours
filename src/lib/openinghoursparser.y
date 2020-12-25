@@ -163,7 +163,7 @@ typedef void* yyscan_t;
 %type <time> ExtendedHourMinute
 %type <weekdayRange> WeekdaySequence
 %type <weekdayRange> WeekdayRange
-%type <weekdayRange> HolidySequence
+%type <weekdayRange> HolidaySequence
 %type <weekdayRange> Holiday
 %type <num> NthSequence
 %type <num> NthEntry
@@ -412,21 +412,21 @@ WeekdaySelector:
     initSelectors($$);
     $$.weekdaySelector = $W;
   }
-| HolidySequence[H] {
+| HolidaySequence[H] {
     initSelectors($$);
     $$.weekdaySelector = $H;
   }
-| HolidySequence[H] T_COMMA WeekdaySequence[W] {
+| HolidaySequence[H] T_COMMA WeekdaySequence[W] {
     initSelectors($$);
     $$.weekdaySelector = $H;
     appendSelector($$.weekdaySelector, $W);
   }
-| WeekdaySequence[W] T_COMMA HolidySequence[H] {
+| WeekdaySequence[W] T_COMMA HolidaySequence[H] {
     initSelectors($$);
     $$.weekdaySelector = $W;
     appendSelector($$.weekdaySelector, $H);
   }
-| HolidySequence[H] WeekdaySequence[W] { // ### enforce a space inbetween those
+| HolidaySequence[H] WeekdaySequence[W] { // ### enforce a space inbetween those
     initSelectors($$);
     $$.weekdaySelector = $H;
     $$.weekdaySelector->andSelector.reset($W);
@@ -465,9 +465,9 @@ WeekdayRange:
   }
 ;
 
-HolidySequence:
+HolidaySequence:
   Holiday[H] { $$ = $H; }
-| HolidySequence[S] T_COMMA Holiday[H] { $$ = $S; appendSelector($$, $H); }
+| HolidaySequence[S] T_COMMA Holiday[H] { $$ = $S; appendSelector($$, $H); }
 ;
 
 Holiday:
