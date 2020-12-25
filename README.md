@@ -14,6 +14,8 @@ See:
 
 ## Supported Features
 
+The parser and validator is fairly complete. However the evaluation feature has the following limitations.
+
 So far only the time interval mode is supported, not the point in time mode.
 
 Supported opening hours features are:
