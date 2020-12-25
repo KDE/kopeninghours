@@ -55,10 +55,24 @@ set_package_properties(FLEX PROPERTIES PURPOSE "Lexer generator for parsing open
 find_package(BISON REQUIRED)
 set_package_properties(BISON PROPERTIES PURPOSE "Grammar generator for parsing opening hours expressions")
 
+find_package(PythonLibs 3.6 MODULE)
+if (PythonLibs_FOUND)
+    # Extract major/minor python version
+    string(REPLACE "." ";" VERSION_LIST ${PYTHONLIBS_VERSION_STRING})
+    list(GET VERSION_LIST 0 PYTHONLIBS_VERSION_MAJOR)
+    list(GET VERSION_LIST 1 PYTHONLIBS_VERSION_MINOR)
+
+    # boost-python requires exact version number
+    find_package(Boost COMPONENTS python${PYTHONLIBS_VERSION_MAJOR}${PYTHONLIBS_VERSION_MINOR} MODULE)
+endif()
+
 add_definitions(-DQT_DISABLE_DEPRECATED_BEFORE=0x050d00)
 add_definitions(-DKF_DISABLE_DEPRECATED_BEFORE_AND_AT=0x054400)
 add_definitions(-DQT_NO_FOREACH)
 add_subdirectory(src)
+if (Boost_FOUND)
+    add_subdirectory(PyKOpeningHours)
+endif()
 
 if (BUILD_TESTING)
     add_subdirectory(autotests)
