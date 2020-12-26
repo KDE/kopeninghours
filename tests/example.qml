@@ -162,6 +162,10 @@ Kirigami.ApplicationWindow {
                         }
                     }
                 }
+                QQC2.Label {
+                    text: "Normalized: " + oh.normalizedExpression
+                    visible: oh.error != OpeningHours.SyntaxError && oh.normalizedExpression != expression.text
+                }
 
                 QQC2.Label {
                     id: currentState

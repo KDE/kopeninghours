@@ -254,6 +254,11 @@ QByteArray OpeningHours::normalizedExpression() const
     return ret;
 }
 
+QString OpeningHours::normalizedExpressionString() const
+{
+    return QString::fromUtf8(normalizedExpression());
+}
+
 void OpeningHours::setLocation(float latitude, float longitude)
 {
     d->m_latitude = latitude;

@@ -33,6 +33,7 @@ class KOPENINGHOURS_EXPORT OpeningHours
 {
     Q_GADGET
     Q_PROPERTY(Error error READ error)
+    Q_PROPERTY(QString normalizedExpression READ normalizedExpressionString)
     Q_PROPERTY(float latitude READ latitude WRITE setLatitude)
     Q_PROPERTY(float longitude READ longitude WRITE setLongitude)
 #ifndef KOPENINGHOURS_VALIDATOR_ONLY
@@ -152,8 +153,9 @@ public:
 
 private:
     // for QML bindings
-    QString timeZoneId() const;
-    void setTimeZoneId(const QString &tzId);
+    Q_DECL_HIDDEN QString normalizedExpressionString() const;
+    Q_DECL_HIDDEN QString timeZoneId() const;
+    Q_DECL_HIDDEN void setTimeZoneId(const QString &tzId);
 
     QExplicitlySharedDataPointer<OpeningHoursPrivate> d;
 };
