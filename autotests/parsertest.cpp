@@ -146,6 +146,8 @@ private Q_SLOTS:
 
         // real-world tests from Osmose that we were handling wrongly
         T("Tu-Fr 11:30-14:30 open, 14:30-18:00 open \"pickup only\", 18:00-22:00 open");
+        T("SH Tu,Th 10:00-19:00");
+        T2("Tu, Th 13:30-19:00; SH Tu, Th 10:00-19:00; Fr 13:30-18:00; SH Fr 10:00-18:00; We, Sa 10:00-18:00; SH We, Sa 10:00-18:00", "Tu,Th 13:30-19:00; SH Tu,Th 10:00-19:00; Fr 13:30-18:00; SH Fr 10:00-18:00; We,Sa 10:00-18:00; SH We,Sa 10:00-18:00");
 
         // technically wrong but often found content in OSM for which we have error recovery
         T2("So", "Su");
@@ -248,6 +250,7 @@ private Q_SLOTS:
         T2("10:00 - 13:30 / 17:00 - 20:30", "10:00-13:30,17:00-20:30");
         T2("Mo-Fr 6:00-18:00 / Sa 6:00-13:00 / So 7:00-17:00", "Mo-Fr 06:00-18:00; Sa 06:00-13:00; Su 07:00-17:00");
 #undef T
+#undef T2
     }
 
     void testSuccess()
