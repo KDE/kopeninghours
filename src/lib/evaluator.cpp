@@ -92,7 +92,10 @@ static QDate nthWeekday(QDate month, int weekDay, int n)
 
 SelectorResult WeekdayRange::nextInterval(const Interval &interval, const QDateTime &dt, OpeningHoursPrivate *context) const
 {
-    const auto r1 = nextIntervalLocal(interval, dt, context);
+    SelectorResult r1;
+    for (auto s = this; s; s = s->next.get()) {
+        r1 = std::min(r1, s->nextIntervalLocal(interval, dt, context));
+    }
     if (!andSelector || r1.matchOffset() > 0 || !r1.canMatch()) {
         return r1;
     }
@@ -381,10 +384,7 @@ RuleResult Rule::nextInterval(const QDateTime &dt, OpeningHoursPrivate *context,
     }
 
     if (m_weekdaySelector) {
-        SelectorResult r;
-        for (auto s = m_weekdaySelector.get(); s; s = s->next.get()) {
-            r = std::min(r, s->nextInterval(i, dt, context));
-        }
+        SelectorResult r = m_weekdaySelector->nextInterval(i, dt, context);
         if (!r.canMatch()) {
             return {{}, resultMode};
         }
