@@ -247,7 +247,7 @@ QByteArray Date::toExpression(Date refDate) const
         if (year && year != refDate.year) {
             expr += QByteArray::number(year);
         }
-        if (month && month != refDate.month) {
+        if (month && ((year && year != refDate.year) || month != refDate.month)) {
             static const char* s_monthName[] = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
             maybeSpace();
             expr += s_monthName[month-1];
@@ -258,7 +258,10 @@ QByteArray Date::toExpression(Date refDate) const
         }
         break;
     case Date::Easter:
-        expr = "easter";
+        if (year) {
+            expr += QByteArray::number(year) + ' ';
+        }
+        expr += "easter";
         break;
     }
     if (dayOffset > 0) {

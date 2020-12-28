@@ -85,7 +85,7 @@ typedef void* yyscan_t;
 %parse-param { yyscan_t scanner }
 
 %glr-parser
-%expect 10
+%expect 9
 
 %union {
     int num;
@@ -175,6 +175,7 @@ typedef void* yyscan_t;
 %type <date> VariableDate
 %type <monthdayRange> MonthdayRange
 %type <yearRange> YearRange
+%type <yearRange> YearRangeStandalone
 
 %destructor { delete $$; } <rule>
 %destructor {
@@ -573,7 +574,11 @@ MonthdaySelector:
 ;
 
 MonthdayRange:
-  T_MONTH[M] {
+  T_YEAR[Y] {
+    $$ = new MonthdayRange;
+    $$->begin = $$->end = { $Y, 0, 0, Date::FixedDate, 0, 0 };
+  }
+| T_MONTH[M] {
     $$ = new MonthdayRange;
     $$->begin = $$->end = { 0, $M, 0, Date::FixedDate, 0, 0 };
   }
@@ -590,6 +595,11 @@ MonthdayRange:
     $$ = new MonthdayRange;
     $$->begin = { $Y, $M1, 0, Date::FixedDate, 0, 0 };
     $$->end = { $Y, $M2, 0, Date::FixedDate, 0, 0 };
+  }
+| T_YEAR[Y1] T_MONTH[M1] RangeSeparator T_YEAR[Y2] T_MONTH[M2] {
+    $$ = new MonthdayRange;
+    $$->begin = { $Y1, $M1, 0, Date::FixedDate, 0, 0 };
+    $$->end = { $Y2, $M2, 0, Date::FixedDate, 0, 0 };
   }
 | DateFrom[D] {
     $$ = new MonthdayRange;
@@ -646,7 +656,7 @@ DateFrom:
   T_MONTH[M] T_INTEGER[D] { $$ = { 0, $M, $D, Date::FixedDate, 0, 0 }; }
 | T_YEAR[Y] T_MONTH[M] T_INTEGER[D] { $$ = { $Y, $M, $D, Date::FixedDate, 0, 0 }; }
 | VariableDate[D] { $$ = $D; }
-| T_INTEGER[Y] VariableDate[D] {
+| T_YEAR[Y] VariableDate[D] {
     $$ = $D;
     $$.year = $Y;
   }
@@ -663,7 +673,7 @@ VariableDate:
 
 // Year selector
 YearSelector:
-  YearRange[Y] {
+  YearRangeStandalone[Y] {
     initSelectors($$);
     $$.yearSelector = $Y;
   }
@@ -678,7 +688,11 @@ YearRange:
     $$ = new YearRange;
     $$->begin = $$->end = $Y;
   }
-| T_YEAR[Y1] RangeSeparator T_YEAR[Y2] {
+| YearRangeStandalone[Y] { $$ = $Y; }
+;
+
+YearRangeStandalone:
+  T_YEAR[Y1] RangeSeparator T_YEAR[Y2] {
     $$ = new YearRange;
     $$->begin = $Y1;
     $$->end = $Y2;

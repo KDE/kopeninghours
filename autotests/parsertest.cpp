@@ -42,6 +42,13 @@ private Q_SLOTS:
         T("2020-2021");
         T("1970-2022/2");
         T("2020+");
+        T("2010,2020,2030");
+        T("2010-2015,2020-2025,2030");
+        T("2020-2022 Dec");
+        T("2020 Dec-2022 Dec");
+        T("2020-2022 Dec 24-26");
+        T("2020 Dec 24-26");
+        T("2021 10:00-20:00");
         T("PH off || open"); // https://openingh.openstreetmap.de/evaluation_tool/ says this means always open... bug in opening.js?
         T("PH off || unknown \"foo\"");
         T("2020 Jan-Apr");
@@ -116,7 +123,7 @@ private Q_SLOTS:
         T("We-Mo,PH 23:59-22:59");
         T2("week 2-52/2 We 00:00-24:00; week 1-53/2 Sa 00:00-24:00; PH off", "week 02-52/2 We 00:00-24:00; week 01-53/2 Sa 00:00-24:00; PH off");
         T2("week 4-16 We 00:00-24:00; week 38-42 Sa 00:00-24:00; PH off", "week 04-16 We 00:00-24:00; week 38-42 Sa 00:00-24:00; PH off");
-//         T("2012 easter -2 days-2012 easter +2 days: open \"Around easter\"; PH off");
+        T("2012 easter -2 days-2012 easter +2 days: open \"Around easter\"; PH off");
         T("24/7 closed \"always closed\"");
         T("Jan 23-Feb 11,Feb 12 00:00-24:00; PH off");
         T("Apr-Oct Su[2] 14:00-18:00; Aug Su[-1] -1 day 10:00-18:00; Aug Su[-1] 10:00-18:00; PH off");

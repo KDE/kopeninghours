@@ -226,7 +226,7 @@ static QDate resolveDate(Date d, int year)
     QDate date;
     switch (d.variableDate) {
         case Date::FixedDate:
-            date = {d.year ? d.year : year, d.month, d.day ? d.day : 1};
+            date = {d.year ? d.year : year, d.month ? d.month : 1, d.day ? d.day : 1};
             break;
         case Date::Easter:
             date = Easter::easterDate(d.year ? d.year : year);
@@ -241,8 +241,12 @@ static QDate resolveDate(Date d, int year)
 static QDate resolveDateEnd(Date d, int year)
 {
     auto date = resolveDate(d, year);
-    if (!d.day && d.variableDate == Date::FixedDate) {
-        return date.addDays(daysInMonth(d.month));
+    if (d.variableDate == Date::FixedDate) {
+        if (!d.day && !d.month) {
+            return date.addYears(1);
+        } else if (!d.day) {
+            return date.addDays(daysInMonth(d.month));
+        }
     }
     return date.addDays(1);
 }
