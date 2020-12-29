@@ -37,18 +37,15 @@ void OpeningHoursPrivate::autocorrect()
         auto rule = (*it).get();
         auto prevRule = (*(std::prev(it))).get();
 
-        if (rule->m_ruleType != Rule::AdditionalRule || !rule->m_comment.isEmpty() || !prevRule->m_comment.isEmpty()) {
+        if (rule->m_ruleType != Rule::AdditionalRule || rule->hasComment() || prevRule->hasComment() || !prevRule->hasImplicitState()) {
             continue;
         }
 
-        const auto prevRuleWeekDayOnly = prevRule->m_weekdaySelector && prevRule->selectorCount() == 1;
-        const auto curRuleTimeOnly = rule->m_timeSelector && rule->selectorCount() == 1;
-        if (!prevRuleWeekDayOnly && !curRuleTimeOnly) {
-            continue;
-        }
+        const auto prevRuleSingleSelector = prevRule->selectorCount() == 1;
+        const auto curRuleSingleSelector = rule->selectorCount() == 1;
 
         // the previous rule only has a weekday selector, so we fold that into the current rule
-        if (prevRuleWeekDayOnly && rule->m_weekdaySelector) {
+        if (prevRuleSingleSelector && prevRule->m_weekdaySelector && rule->m_weekdaySelector) {
             auto tmp = std::move(rule->m_weekdaySelector);
             rule->m_weekdaySelector = std::move(prevRule->m_weekdaySelector);
             auto *selector = rule->m_weekdaySelector.get();
@@ -61,8 +58,18 @@ void OpeningHoursPrivate::autocorrect()
         }
 
         // the current rule only has a time selector, so we append that to the previous rule
-        else if (curRuleTimeOnly && prevRule->m_timeSelector) {
+        else if (curRuleSingleSelector && rule->m_timeSelector && prevRule->m_timeSelector) {
             appendSelector(prevRule->m_timeSelector.get(), std::move(rule->m_timeSelector));
+            it = std::prev(m_rules.erase(it));
+        }
+
+        // both sides are single monthday selectors
+        else if (curRuleSingleSelector && rule->m_monthdaySelector && prevRuleSingleSelector && prevRule->m_monthdaySelector) {
+            auto tmp = std::move(rule->m_monthdaySelector);
+            rule->m_monthdaySelector = std::move(prevRule->m_monthdaySelector);
+            appendSelector(rule->m_monthdaySelector.get(), std::move(tmp));
+            rule->m_ruleType = prevRule->m_ruleType;
+            std::swap(*it, *std::prev(it));
             it = std::prev(m_rules.erase(it));
         }
     }

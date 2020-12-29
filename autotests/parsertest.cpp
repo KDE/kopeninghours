@@ -172,6 +172,8 @@ private Q_SLOTS:
         T2("Friday 08:00-12:00", "Fr 08:00-12:00");
         T2("Sat", "Sa");
         T2("december", "Dec");
+        T2("Dec 24,25,26, Jan 1,6 off", "Dec 24,Dec 25,Dec 26,Jan 01,Jan 06 off");
+        T2("Dec 24,25,26 open, Jan 1,6 off", "Dec 24,Dec 25,Dec 26 open, Jan 01,Jan 06 off");
 
         // Tolerance for incorrect casing
         T2("mo-fr 10:00-20:00", "Mo-Fr 10:00-20:00");

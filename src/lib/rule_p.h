@@ -51,7 +51,9 @@ public:
     };
 
     Interval::State state() const;
+    bool hasImplicitState() const;
     void setState(State state);
+    bool hasComment() const;
     void setComment(const char *str, int len);
     int requiredCapabilities() const;
 

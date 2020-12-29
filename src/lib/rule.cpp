@@ -20,6 +20,11 @@ Interval::State Rule::state() const
     return m_state;
 }
 
+bool Rule::hasImplicitState() const
+{
+    return m_state == Interval::Invalid;
+}
+
 void Rule::setState(State state)
 {
     if (state == State::Off) {
@@ -28,6 +33,11 @@ void Rule::setState(State state)
     } else {
         m_state = static_cast<Interval::State>(state);
     }
+}
+
+bool Rule::hasComment() const
+{
+    return !m_comment.isEmpty();
 }
 
 void Rule::setComment(const char *str, int len)
