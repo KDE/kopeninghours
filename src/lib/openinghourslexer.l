@@ -139,7 +139,7 @@ h|時 { return T_ALT_TIME_SEP_OR_SUFFIX; }
 ~|～|〜|to|à|bis|a|ás|às|as|au|→|до { return T_ALT_RANGE_SEP; }
 
   /* localized state names */
-ferm(e|é)|geschlossen|encerrado { yylval->state = State::Closed;  return T_STATE; }
+ferm(e|é)|geschlossen|encerrado|chiuso { yylval->state = State::Closed;  return T_STATE; }
 
  /* German localized day names. */
 Montags?     { yylval->num = 1; return T_WEEKDAY; }
