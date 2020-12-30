@@ -171,6 +171,15 @@ Viernes      { yylval->num = 5; return T_WEEKDAY; }
 S(á|a)bado    { yylval->num = 6; return T_WEEKDAY; }
 Domingo      { yylval->num = 7; return T_WEEKDAY; }
 
+  /* Italian localized day names */
+Luned(ì|i)    { yylval->num = 1; return T_WEEKDAY; }
+Marted(ì|i)   { yylval->num = 2; return T_WEEKDAY; }
+Mercoled(ì|i) { yylval->num = 3; return T_WEEKDAY; }
+Gioved(ì|i)   { yylval->num = 4; return T_WEEKDAY; }
+Venerd(ì|i)   { yylval->num = 5; return T_WEEKDAY; }
+Sabato        { yylval->num = 6; return T_WEEKDAY; }
+Domenica      { yylval->num = 7; return T_WEEKDAY; }
+
   /* Portuguese localized day names */
 feira   { yylval->num = 1; return T_WEEKDAY; }
 segunda { yylval->num = 1; return T_WEEKDAY; }
