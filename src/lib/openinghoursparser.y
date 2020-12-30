@@ -568,6 +568,7 @@ MonthdaySelector:
         sel->begin.day = sel->end.day = $D;
         appendSelector($$.monthdaySelector, sel);
     } else {
+        delete $$.monthdaySelector;
         YYERROR;
     }
   }
