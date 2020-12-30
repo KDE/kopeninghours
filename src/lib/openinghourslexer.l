@@ -110,18 +110,18 @@ Sun? { yylval->num = 7; return T_WEEKDAY; }
 "November" { yylval->num = 11; return T_MONTH; }
 "December" { yylval->num = 12; return T_MONTH; }
 
-"Jan" { yylval->num = 1; return T_MONTH; }
-"Feb" { yylval->num = 2; return T_MONTH; }
-"Mar" { yylval->num = 3; return T_MONTH; }
-"Apr" { yylval->num = 4; return T_MONTH; }
-"May" { yylval->num = 5; return T_MONTH; }
-"Jun" { yylval->num = 6; return T_MONTH; }
-"Jul" { yylval->num = 7; return T_MONTH; }
-"Aug" { yylval->num = 8; return T_MONTH; }
-"Sep" { yylval->num = 9; return T_MONTH; }
-"Oct" { yylval->num = 10; return T_MONTH; }
-"Nov" { yylval->num = 11; return T_MONTH; }
-"Dec" { yylval->num = 12; return T_MONTH; }
+Jan\.? { yylval->num = 1; return T_MONTH; }
+Feb\.? { yylval->num = 2; return T_MONTH; }
+Mar\.? { yylval->num = 3; return T_MONTH; }
+Apr\.? { yylval->num = 4; return T_MONTH; }
+May\.? { yylval->num = 5; return T_MONTH; }
+Jun\.? { yylval->num = 6; return T_MONTH; }
+Jul\.? { yylval->num = 7; return T_MONTH; }
+Aug\.? { yylval->num = 8; return T_MONTH; }
+Sep\.? { yylval->num = 9; return T_MONTH; }
+Oct\.? { yylval->num = 10; return T_MONTH; }
+Nov\.? { yylval->num = 11; return T_MONTH; }
+Dec\.? { yylval->num = 12; return T_MONTH; }
 
 {COMMENT} {
     yylval->strRef.str = yytext + 1;
