@@ -164,12 +164,13 @@ int WeekdayRange::requiredCapabilities() const
     return c;
 }
 
+static constexpr const char* s_weekDays[] = { "ERROR", "Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"};
+
 QByteArray WeekdayRange::toExpression() const
 {
     QByteArray expr;
     switch (holiday) {
     case NoHoliday: {
-        static const char* s_weekDays[] = { "ERROR", "Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"};
         expr = s_weekDays[beginDay];
         if (endDay != beginDay) {
             expr += '-';
@@ -264,6 +265,15 @@ QByteArray Date::toExpression(Date refDate) const
         expr += "easter";
         break;
     }
+
+    if (weekdayOffset < 0) {
+        expr += " -";
+        expr += s_weekDays[-weekdayOffset];
+    } else if (weekdayOffset > 0) {
+        expr += " +";
+        expr += s_weekDays[weekdayOffset];
+    }
+
     if (dayOffset > 0) {
         expr += " +" + QByteArray::number(dayOffset) + ' ' + (dayOffset > 1 ? "days" : "day");
     } else if (dayOffset < 0) {
