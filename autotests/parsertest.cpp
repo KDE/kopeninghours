@@ -245,6 +245,7 @@ private Q_SLOTS:
         T2("月～土 　17:00～23:00", "Mo-Sa 17:00-23:00");
 
         // non-English
+        T2("Lun-Ven 08:00-13:00", "Mo-Fr 08:00-13:00");
         T2("Domingo de 9: 00 am. a 1:00 pm", "Su 09:00-13:00");
         T2("Segunda a Sexta 08:00h a 16:00h", "Mo-Fr 08:00-16:00");
         T2("lunedi,mercoledi,venerdi,sabato 09:00-20:00", "Mo,We,Fr,Sa 09:00-20:00");
