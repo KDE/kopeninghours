@@ -33,6 +33,8 @@ private Q_SLOTS:
         T2("Dec 24-26,31 off", "Dec 24-26,Dec 31 off");
         T2("Jan 1,6 off", "Jan 01,Jan 06 off");
         T2("Dec 24,25,26", "Dec 24,Dec 25,Dec 26");
+        T2("Jan 03,Dec 04,24 off", "Jan 03,Dec 04,Dec 24 off");
+        T2("07:30-20:00; Jan 03,13,23,Dec 04,14,24 off", "07:30-20:00; Jan 03,Jan 13,Jan 23,Dec 04,Dec 14,Dec 24 off");
         T("Dec 08:00");
         T("Dec 08:00-14:00");
         T("easter off");

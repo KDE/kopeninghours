@@ -77,6 +77,15 @@ void appendSelector(T* firstSelector, T* selector)
     return appendSelector(firstSelector, std::unique_ptr<T>(selector));
 }
 
+template <typename T>
+T* lastSelector(T* firstSelector)
+{
+    while (firstSelector && firstSelector->next) {
+        firstSelector = firstSelector->next.get();
+    }
+    return firstSelector;
+}
+
 /** Time */
 class Time
 {

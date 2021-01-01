@@ -554,15 +554,16 @@ MonthdaySelector:
     // month day sets, not covered the official grammar but in the
     // description in https://wiki.openstreetmap.org/wiki/Key:opening_hours#Summary_syntax
     $$ = $S;
-    if ($$.monthdaySelector->begin.year == $$.monthdaySelector->end.year
-     && $$.monthdaySelector->begin.month == $$.monthdaySelector->end.month
-     && $$.monthdaySelector->begin.day < $D
-     && $$.monthdaySelector->end.day < $D)
+    const auto prevSelector = lastSelector($$.monthdaySelector);
+    if (prevSelector->begin.year == prevSelector->end.year
+     && prevSelector->begin.month == prevSelector->end.month
+     && prevSelector->begin.day < $D
+     && prevSelector->end.day < $D)
     {
         auto sel = new MonthdayRange;
-        sel->begin = sel->end = $$.monthdaySelector->end;
+        sel->begin = sel->end = prevSelector->end;
         sel->begin.day = sel->end.day = $D;
-        appendSelector($$.monthdaySelector, sel);
+        appendSelector(prevSelector, sel);
     } else {
         delete $$.monthdaySelector;
         YYERROR;
