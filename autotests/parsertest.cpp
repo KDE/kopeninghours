@@ -248,6 +248,7 @@ private Q_SLOTS:
         T2("Domingo de 9: 00 am. a 1:00 pm", "Su 09:00-13:00");
         T2("Segunda a Sexta 08:00h a 16:00h", "Mo-Fr 08:00-16:00");
         T2("lunedi,mercoledi,venerdi,sabato 09:00-20:00", "Mo,We,Fr,Sa 09:00-20:00");
+        T2("Mi 08:00-18:00", "We 08:00-18:00");
 
         // recovery from wrong rule separators
         T2("Fr-Sa 10:00-02:00,Su 10:00-20:00", "Fr-Sa 10:00-02:00, Su 10:00-20:00");
