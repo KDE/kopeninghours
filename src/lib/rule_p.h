@@ -44,6 +44,7 @@ public:
         NormalRule,
         AdditionalRule,
         FallbackRule,
+        GuessRuleType,
     };
     enum StateFlags : char {
         NoFlags,

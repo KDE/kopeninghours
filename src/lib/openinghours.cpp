@@ -143,7 +143,18 @@ void OpeningHoursPrivate::addRule(Rule *rule)
 void OpeningHoursPrivate::restartFrom(int pos, Rule::Type nextRuleType)
 {
     m_restartPosition = pos;
-    m_recoveryRuleType = nextRuleType;
+    if (nextRuleType == Rule::GuessRuleType) {
+        if (m_rules.empty()) {
+            m_recoveryRuleType = Rule::NormalRule;
+        } else {
+            // if autocorrect() could merge the previous rule, we assume that's the intended meaning
+            const auto &prev = m_rules.back();
+            const auto couldBeMerged = prev->selectorCount() == 1 && !prev->hasComment() && prev->hasImplicitState();
+            m_recoveryRuleType = couldBeMerged ? Rule::AdditionalRule : Rule::NormalRule;
+        }
+    } else {
+        m_recoveryRuleType = nextRuleType;
+    }
 }
 
 bool OpeningHoursPrivate::isRecovering() const
@@ -256,6 +267,9 @@ QByteArray OpeningHours::normalizedExpression() const
                     break;
                 case Rule::FallbackRule:
                     ret += " || ";
+                    break;
+                case Rule::GuessRuleType:
+                    Q_UNREACHABLE();
                     break;
             }
         }

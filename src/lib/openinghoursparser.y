@@ -222,7 +222,7 @@ Ruleset:
   }
 | Ruleset error {
     if (!parser->isRecovering()) {
-        parser->restartFrom(@2.first_column, Rule::NormalRule);
+        parser->restartFrom(@2.first_column, Rule::GuessRuleType);
         parser->m_ruleSeparatorRecovery = true;
         yyerrok;
     } else {
