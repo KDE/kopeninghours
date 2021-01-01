@@ -136,7 +136,7 @@ Dec\.? { yylval->num = 12; return T_MONTH; }
 h|時 { return T_ALT_TIME_SEP_OR_SUFFIX; }
 
   /* alternative range separators */
-~|～|〜|to|à|bis|a|ás|às|as|au|→|до { return T_ALT_RANGE_SEP; }
+~|～|〜|to|à|bis|a|ás|às|as|au|al|→|до { return T_ALT_RANGE_SEP; }
 
   /* localized state names */
 ferm(e|é)|geschlossen|encerrado|chiuso { yylval->state = State::Closed;  return T_STATE; }

@@ -223,6 +223,7 @@ private Q_SLOTS:
         T2("Samedi et Dimanche 5h30 - 12h30 Lundi 13h45 - 15h15", "Sa,Su 05:30-12:30; Mo 13:45-15:15");
         T2("Mo-Th 11:00-20:00 Friday & Saturday 11:00-21:00 Sunday 12:00-19:00", "Mo-Th 11:00-20:00; Fr,Sa 11:00-21:00; Su 12:00-19:00");
         T2("11:30-14:00、16:30-22:00", "11:30-14:00,16:30-22:00");
+        T2("Lunedì al Venerdì 08:00-13:00", "Mo-Fr 08:00-13:00");
 
         // (mis)use of colon as a small-range selector separator
         T2("Fr: 17:00-19:00", "Fr 17:00-19:00");
