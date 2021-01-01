@@ -266,20 +266,23 @@ QByteArray Date::toExpression(Date refDate) const
         break;
     }
 
-    if (weekdayOffset < 0) {
-        expr += " -";
-        expr += s_weekDays[-weekdayOffset];
-    } else if (weekdayOffset > 0) {
-        expr += " +";
-        expr += s_weekDays[weekdayOffset];
+    if (offset.nthWeekday) {
+        expr += ' ';
+        expr += s_weekDays[offset.weekday];
+        expr += '[' + QByteArray::number(offset.nthWeekday) + ']';
     }
 
-    if (dayOffset > 0) {
-        expr += " +" + QByteArray::number(dayOffset) + ' ' + (dayOffset > 1 ? "days" : "day");
-    } else if (dayOffset < 0) {
-        expr += " -" + QByteArray::number(-dayOffset) + ' ' + (dayOffset < -1 ? "days" : "day");
+    if (offset.dayOffset > 0) {
+        expr += " +" + QByteArray::number(offset.dayOffset) + ' ' + (offset.dayOffset > 1 ? "days" : "day");
+    } else if (offset.dayOffset < 0) {
+        expr += " -" + QByteArray::number(-offset.dayOffset) + ' ' + (offset.dayOffset < -1 ? "days" : "day");
     }
     return expr;
+}
+
+bool DateOffset::operator==(DateOffset other) const
+{
+    return weekday == other.weekday && nthWeekday == other.nthWeekday && dayOffset == other.dayOffset;
 }
 
 bool Date::operator==(Date other) const
@@ -291,12 +294,12 @@ bool Date::operator==(Date other) const
             return false;
         }
     }
-    return weekdayOffset == other.weekdayOffset && dayOffset == other.dayOffset;
+    return offset == other.offset;
 }
 
 int MonthdayRange::requiredCapabilities() const
 {
-    if (begin.weekdayOffset != 0 || end.weekdayOffset != 0) {
+    if (begin.offset.weekday != 0 || end.offset.weekday != 0) {
         return Capability::NotImplemented;
     }
     return next ? next->requiredCapabilities() : Capability::None;

@@ -64,11 +64,6 @@ struct Selectors {
     bool colonAfterWideRangeSelector;
 };
 
-struct DateOffset {
-    int dayOffset;
-    int weekdayOffset;
-};
-
 #ifndef YY_TYPEDEF_YY_SCANNER_T
 #define YY_TYPEDEF_YY_SCANNER_T
 typedef void* yyscan_t;
@@ -85,7 +80,7 @@ typedef void* yyscan_t;
 %parse-param { yyscan_t scanner }
 
 %glr-parser
-%expect 9
+%expect 12
 
 %union {
     int num;
@@ -174,6 +169,7 @@ typedef void* yyscan_t;
 %type <date> DateTo
 %type <date> VariableDate
 %type <monthdayRange> MonthdayRange
+%type <dateOffset> AltMonthdayOffset
 %type <yearRange> YearRange
 %type <yearRange> YearRangeStandalone
 
@@ -577,30 +573,35 @@ MonthdaySelector:
 MonthdayRange:
   T_YEAR[Y] {
     $$ = new MonthdayRange;
-    $$->begin = $$->end = { $Y, 0, 0, Date::FixedDate, 0, 0 };
+    $$->begin = $$->end = { $Y, 0, 0, Date::FixedDate, { 0, 0, 0 } };
   }
 | T_MONTH[M] {
     $$ = new MonthdayRange;
-    $$->begin = $$->end = { 0, $M, 0, Date::FixedDate, 0, 0 };
+    $$->begin = $$->end = { 0, $M, 0, Date::FixedDate, { 0, 0, 0 } };
   }
 | T_YEAR[Y] T_MONTH[M] {
     $$ = new MonthdayRange;
-    $$->begin = $$->end = { $Y, $M, 0, Date::FixedDate, 0, 0 };
+    $$->begin = $$->end = { $Y, $M, 0, Date::FixedDate, { 0, 0, 0 } };
   }
 | T_MONTH[M1] RangeSeparator T_MONTH[M2] {
     $$ = new MonthdayRange;
-    $$->begin = { 0, $M1, 0, Date::FixedDate, 0, 0 };
-    $$->end = { 0, $M2, 0, Date::FixedDate, 0, 0 };
+    $$->begin = { 0, $M1, 0, Date::FixedDate, { 0, 0, 0 } };
+    $$->end = { 0, $M2, 0, Date::FixedDate, { 0, 0, 0 } };
   }
 | T_YEAR[Y] T_MONTH[M1] RangeSeparator T_MONTH[M2] {
     $$ = new MonthdayRange;
-    $$->begin = { $Y, $M1, 0, Date::FixedDate, 0, 0 };
-    $$->end = { $Y, $M2, 0, Date::FixedDate, 0, 0 };
+    $$->begin = { $Y, $M1, 0, Date::FixedDate, { 0, 0, 0 } };
+    $$->end = { $Y, $M2, 0, Date::FixedDate, { 0, 0, 0 } };
   }
 | T_YEAR[Y1] T_MONTH[M1] RangeSeparator T_YEAR[Y2] T_MONTH[M2] {
     $$ = new MonthdayRange;
-    $$->begin = { $Y1, $M1, 0, Date::FixedDate, 0, 0 };
-    $$->end = { $Y2, $M2, 0, Date::FixedDate, 0, 0 };
+    $$->begin = { $Y1, $M1, 0, Date::FixedDate, { 0, 0, 0 } };
+    $$->end = { $Y2, $M2, 0, Date::FixedDate, { 0, 0, 0 } };
+  }
+| T_MONTH[M1] AltMonthdayOffset[O1] RangeSeparator T_MONTH[M2] AltMonthdayOffset[O2] {
+    $$ = new MonthdayRange;
+    $$->begin = { 0, $M1, 0, Date::FixedDate, $O1 };
+    $$->end = { 0, $M2, 0, Date::FixedDate, $O2 };
   }
 | DateFrom[D] {
     $$ = new MonthdayRange;
@@ -609,8 +610,7 @@ MonthdayRange:
 | DateFrom[D] DateOffset[O] {
     $$ = new MonthdayRange;
     $$->begin = $D;
-    $$->begin.dayOffset = $O.dayOffset;
-    $$->begin.weekdayOffset = $O.weekdayOffset;
+    $$->begin.offset = $O;
     $$->end = $$->begin;
   }
 | DateFrom[F] RangeSeparator DateTo[T] {
@@ -622,8 +622,7 @@ MonthdayRange:
 | DateFrom[F] DateOffset[OF] RangeSeparator DateTo[T] {
     $$ = new MonthdayRange;
     $$->begin = $F;
-    $$->begin.dayOffset = $OF.dayOffset;
-    $$->begin.weekdayOffset = $OF.weekdayOffset;
+    $$->begin.offset = $OF;
     $$->end = $T;
     if ($$->end.month == 0) { $$->end.month = $$->begin.month; }
   }
@@ -632,30 +631,27 @@ MonthdayRange:
     $$->begin = $F;
     $$->end = $T;
     if ($$->end.month == 0) { $$->end.month = $$->begin.month; }
-    $$->end.dayOffset = $OT.dayOffset;
-    $$->end.weekdayOffset = $OT.weekdayOffset;
+    $$->end.offset = $OT;
   }
 | DateFrom[F] DateOffset[OF] RangeSeparator DateTo[T] DateOffset[OT] {
     $$ = new MonthdayRange;
     $$->begin = $F;
-    $$->begin.dayOffset = $OF.dayOffset;
-    $$->begin.weekdayOffset = $OF.weekdayOffset;
+    $$->begin.offset = $OF;
     $$->end = $T;
     if ($$->end.month == 0) { $$->end.month = $$->begin.month; }
-    $$->end.dayOffset = $OT.dayOffset;
-    $$->end.weekdayOffset = $OT.weekdayOffset;
+    $$->end.offset = $OT;
   }
 ;
 
 DateOffset:
-  T_PLUS T_WEEKDAY[D] { $$ = { 0, $D }; }
-| T_MINUS T_WEEKDAY[D] { $$ = { 0, -$D }; }
-| DayOffset[O] { $$ = { $O, 0 }; }
+  T_PLUS T_WEEKDAY[D] { $$ = { 0, (int8_t)$D, 1 }; }
+| T_MINUS T_WEEKDAY[D] { $$ = { 0, (int8_t)$D, -1 }; }
+| DayOffset[O] { $$ = { (int16_t)$O, 0, 0 }; }
 ;
 
 DateFrom:
-  T_MONTH[M] T_INTEGER[D] { $$ = { 0, $M, $D, Date::FixedDate, 0, 0 }; }
-| T_YEAR[Y] T_MONTH[M] T_INTEGER[D] { $$ = { $Y, $M, $D, Date::FixedDate, 0, 0 }; }
+  T_MONTH[M] T_INTEGER[D] { $$ = { 0, $M, $D, Date::FixedDate, { 0, 0, 0 } }; }
+| T_YEAR[Y] T_MONTH[M] T_INTEGER[D] { $$ = { $Y, $M, $D, Date::FixedDate, { 0, 0, 0 } }; }
 | VariableDate[D] { $$ = $D; }
 | T_YEAR[Y] VariableDate[D] {
     $$ = $D;
@@ -665,12 +661,18 @@ DateFrom:
 
 DateTo:
   DateFrom[D] { $$ = $D; }
-| T_INTEGER[N] { $$ = { 0, 0, $N, Date::FixedDate, 0, 0 }; }
+| T_INTEGER[N] { $$ = { 0, 0, $N, Date::FixedDate, { 0, 0, 0 } }; }
 ;
 
 VariableDate:
-  T_EASTER { $$ = { 0, 0, 0, Date::Easter, 0, 0 }; }
+  T_EASTER { $$ = { 0, 0, 0, Date::Easter, { 0, 0, 0 } }; }
 ;
+
+AltMonthdayOffset:
+  T_WEEKDAY[D] T_LBRACKET T_INTEGER[N] T_RBRACKET { $$ = { 0, (int8_t)$D, (int8_t)$N }; }
+| T_WEEKDAY[D] T_LBRACKET T_MINUS T_INTEGER[N] T_RBRACKET { $$ = { 0, (int8_t)$D, (int8_t)-$N }; }
+| T_WEEKDAY[D] T_LBRACKET T_INTEGER[N] T_RBRACKET DayOffset[O] { $$ = { (int16_t)$O, (int8_t)$D, (int8_t)$N }; }
+| T_WEEKDAY[D] T_LBRACKET T_MINUS T_INTEGER[N] T_RBRACKET DayOffset[O] { $$ = { (int16_t)$O, (int8_t)$D, (int8_t)-$N }; }
 
 // Year selector
 YearSelector:

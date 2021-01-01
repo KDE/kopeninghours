@@ -64,8 +64,8 @@ private Q_SLOTS:
         T("PH off || open || unknown");
         T("10:00-12:00+");
         T("Jun 15-Aug 15 Mo-Fr 10:00-12:30");
-        T("Dec 01 +Su");
-        T("Dec 01 -Su 08:00-12:00");
+        T2("Dec 01 +Su", "Dec 01 Su[1]");
+        T2("Dec 01 -Su 08:00-12:00", "Dec 01 Su[-1] 08:00-12:00");
 
         // from https://wiki.openstreetmap.org/wiki/Key:opening_hours#Simple_examples
         T("Mo-Fr 08:00-17:30");
@@ -111,7 +111,7 @@ private Q_SLOTS:
         T2("Jul 23-Jan 3: 22:00-23:00 \"Please make a reservation by phone.\"; PH off", "Jul 23-Jan 03: 22:00-23:00 \"Please make a reservation by phone.\"; PH off");
         T2("Jul 23-Jan 3: 08:00-11:00 \"Please make a reservation by phone.\"; PH off", "Jul 23-Jan 03: 08:00-11:00 \"Please make a reservation by phone.\"; PH off");
         T2("Jan 23-Jul 3: 22:00-23:00 \"Please make a reservation by phone.\"; PH off", "Jan 23-Jul 03: 22:00-23:00 \"Please make a reservation by phone.\"; PH off");
-//         T("Mar Su[-1]-Dec Su[1] -2 days: 22:00-23:00; PH off");
+        T("Mar Su[-1]-Dec Su[1] -2 days: 22:00-23:00; PH off");
         T("Sa[1],Sa[1] +1 day 10:00-12:00 open \"first weekend in the month\"; PH off");
         T("Sa[-1],Sa[-1] +1 day 10:00-12:00 open \"last weekend in the month\"; PH off");
         T("Sa-Su 00:00-24:00; PH off");
@@ -277,6 +277,11 @@ private Q_SLOTS:
         OpeningHours oh(input);
         QVERIFY(oh.error() != OpeningHours::SyntaxError);
         QCOMPARE(oh.normalizedExpression(), expectedOutput);
+
+        // verify the expressions we generate are parsed correctly as well
+        OpeningHours oh2(oh.normalizedExpression());
+        QVERIFY(oh.error() != OpeningHours::SyntaxError);
+        QCOMPARE(oh2.normalizedExpression(), oh.normalizedExpression());
     }
 
     void testFail_data()

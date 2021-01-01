@@ -232,7 +232,7 @@ static QDate resolveDate(Date d, int year)
             date = Easter::easterDate(d.year ? d.year : year);
             break;
     }
-    date = date.addDays(d.dayOffset);
+    date = date.addDays(d.offset.dayOffset);
 
     // TODO consider weekday offsets
     return date;
