@@ -187,6 +187,7 @@ public:
     QByteArray toExpression(Date refDate) const;
     bool operator==(Date other) const;
     bool operator!=(Date other) const { return !operator==(other); }
+    bool hasOffset() const;
 
     int year;
     int month;

@@ -68,6 +68,7 @@ private Q_SLOTS:
         T("Jun 15-Aug 15 Mo-Fr 10:00-12:30");
         T2("Dec 01 +Su", "Dec 01 Su[1]");
         T2("Dec 01 -Su 08:00-12:00", "Dec 01 Su[-1] 08:00-12:00");
+        T("Aug Mo[1]-Aug Sa[-1] closed");
 
         // from https://wiki.openstreetmap.org/wiki/Key:opening_hours#Simple_examples
         T("Mo-Fr 08:00-17:30");

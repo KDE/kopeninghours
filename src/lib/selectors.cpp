@@ -248,7 +248,7 @@ QByteArray Date::toExpression(Date refDate) const
         if (year && year != refDate.year) {
             expr += QByteArray::number(year);
         }
-        if (month && ((year && year != refDate.year) || month != refDate.month)) {
+        if (month && ((year && year != refDate.year) || month != refDate.month || hasOffset())) {
             static const char* s_monthName[] = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
             maybeSpace();
             expr += s_monthName[month-1];
@@ -295,6 +295,11 @@ bool Date::operator==(Date other) const
         }
     }
     return offset == other.offset;
+}
+
+bool Date::hasOffset() const
+{
+    return offset.dayOffset || offset.weekday;
 }
 
 int MonthdayRange::requiredCapabilities() const
