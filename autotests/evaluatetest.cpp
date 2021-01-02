@@ -81,6 +81,7 @@ private Q_SLOTS:
         QTest::newRow("month sets") << QByteArray("Oct,Nov,Dec") << QDateTime({2020, 11, 1}, {0, 0}) << QDateTime({2020, 12, 1}, {0, 0});
         QTest::newRow("month range max") << QByteArray("Jan-Dec") << QDateTime({2020, 1, 1}, {0, 0}) << QDateTime({2021, 1, 1}, {0, 0});
         QTest::newRow("month wrap") << QByteArray("Nov-Feb") << QDateTime({2020, 11, 1}, {0, 0}) << QDateTime({2021, 3, 1}, {0, 0});
+        QTest::newRow("month wrap 2") << QByteArray("Dec-Nov") << QDateTime({2019, 12, 1}, {0, 0}) << QDateTime({2020, 12, 1}, {0, 0});
 
         QTest::newRow("month/day") << QByteArray("Nov 7") << QDateTime({2020, 11, 7}, {0, 0}) << QDateTime({2020, 11, 8}, {0, 0});
         QTest::newRow("next month/day") << QByteArray("Nov 8") << QDateTime({2020, 11, 8}, {0, 0}) << QDateTime({2020, 11, 9}, {0, 0});
@@ -295,6 +296,15 @@ private Q_SLOTS:
         QVERIFY(i.isValid());
         QCOMPARE(i.state(), Interval::Unknown);
         QCOMPARE(i.comment(), QLatin1String("on appointment"));
+    }
+
+    void testLookBack()
+    {
+        OpeningHours oh("Oct-Mar");
+        QCOMPARE(oh.error(), OpeningHours::NoError);
+        const auto i = oh.interval(QDateTime({2021, 1, 1}, {0, 0}));
+        QVERIFY(i.isValid());
+        QCOMPARE(i.state(), Interval::Open);
     }
 };
 

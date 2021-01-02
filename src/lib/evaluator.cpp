@@ -262,7 +262,7 @@ SelectorResult MonthdayRange::nextInterval(const Interval &interval, const QDate
 
     // note that for any of the following we cannot just do addYears(1), as that will break
     // for leap years. instead we have to recompute the date again for each year
-    if (endDt < beginDt) {
+    if (endDt < beginDt || (endDt <= beginDt && begin != end)) {
         // month range wraps over the year boundary
         endDt = resolveDateEnd(end, dt.date().year() + 1);
     }
@@ -270,6 +270,20 @@ SelectorResult MonthdayRange::nextInterval(const Interval &interval, const QDate
     if (end.year && dt.date() >= endDt) {
         return false;
     }
+
+    // if the current range is in the future, check if we are still in the previous one
+    if (dt.date() < beginDt && end.month < begin.month) {
+        auto lookbackBeginDt = resolveDate(begin, dt.date().year() - 1);
+        auto lookbackEndDt = resolveDateEnd(end, dt.date().year() - 1);
+        if (lookbackEndDt < lookbackEndDt || (lookbackEndDt <= lookbackBeginDt && begin != end)) {
+            lookbackEndDt = resolveDateEnd(end, dt.date().year());
+        }
+        if (lookbackEndDt >= dt.date()) {
+            beginDt = lookbackBeginDt;
+            endDt = lookbackEndDt;
+        }
+    }
+
     if (dt.date() >= endDt) {
         beginDt = resolveDate(begin, dt.date().year() + 1);
         endDt = resolveDateEnd(end, dt.date().year() + 1);
