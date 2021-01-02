@@ -220,7 +220,7 @@ int Week::requiredCapabilities() const
 
 QByteArray Week::toExpression() const
 {
-    QByteArray expr = "week " + twoDigits(beginWeek);
+    QByteArray expr = twoDigits(beginWeek);
     if (endWeek != beginWeek) {
         expr += '-';
         expr += twoDigits(endWeek);
