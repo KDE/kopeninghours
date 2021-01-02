@@ -304,10 +304,7 @@ bool Date::hasOffset() const
 
 int MonthdayRange::requiredCapabilities() const
 {
-    if (begin.offset.weekday != 0 || end.offset.weekday != 0) {
-        return Capability::NotImplemented;
-    }
-    return next ? next->requiredCapabilities() : Capability::None;
+    return Capability::None;
 }
 
 QByteArray MonthdayRange::toExpression() const

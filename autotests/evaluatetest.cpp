@@ -151,6 +151,9 @@ private Q_SLOTS:
 
         QTest::newRow("holiday and condition") << QByteArray("PH Mo") << QDateTime({2021, 4, 5}, {0, 0}) << QDateTime({2021, 4, 6}, {0, 0});
         QTest::newRow("holiday and condition, range") << QByteArray("PH Mo-Fr") << QDateTime({2020, 12, 25}, {0, 0}) << QDateTime({2020, 12, 26}, {0, 0});
+
+        QTest::newRow("nth day month begin") << QByteArray("Nov Su[2]-Dec Su[-1] 09:00-12:00") << QDateTime({2020, 11, 8}, {9, 0}) << QDateTime({2020, 11, 8}, {12, 0});
+        QTest::newRow("nth day month end") << QByteArray("Oct Su[1]-Nov Su[-4] 09:00-12:00") << QDateTime({2020, 11, 8}, {9, 0}) << QDateTime({2020, 11, 8}, {12, 0});
     }
 
     void testNext()

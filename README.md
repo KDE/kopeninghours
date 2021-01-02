@@ -33,7 +33,6 @@ Still missing features:
 * open-ended time selectors
 * school holiday selectors
 * open ended month ranges
-* weekday-based offsets
 
 ## Other Formats
 
