@@ -164,13 +164,13 @@ Sam(edi)?   { yylval->num = 6; return T_WEEKDAY; }
 Dim(anche)? { yylval->num = 7; return T_WEEKDAY; }
 
   /* Spanish localized day names */
-Lunes        { yylval->num = 1; return T_WEEKDAY; }
-Martes       { yylval->num = 2; return T_WEEKDAY; }
+Lunes         { yylval->num = 1; return T_WEEKDAY; }
+Martes        { yylval->num = 2; return T_WEEKDAY; }
 Mi(é|e)rcoles { yylval->num = 3; return T_WEEKDAY; }
-Jueves       { yylval->num = 4; return T_WEEKDAY; }
-Viernes      { yylval->num = 5; return T_WEEKDAY; }
-S(á|a)bado    { yylval->num = 6; return T_WEEKDAY; }
-Domingo      { yylval->num = 7; return T_WEEKDAY; }
+Jueves        { yylval->num = 4; return T_WEEKDAY; }
+Vie(rnes)?    { yylval->num = 5; return T_WEEKDAY; }
+S(á|a)b(ado)? { yylval->num = 6; return T_WEEKDAY; }
+Dom(ingo)?    { yylval->num = 7; return T_WEEKDAY; }
 
   /* Italian localized day names */
 Luned(ì|i)    { yylval->num = 1; return T_WEEKDAY; }
