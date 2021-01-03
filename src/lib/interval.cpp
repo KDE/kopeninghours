@@ -13,6 +13,7 @@ public:
     QDateTime end;
     Interval::State state = Interval::Invalid;
     QString comment;
+    bool openEndTime = false;
 };
 }
 
@@ -90,6 +91,17 @@ void Interval::setEnd(const QDateTime &end)
 bool Interval::hasOpenEnd() const
 {
     return !d->end.isValid();
+}
+
+bool Interval::hasOpenEndTime() const
+{
+    return d->openEndTime;
+}
+
+void Interval::setOpenEndTime(bool openEndTime)
+{
+    d.detach();
+    d->openEndTime = openEndTime;
 }
 
 bool Interval::contains(const QDateTime &dt) const

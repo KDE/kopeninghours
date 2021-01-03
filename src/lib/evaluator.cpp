@@ -69,6 +69,7 @@ SelectorResult Timespan::nextInterval(const Interval &interval, const QDateTime 
         auto i = interval;
         i.setBegin(beginDt);
         i.setEnd(endDt);
+        i.setOpenEndTime(openEnd);
         return i;
     }
 

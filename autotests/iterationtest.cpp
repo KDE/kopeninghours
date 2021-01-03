@@ -35,6 +35,9 @@ private:
         i.begin().isValid() ? b += QLocale::c().toString(i.begin(), QStringLiteral("ddd yyyy-MM-dd hh:mm")).toUtf8() : b += "-inf";
         b += " - ";
         i.end().isValid() ? b += QLocale::c().toString(i.end(), QStringLiteral("ddd yyyy-MM-dd hh:mm")).toUtf8() : b += "inf";
+        if (i.hasOpenEndTime()) {
+            b += '+';
+        }
         b += ": ";
         switch (i.state()) {
             case Interval::Open:

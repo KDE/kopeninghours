@@ -101,7 +101,7 @@ int Timespan::requiredCapabilities() const
     if (begin.event != Time::NoEvent || end.event != Time::NoEvent) {
         c |= Capability::Location;
     }
-    if (openEnd) {
+    if (openEnd && begin == end) {
         c |= Capability::NotImplemented;
     }
     return next ? (next->requiredCapabilities() | c) : c;
