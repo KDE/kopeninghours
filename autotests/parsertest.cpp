@@ -247,6 +247,9 @@ private Q_SLOTS:
         T2("月-土 09:00-18:00", "Mo-Sa 09:00-18:00");
         T2("水曜日～土曜日10:00～19:00", "We-Sa 10:00-19:00");
         T2("月～土 　17:00～23:00", "Mo-Sa 17:00-23:00");
+        T2("Mo-Fr 08:00-17:00 “Visa Applications\"", "Mo-Fr 08:00-17:00 \"Visa Applications\"");
+        T2("„nach Vereinbarung“", "\"nach Vereinbarung\"");
+        T("\"„Termine nach Vereinbarung“\"");
 
         // non-English
         T2("Lun-Ven 08:00-13:00", "Mo-Fr 08:00-13:00");

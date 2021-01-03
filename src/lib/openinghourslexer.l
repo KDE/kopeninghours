@@ -6,6 +6,8 @@
 
 #include "openinghoursparser_p.h"
 
+#include <cstring>
+
 #define YY_USER_ACTION yylloc->first_column = yylloc->last_column; yylloc->last_column += yyleng;
 
 %}
@@ -24,7 +26,6 @@
 SPACE       ([ \t\r\n]| | |　)+
 
 INTEGER     [0-9]+
-COMMENT     ["][^"]*["]
 
 YEAR        [1-2][019][0-9][0-9]
 
@@ -123,9 +124,28 @@ Oct\.? { yylval->num = 10; return T_MONTH; }
 Nov\.? { yylval->num = 11; return T_MONTH; }
 Dec\.? { yylval->num = 12; return T_MONTH; }
 
-{COMMENT} {
+ /* different quote types are sometimes mixed and/or used nested, so this is a compromise to catch most of them */
+["][^"]*["] {
     yylval->strRef.str = yytext + 1;
     yylval->strRef.len = yyleng - 2;
+    return T_COMMENT;
+}
+(“|”|„)[^(\"|“|”|„)]*(\"|“|”|„) {
+    int startOffset = 1; int endOffset = 1;
+    for (const auto quote : { "\"", "“", "”", "„" }) {
+        const int len = std::strlen(quote);
+        if (yyleng <= len) {
+            continue;
+        }
+        if (std::strncmp(yytext, quote, len) == 0) {
+            startOffset = len;
+        }
+        if (std::strncmp(yytext + yyleng - len, quote, len) == 0) {
+            endOffset = len;
+        }
+    }
+    yylval->strRef.str = yytext + startOffset;
+    yylval->strRef.len = yyleng - startOffset - endOffset;
     return T_COMMENT;
 }
 
