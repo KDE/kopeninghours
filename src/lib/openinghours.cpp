@@ -63,8 +63,8 @@ void OpeningHoursPrivate::autocorrect()
             it = std::prev(m_rules.erase(it));
         }
 
-        // both sides are single monthday selectors
-        else if (curRuleSingleSelector && rule->m_monthdaySelector && prevRuleSingleSelector && prevRule->m_monthdaySelector) {
+        // previous is a single monthday selector
+        else if (rule->m_monthdaySelector && prevRuleSingleSelector && prevRule->m_monthdaySelector) {
             auto tmp = std::move(rule->m_monthdaySelector);
             rule->m_monthdaySelector = std::move(prevRule->m_monthdaySelector);
             appendSelector(rule->m_monthdaySelector.get(), std::move(tmp));
