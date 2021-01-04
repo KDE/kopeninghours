@@ -23,6 +23,7 @@ Supported opening hours features are:
 * fallback rules
 * all rule modifiers and rule comments
 * time span, weekday, week, month, month day and year selectors
+* open-ended time spans
 * solar position based variable time events
 * public holiday selectors (based on KF5::Holidays)
 * variable date selectors
@@ -30,7 +31,6 @@ Supported opening hours features are:
 Still missing features:
 * comment preservation on intersecting close rules
 * wide range selector placeholder comments
-* open-ended time selectors
 * school holiday selectors
 * open ended month ranges
 

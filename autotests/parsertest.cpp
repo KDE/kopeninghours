@@ -358,7 +358,6 @@ private Q_SLOTS:
         QTest::newRow("time interval") << QByteArray("10:00-16:00/90") << OpeningHours::IncompatibleMode;
         QTest::newRow("time interval 2") << QByteArray("10:00-16:00/1:30") << OpeningHours::IncompatibleMode;
         QTest::newRow("week wrap") << QByteArray("week 45-13") << OpeningHours::UnsupportedFeature;
-        QTest::newRow("unsupported") << QByteArray("Su 10:00+") << OpeningHours::UnsupportedFeature;
         QTest::newRow("single timepoint") << QByteArray("10:00") << OpeningHours::IncompatibleMode;
         QTest::newRow("month timepoint") << QByteArray("Dec 08:00") << OpeningHours::IncompatibleMode;
     }

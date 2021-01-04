@@ -65,7 +65,7 @@ SelectorResult Timespan::nextInterval(const Interval &interval, const QDateTime 
         endDt = endDt.addDays(1);
     }
 
-    if (dt >= beginDt && dt < endDt) {
+    if ((dt >= beginDt && dt < endDt) || (beginDt == endDt && beginDt == dt)) {
         auto i = interval;
         i.setBegin(beginDt);
         i.setEnd(endDt);

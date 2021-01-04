@@ -442,7 +442,12 @@ Interval OpeningHours::interval(const QDateTime &dt) const
 Interval OpeningHours::nextInterval(const Interval &interval) const
 {
     if (!interval.hasOpenEnd()) {
-        auto i = this->interval(interval.end());
+        auto endDt = interval.end();
+        // ensure we move forward even on zero-length open-end intervals, otherwise we get stuck in a loop
+        if (interval.hasOpenEndTime() && interval.begin() == interval.end()) {
+            endDt = endDt.addSecs(3600);
+        }
+        auto i = this->interval(endDt);
         if (i.begin() < interval.end() && i.end() > interval.end()) {
             i.setBegin(interval.end());
         }

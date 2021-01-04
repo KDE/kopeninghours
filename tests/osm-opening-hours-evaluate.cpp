@@ -19,14 +19,17 @@ using namespace KOpeningHours;
 
 void printInterval(const Interval &i)
 {
-    if (i.begin().isValid()) {
+    if (!i.hasOpenBegin()) {
         std::cout << qPrintable(i.begin().toString(QStringLiteral("ddd yyyy-MM-dd hh:mm")));
     } else {
         std::cout << "since ever";
     }
     std::cout << " - ";
-    if (i.end().isValid()) {
+    if (!i.hasOpenEnd()) {
         std::cout << qPrintable(i.end().toString(QStringLiteral("ddd yyyy-MM-dd hh:mm")));
+        if (i.hasOpenEndTime()) {
+            std::cout << '+';
+        }
     } else {
         std::cout << "until all eternity";
     }

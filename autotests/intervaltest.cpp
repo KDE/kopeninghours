@@ -65,6 +65,18 @@ private Q_SLOTS:
         QCOMPARE(i < j, false);
         QCOMPARE(j < i, true);
     }
+
+    void testZeroLengthOpenEndTime()
+    {
+        Interval i;
+        i.setBegin(QDateTime({2020, 11, 7}, {18, 0}));
+        i.setEnd(QDateTime({2020, 11, 7}, {18, 0}));
+        i.setOpenEndTime(true);
+        i.setState(Interval::Open);
+
+        QVERIFY(i.isValid());
+        QVERIFY(i.contains(QDateTime({2020, 11, 7}, {18, 0})));
+    }
 };
 
 QTEST_GUILESS_MAIN(IntervalTest)

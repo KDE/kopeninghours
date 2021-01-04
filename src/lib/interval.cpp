@@ -106,6 +106,9 @@ void Interval::setOpenEndTime(bool openEndTime)
 
 bool Interval::contains(const QDateTime &dt) const
 {
+    if (d->openEndTime && d->begin.isValid() && d->begin == d->end) {
+        return dt == d->begin;
+    }
     return (d->begin.isValid() ? d->begin <= dt : true) && (d->end.isValid() ? dt < d->end : true);
 }
 

@@ -47,6 +47,9 @@ private Q_SLOTS:
         QTest::newRow("time start match") << QByteArray("18:00-22:00") << QDateTime({2020, 11, 7}, {18, 0}) << QDateTime({2020, 11, 7}, {22, 0});
         QTest::newRow("time end match") << QByteArray("16:00-18:00") << QDateTime({2020, 11, 8}, {16, 0}) << QDateTime({2020, 11, 8}, {18, 0});
 
+        QTest::newRow("time open end future") << QByteArray("20:00+") << QDateTime({2020, 11, 7}, {20, 0}) << QDateTime({2020, 11, 7}, {20, 0});
+        QTest::newRow("time open end now") << QByteArray("18:00+") << QDateTime({2020, 11, 7}, {18, 0}) << QDateTime({2020, 11, 7}, {18, 0});
+        QTest::newRow("time open end past") << QByteArray("12:00+") << QDateTime({2020, 11, 8}, {12, 0}) << QDateTime({2020, 11, 8}, {12, 0});
         QTest::newRow("time range open end") << QByteArray("16:00-22:00+") << QDateTime({2020, 11, 7}, {16, 0}) << QDateTime({2020, 11, 7}, {22, 0});
 
         QTest::newRow("matching day") << QByteArray("Sa") << QDateTime({2020, 11, 7}, {0, 0}) << QDateTime({2020, 11, 8}, {0, 0});
