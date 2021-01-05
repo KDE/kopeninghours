@@ -12,8 +12,9 @@ public:
     QDateTime begin;
     QDateTime end;
     Interval::State state = Interval::Invalid;
-    QString comment;
     bool openEndTime = false;
+    QString comment;
+    QDateTime estimatedEnd;
 };
 }
 
@@ -132,6 +133,20 @@ void Interval::setComment(const QString &comment)
 {
     d.detach();
     d->comment = comment;
+}
+
+QDateTime Interval::estimatedEnd() const
+{
+    if (d->openEndTime && d->estimatedEnd.isValid()) {
+        return d->estimatedEnd;
+    }
+    return end();
+}
+
+void Interval::setEstimatedEnd(const QDateTime& estimatedEnd)
+{
+    d.detach();
+    d->estimatedEnd = estimatedEnd;
 }
 
 QDebug operator<<(QDebug debug, const Interval &interval)

@@ -33,6 +33,14 @@ public:
 };
 }
 
+static void clipIntervalEnd(Interval &i, const QDateTime &endDt)
+{
+    i.setEnd(i.hasOpenEnd() ? endDt : std::min(i.end(), endDt));
+    if (i.end() == endDt && i.hasOpenEndTime()) { // spans in the next day, so this sub-interval isn't open-ended
+        i.setOpenEndTime(false);
+    }
+}
+
 void IntervalModelPrivate::repopulateModel()
 {
     m_intervals.clear();
@@ -49,15 +57,33 @@ void IntervalModelPrivate::repopulateModel()
         // clip intervals to the current day, makes displaying much easier
         i.setBegin(i.hasOpenBegin() ? QDateTime(dt, {0, 0}) : std::max(i.begin(), QDateTime(dt, {0, 0})));
         dt = dt.addDays(1);
-        i.setEnd(i.hasOpenEnd() ? QDateTime(dt, {0, 0}) : std::min(i.end(), QDateTime(dt, {0, 0})));
+        clipIntervalEnd(i, QDateTime(dt, {0, 0}));
 
         dayData.intervals.push_back(i);
         while (i.isValid() && i.end() < QDateTime(dt, {0, 0})) {
             i = oh.nextInterval(i);
-            i.setEnd(i.hasOpenEnd() ? QDateTime(dt, {0, 0}) : std::min(i.end(), QDateTime(dt, {0, 0})));
+            clipIntervalEnd(i, QDateTime(dt, {0, 0}));
             dayData.intervals.push_back(i);
         }
 
+        // fill open end time estimates
+        for (auto it = dayData.intervals.begin(); it != std::prev(dayData.intervals.end()); ++it) {
+            auto nextStartDt = QDateTime(dt, {0, 0});
+            if (!(*it).hasOpenEndTime() || (*it).state() == Interval::Closed) {
+                continue;
+            }
+            for (auto nextIt = std::next(it); nextIt != dayData.intervals.end(); ++nextIt) {
+                if ((*nextIt).state() != Interval::Closed) {
+                    nextStartDt = (*nextIt).begin();
+                    break;
+                }
+            }
+
+            auto estimatedEnd = nextStartDt == QDateTime(dt, {0, 0}) ? nextStartDt : (*it).end().addSecs((*it).end().secsTo(nextStartDt) / 2);
+            estimatedEnd = std::min(estimatedEnd, (*it).end().addSecs(4 * 3600));
+            (*it).setEstimatedEnd(estimatedEnd);
+            (*std::next(it)).setBegin(estimatedEnd);
+        }
     }
 }
 

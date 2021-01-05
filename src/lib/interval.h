@@ -31,6 +31,7 @@ class KOPENINGHOURS_EXPORT Interval
     Q_PROPERTY(bool hasOpenEnd READ hasOpenEnd)
     Q_PROPERTY(bool hasOpenEndTime READ hasOpenEndTime)
     Q_PROPERTY(QString comment READ comment)
+    Q_PROPERTY(QDateTime estimatedEnd READ estimatedEnd)
 public:
     Interval();
     Interval(const Interval&);
@@ -74,6 +75,13 @@ public:
      */
     bool hasOpenEndTime() const;
     void setOpenEndTime(bool openEndTime);
+
+    /** Returns an estimated end time for intervals with an open end time.
+     *  By default this is the same as end() would return, unless higher-level
+     *  logic with a view on multiple intervals and/or other context actually sets this.
+     */
+    QDateTime estimatedEnd() const;
+    void setEstimatedEnd(const QDateTime &estimatedEnd);
 
     /** Check if this interval contains @p dt. */
     bool contains(const QDateTime &dt) const;

@@ -48,10 +48,16 @@ Kirigami.ApplicationWindow {
                             return "transparent";
                         }
                         width: {
-                            var ratio = (interval.end - interval.begin) / (24 * 60 * 60 * 1000);
+                            var ratio = (interval.estimatedEnd - interval.begin) / (24 * 60 * 60 * 1000);
                             return ratio * (delegateRoot.ListView.view.width - delegateRoot.ListView.view.labelWidth - Kirigami.Units.smallSpacing);
                         }
                         height: Kirigami.Units.gridUnit
+                        gradient: Gradient {
+                            orientation: Gradient.Horizontal
+                            GradientStop { position: 0.0; color: intervalBox.color }
+                            GradientStop { position: (interval.end - interval.begin) / (interval.estimatedEnd - interval.begin); color: intervalBox.color }
+                            GradientStop { position: 1.0; color: interval.hasOpenEndTime ? Kirigami.Theme.negativeBackgroundColor : intervalBox.color }
+                        }
 
                         QQC2.Label {
                             id: commentLabel
