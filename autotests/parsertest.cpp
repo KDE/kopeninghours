@@ -163,6 +163,9 @@ private Q_SLOTS:
         T2("Tu, Th 13:30-19:00; SH Tu, Th 10:00-19:00; Fr 13:30-18:00; SH Fr 10:00-18:00; We, Sa 10:00-18:00; SH We, Sa 10:00-18:00", "Tu,Th 13:30-19:00; SH Tu,Th 10:00-19:00; Fr 13:30-18:00; SH Fr 10:00-18:00; We,Sa 10:00-18:00; SH We,Sa 10:00-18:00");
         T2("Apr-Sep 09:00-19:00; Mar-Oct. 09:00-18:00; Nov.-Feb. 09:00-17:00", "Apr-Sep 09:00-19:00; Mar-Oct 09:00-18:00; Nov-Feb 09:00-17:00");
         T2("week 23-37 12:30-15:00,20:00-23:00; week 01-22,38-53 off", "week 23-37 12:30-15:00,20:00-23:00; week 01-22,38-53 off");
+        T2("Mar Su[-1] - Oct Su[-1] - 1 days: Th 09:00-18:00, Tu 15:00-18:00; Sa 09:00-12:00; Oct Su[-1] - Mar Su[-1] - 1 days: Tu 09:00-17:00, Th 09:00-17:00, Sa 09:00-12:00; Mo, We, Fr, Su, PH Off",
+           "Mar Su[-1]-Oct Su[-1] -1 day: Th 09:00-18:00, Tu 15:00-18:00; Sa 09:00-12:00; Oct Su[-1]-Mar Su[-1] -1 day: Tu 09:00-17:00, Th 09:00-17:00, Sa 09:00-12:00; Mo,We,Fr,Su,PH off");
+        T("Mo-Sa 09:00-20:00; Su[-2,-1] 12:30-18:00");
 
         // technically wrong but often found content in OSM for which we have error recovery
         T2("So", "Su");

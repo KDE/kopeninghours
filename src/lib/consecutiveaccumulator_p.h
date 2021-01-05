@@ -46,7 +46,13 @@ private:
     {
         if (!first) {
             if (start < cur) {
-                expr += func(start) + '-' + func(cur) + ',';
+                if (cur >= 0) {
+                    expr += func(start) + '-' + func(cur) + ',';
+                } else { // don't generate -2--1
+                    for (int i = start; i <= cur; ++i) {
+                        expr += func(i) + ',';
+                    }
+                }
             } else {
                 expr += func(cur) + ',';
             }
