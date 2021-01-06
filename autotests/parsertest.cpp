@@ -34,6 +34,7 @@ private Q_SLOTS:
         T2("Jan 1,6 off", "Jan 01,Jan 06 off");
         T2("Dec 24,25,26", "Dec 24,Dec 25,Dec 26");
         T2("Jan 03,Dec 04,24 off", "Jan 03,Dec 04,Dec 24 off");
+        T2("Jan 03, Dec 04, 24 off", "Jan 03,Dec 04,Dec 24 off");
         T2("07:30-20:00; Jan 03,13,23,Dec 04,14,24 off", "07:30-20:00; Jan 03,Jan 13,Jan 23,Dec 04,Dec 14,Dec 24 off");
         T("Dec 08:00");
         T("Dec 08:00-14:00");
@@ -181,6 +182,7 @@ private Q_SLOTS:
         T2("december", "Dec");
         T2("Dec 24,25,26, Jan 1,6 off", "Dec 24,Dec 25,Dec 26,Jan 01,Jan 06 off");
         T2("Dec 24,25,26 open, Jan 1,6 off", "Dec 24,Dec 25,Dec 26 open, Jan 01,Jan 06 off");
+        T2("07:30-20:00; Jan 03, 13, 23, Feb 03, 13, 23, Mar 03, 13, 23, Apr 03, 13, 23, Jun 03, 13, 23, Jul 03, 13, 23, Aug 03, 13, 23, Sep 03, 13, 23, Oct 03, 13, 23, Nov 03, 13, 23, Dec 03, 13, 23 off", "07:30-20:00; Jan 03,Jan 13,Jan 23,Feb 03,Feb 13,Feb 23,Mar 03,Mar 13,Mar 23,Apr 03,Apr 13,Apr 23,Jun 03,Jun 13,Jun 23,Jul 03,Jul 13,Jul 23,Aug 03,Aug 13,Aug 23,Sep 03,Sep 13,Sep 23,Oct 03,Oct 13,Oct 23,Nov 03,Nov 13,Nov 23,Dec 03,Dec 13,Dec 23 off");
 
         // Tolerance for incorrect casing
         T2("mo-fr 10:00-20:00", "Mo-Fr 10:00-20:00");

@@ -40,6 +40,23 @@ static void applySelectors(const Selectors &sels, Rule *rule)
     rule->m_colonAfterWideRangeSelector = sels.colonAfterWideRangeSelector;
 }
 
+static bool extendMonthdaySelector(MonthdayRange *monthdaySelector, int day)
+{
+    const auto prevSelector = lastSelector(monthdaySelector);
+    if (prevSelector->begin.year == prevSelector->end.year
+     && prevSelector->begin.month == prevSelector->end.month
+     && prevSelector->begin.day < day
+     && prevSelector->end.day < day)
+    {
+        auto sel = new MonthdayRange;
+        sel->begin = sel->end = prevSelector->end;
+        sel->begin.day = sel->end.day = day;
+        appendSelector(prevSelector, sel);
+        return true;
+    }
+    return false;
+}
+
 %}
 
 %code requires {
@@ -80,7 +97,7 @@ typedef void* yyscan_t;
 %parse-param { yyscan_t scanner }
 
 %glr-parser
-%expect 12
+%expect 14
 
 %union {
     int num;
@@ -554,17 +571,15 @@ MonthdaySelector:
     // month day sets, not covered the official grammar but in the
     // description in https://wiki.openstreetmap.org/wiki/Key:opening_hours#Summary_syntax
     $$ = $S;
-    const auto prevSelector = lastSelector($$.monthdaySelector);
-    if (prevSelector->begin.year == prevSelector->end.year
-     && prevSelector->begin.month == prevSelector->end.month
-     && prevSelector->begin.day < $D
-     && prevSelector->end.day < $D)
-    {
-        auto sel = new MonthdayRange;
-        sel->begin = sel->end = prevSelector->end;
-        sel->begin.day = sel->end.day = $D;
-        appendSelector(prevSelector, sel);
-    } else {
+    if (!extendMonthdaySelector($$.monthdaySelector, $D)) {
+        delete $$.monthdaySelector;
+        YYERROR;
+    }
+  }
+| MonthdaySelector[S] T_ADDITIONAL_RULE_SEPARATOR T_INTEGER[D] {
+    // same as the above, just with the wrong ", " separator
+    $$ = $S;
+    if (!extendMonthdaySelector($$.monthdaySelector, $D)) {
         delete $$.monthdaySelector;
         YYERROR;
     }
