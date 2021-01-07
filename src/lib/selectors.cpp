@@ -324,9 +324,9 @@ int YearRange::requiredCapabilities() const
 QByteArray YearRange::toExpression() const
 {
     QByteArray expr = QByteArray::number(begin);
-    if (end == 0) {
+    if (end == 0 && interval == 1) {
         expr += '+';
-    } else if (end != begin) {
+    } else if (end != begin && end != 0) {
         expr += '-';
         expr += QByteArray::number(end);
     }

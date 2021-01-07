@@ -97,7 +97,7 @@ typedef void* yyscan_t;
 %parse-param { yyscan_t scanner }
 
 %glr-parser
-%expect 14
+%expect 16
 
 %union {
     int num;
@@ -719,6 +719,11 @@ YearRangeStandalone:
         delete $$;
         YYABORT;
     }
+  }
+| T_YEAR[Y] T_SLASH T_INTEGER[I] {
+    $$ = new YearRange;
+    $$->begin = $Y;
+    $$->interval = $I;
   }
 | T_YEAR[Y1] RangeSeparator T_YEAR[Y2] T_SLASH T_INTEGER[I] {
     $$ = new YearRange;

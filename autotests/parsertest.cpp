@@ -70,6 +70,7 @@ private Q_SLOTS:
         T2("Dec 01 +Su", "Dec 01 Su[1]");
         T2("Dec 01 -Su 08:00-12:00", "Dec 01 Su[-1] 08:00-12:00");
         T("Aug Mo[1]-Aug Sa[-1] closed");
+        T("2020/2");
 
         // from https://wiki.openstreetmap.org/wiki/Key:opening_hours#Simple_examples
         T("Mo-Fr 08:00-17:30");
@@ -131,6 +132,7 @@ private Q_SLOTS:
         T2("week 4-16 We 00:00-24:00; week 38-42 Sa 00:00-24:00; PH off", "week 04-16 We 00:00-24:00; week 38-42 Sa 00:00-24:00; PH off");
         T("2012 easter -2 days-2012 easter +2 days: open \"Around easter\"; PH off");
         T("24/7 closed \"always closed\"");
+        //T("2013,2015,2050-2053,2055/2,2020-2029/3,2060+ Jan 1");
         T("Jan 23-Feb 11,Feb 12 00:00-24:00; PH off");
         T("Apr-Oct Su[2] 14:00-18:00; Aug Su[-1] -1 day 10:00-18:00; Aug Su[-1] 10:00-18:00; PH off");
         T("Mo-Fr 08:00-12:00, We 14:00-18:00; Su,PH off"); // open We morning too
