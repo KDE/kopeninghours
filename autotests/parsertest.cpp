@@ -132,7 +132,7 @@ private Q_SLOTS:
         T2("week 4-16 We 00:00-24:00; week 38-42 Sa 00:00-24:00; PH off", "week 04-16 We 00:00-24:00; week 38-42 Sa 00:00-24:00; PH off");
         T("2012 easter -2 days-2012 easter +2 days: open \"Around easter\"; PH off");
         T("24/7 closed \"always closed\"");
-        //T("2013,2015,2050-2053,2055/2,2020-2029/3,2060+ Jan 1");
+        T2("2013,2015,2050-2053,2055/2,2020-2029/3,2060+ Jan 1", "2013,2015,2050-2053,2055/2,2020-2029/3,2060+ Jan 01");
         T("Jan 23-Feb 11,Feb 12 00:00-24:00; PH off");
         T("Apr-Oct Su[2] 14:00-18:00; Aug Su[-1] -1 day 10:00-18:00; Aug Su[-1] 10:00-18:00; PH off");
         T("Mo-Fr 08:00-12:00, We 14:00-18:00; Su,PH off"); // open We morning too
@@ -337,7 +337,6 @@ private Q_SLOTS:
         T("BAR: Su-Mo 18:00-02:00; Tu-Th 18:00-03:00; Fr-Sa 18:00-04:00; CLUB: Tu-Th 20:00-03:00; Fr-Sa 20:00-04:00");
 
         // from https://openingh.openstreetmap.de/evaluation_tool/
-        T("2013,2015,2050-2053,2055/2,2020-2029/3,2060+ Jan 1"); // periodic open end year selectors are a non-standard extension
         T("00:00-24:00 week 6 Mo-Su Feb; PH off");
         T("monday, Tu, wE, TH 12:00 - 20:00 ; 14:00-16:00 Off ; closed public Holiday");
 #undef T

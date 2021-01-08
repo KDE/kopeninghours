@@ -98,6 +98,8 @@ typedef void* yyscan_t;
 
 %glr-parser
 %expect 16
+// this is for "T_YEAR T_COMMA T_YEAR T_MONTH", which is syntactically invalid anyway
+%expect-rr 1
 
 %union {
     int num;
@@ -169,6 +171,7 @@ typedef void* yyscan_t;
 %type <selectors> WeekSelector
 %type <selectors> MonthdaySelector
 %type <selectors> YearSelector
+%type <selectors> YearSelectorCombined
 %type <timespan> Timespan
 %type <time> Time
 %type <time> VariableTime
@@ -186,6 +189,7 @@ typedef void* yyscan_t;
 %type <date> DateTo
 %type <date> VariableDate
 %type <monthdayRange> MonthdayRange
+%type <monthdayRange> MonthdayRangeAdditional
 %type <dateOffset> AltMonthdayOffset
 %type <yearRange> YearRange
 %type <yearRange> YearRangeStandalone
@@ -558,12 +562,14 @@ Week:
 ;
 
 // Month selector
+// the split between MonthdayRange and MonthdayRangeAdditional is to avoid matching a list of years
+// to avoid an ambiguity with YearRange below
 MonthdaySelector:
   MonthdayRange[M] {
     initSelectors($$);
     $$.monthdaySelector = $M;
   }
-| MonthdaySelector[S] T_COMMA MonthdayRange[M] {
+| MonthdaySelector[S] T_COMMA MonthdayRangeAdditional[M] {
     $$ = $S;
     appendSelector($$.monthdaySelector, $M);
   }
@@ -591,7 +597,10 @@ MonthdayRange:
     $$ = new MonthdayRange;
     $$->begin = $$->end = { $Y, 0, 0, Date::FixedDate, { 0, 0, 0 } };
   }
-| T_MONTH[M] {
+| MonthdayRangeAdditional[M] { $$ = $M; }
+
+MonthdayRangeAdditional:
+  T_MONTH[M] {
     $$ = new MonthdayRange;
     $$->begin = $$->end = { 0, $M, 0, Date::FixedDate, { 0, 0, 0 } };
   }
@@ -691,12 +700,24 @@ AltMonthdayOffset:
 | T_WEEKDAY[D] T_LBRACKET T_MINUS T_INTEGER[N] T_RBRACKET DayOffset[O] { $$ = { (int16_t)$O, (int8_t)$D, (int8_t)-$N }; }
 
 // Year selector
+// the split between the standalone and combined rules here is to avoid matching a single year
+// to avoid a practically relevant ambiguity with MonthdayRange
 YearSelector:
   YearRangeStandalone[Y] {
     initSelectors($$);
     $$.yearSelector = $Y;
   }
-| YearSelector[S] T_COMMA YearRange[Y] {
+| YearSelectorCombined[S] T_COMMA YearRange[Y] {
+    $$ = $S;
+    appendSelector($$.yearSelector, $Y);
+  }
+;
+YearSelectorCombined:
+  YearRange[Y] {
+    initSelectors($$);
+    $$.yearSelector = $Y;
+  }
+| YearSelectorCombined[S] T_COMMA YearRange[Y] {
     $$ = $S;
     appendSelector($$.yearSelector, $Y);
   }
