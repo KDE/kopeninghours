@@ -162,12 +162,20 @@ private Q_SLOTS:
         // real-world tests from Osmose that we were handling wrongly
         T("Tu-Fr 11:30-14:30 open, 14:30-18:00 open \"pickup only\", 18:00-22:00 open");
         T("SH Tu,Th 10:00-19:00");
-        T2("Tu, Th 13:30-19:00; SH Tu, Th 10:00-19:00; Fr 13:30-18:00; SH Fr 10:00-18:00; We, Sa 10:00-18:00; SH We, Sa 10:00-18:00", "Tu,Th 13:30-19:00; SH Tu,Th 10:00-19:00; Fr 13:30-18:00; SH Fr 10:00-18:00; We,Sa 10:00-18:00; SH We,Sa 10:00-18:00");
         T2("Apr-Sep 09:00-19:00; Mar-Oct. 09:00-18:00; Nov.-Feb. 09:00-17:00", "Apr-Sep 09:00-19:00; Mar-Oct 09:00-18:00; Nov-Feb 09:00-17:00");
         T2("week 23-37 12:30-15:00,20:00-23:00; week 01-22,38-53 off", "week 23-37 12:30-15:00,20:00-23:00; week 01-22,38-53 off");
+        T("Mo-Sa 09:00-20:00; Su[-2,-1] 12:30-18:00");
+
+        // weekday autocorrect
+        T2("Tu, Th 13:30-19:00; SH Tu, Th 10:00-19:00; Fr 13:30-18:00; SH Fr 10:00-18:00; We, Sa 10:00-18:00; SH We, Sa 10:00-18:00", "Tu,Th 13:30-19:00; SH Tu,Th 10:00-19:00; Fr 13:30-18:00; SH Fr 10:00-18:00; We,Sa 10:00-18:00; SH We,Sa 10:00-18:00");
         T2("Mar Su[-1] - Oct Su[-1] - 1 days: Th 09:00-18:00, Tu 15:00-18:00; Sa 09:00-12:00; Oct Su[-1] - Mar Su[-1] - 1 days: Tu 09:00-17:00, Th 09:00-17:00, Sa 09:00-12:00; Mo, We, Fr, Su, PH Off",
            "Mar Su[-1]-Oct Su[-1] -1 day: Th 09:00-18:00, Tu 15:00-18:00; Sa 09:00-12:00; Oct Su[-1]-Mar Su[-1] -1 day: Tu 09:00-17:00, Th 09:00-17:00, Sa 09:00-12:00; Mo,We,Fr,Su,PH off");
-        T("Mo-Sa 09:00-20:00; Su[-2,-1] 12:30-18:00");
+        T2("Sep 16-Jun 15: Tu-Fr, Sa, Su [1,3] 09:00-14:00; Jun 16-Sep 15: Sa, Su [1,3] 13:00-19:00; Mo off, Su [2,4] off",
+           "Sep 16-Jun 15: Tu-Fr,Sa,Su[1,3] 09:00-14:00; Jun 16-Sep 15: Sa,Su[1,3] 13:00-19:00; Mo off, Su[2,4] off");
+        T2("2020-2021 Mo, Tu-Fr, Sa [-1] 09:00-14:00", "2020-2021 Mo,Tu-Fr,Sa[-1] 09:00-14:00");
+        T2("week 1-3 Mo[2], Tu-Fr, Sa [-1] 09:00-14:00", "week 01-03 Mo[2],Tu-Fr,Sa[-1] 09:00-14:00");
+        T2("Mo Fr 09:30-12:30 13:30-18:30", "Mo,Fr 09:30-12:30,13:30-18:30");
+        T2("Mo, We, Fr 06:30-21:30; Tu, Th 09:00-21:30; Sa 09:00-17:00; Su 09:00-14:00", "Mo,We,Fr 06:30-21:30; Tu,Th 09:00-21:30; Sa 09:00-17:00; Su 09:00-14:00");
 
         // technically wrong but often found content in OSM for which we have error recovery
         T2("So", "Su");
@@ -179,7 +187,6 @@ private Q_SLOTS:
         T2("Mo 14:00-21:00; Tu-Th 10:00-21:00; Fr 10:00-18:00;Su, PH off|| \"Samstag zweimal im Monat, Details siehe Webseite\"", "Mo 14:00-21:00; Tu-Th 10:00-21:00; Fr 10:00-18:00; Su,PH off || \"Samstag zweimal im Monat, Details siehe Webseite\"");
         T2("Mo-Fr 06:30-12:00, 13:00-18:00", "Mo-Fr 06:30-12:00,13:00-18:00"); // see autocorrect()
         T2("we-mo 11:30-14:00, 17:30-22:00; tu off", "We-Mo 11:30-14:00,17:30-22:00; Tu off");
-        T2("Mo, We, Fr 06:30-21:30; Tu, Th 09:00-21:30; Sa 09:00-17:00; Su 09:00-14:00", "Mo,We,Fr 06:30-21:30; Tu,Th 09:00-21:30; Sa 09:00-17:00; Su 09:00-14:00"); // autocorrect3
         T2("01:00-23:00; ", "01:00-23:00");
         T2("02:00-22:00,\n", "02:00-22:00");
         T2("Friday 08:00-12:00", "Fr 08:00-12:00");
@@ -273,7 +280,6 @@ private Q_SLOTS:
         T2("Mo 07:00-12:00,Tu 15:00-20:00,We 07:00-12:00,Fr 15:00-20:00", "Mo 07:00-12:00, Tu 15:00-20:00, We 07:00-12:00, Fr 15:00-20:00");
         T2("Mo-Fr 09:00-17:00 Sa 09:00-14:00", "Mo-Fr 09:00-17:00; Sa 09:00-14:00");
         T2("Friday 11AM–2:30AM Saturday 10AM–3:30AM Sunday 9AM–4:30AM", "Fr 11:00-02:30; Sa 10:00-03:30; Su 09:00-04:30");
-        T2("Mo Fr 09:30-12:30 13:30-18:30", "Mo,Fr 09:30-12:30,13:30-18:30");
 
         // recovery from wrong time selector separators
         T2("Dimanche Fermé Lundi 08:00 – 12:30 14:00 – 19:00 Mardi 08:00 – 12:30 14:00 – 19:00 Mercredi 08:00 – 12:30 14:00 – 19:00 Jeudi 08:00 – 12:30 14:00 – 19:00 Vendredi 08:00 – 12:30 14:00 – 19:00 Samedi 08:00 – 12:30 14:30 – 18:00", "Su closed; Mo 08:00-12:30,14:00-19:00; Tu 08:00-12:30,14:00-19:00; We 08:00-12:30,14:00-19:00; Th 08:00-12:30,14:00-19:00; Fr 08:00-12:30,14:00-19:00; Sa 08:00-12:30,14:30-18:00");

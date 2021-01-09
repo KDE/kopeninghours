@@ -44,10 +44,15 @@ void OpeningHoursPrivate::autocorrect()
         const auto prevRuleSingleSelector = prevRule->selectorCount() == 1;
         const auto curRuleSingleSelector = rule->selectorCount() == 1;
 
-        // the previous rule only has a weekday selector, so we fold that into the current rule
-        if (prevRuleSingleSelector && prevRule->m_weekdaySelector && rule->m_weekdaySelector) {
+        // the previous rule has no time selector, the current rule only has a weekday selector
+        // so we fold the two rules together
+        if (!prevRule->m_timeSelector && prevRule->m_weekdaySelector && rule->m_weekdaySelector) {
             auto tmp = std::move(rule->m_weekdaySelector);
             rule->m_weekdaySelector = std::move(prevRule->m_weekdaySelector);
+            rule->m_weekSelector = std::move(prevRule->m_weekSelector);
+            rule->m_monthdaySelector = std::move(prevRule->m_monthdaySelector);
+            rule->m_yearSelector = std::move(prevRule->m_yearSelector);
+            rule->m_colonAfterWideRangeSelector = prevRule->m_colonAfterWideRangeSelector;
             auto *selector = rule->m_weekdaySelector.get();
             while (selector->andSelector)
                 selector = selector->andSelector.get();
