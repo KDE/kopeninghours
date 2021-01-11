@@ -53,6 +53,7 @@ int Rule::requiredCapabilities() const
     c |= m_weekSelector ? m_weekSelector->requiredCapabilities() : Capability::None;
     c |= m_monthdaySelector ? m_monthdaySelector->requiredCapabilities() : Capability::None;
     c |= m_yearSelector ? m_yearSelector->requiredCapabilities() : Capability::None;
+    c |= m_wideRangeSelectorComment.isEmpty() ? Capability::None : Capability::NotImplemented;
 
     return c;
 }
@@ -80,6 +81,9 @@ QByteArray Rule::toExpression() const
     if (m_weekSelector) {
         maybeSpace();
         expr += "week " + m_weekSelector->toExpression();
+    }
+    if (!m_wideRangeSelectorComment.isEmpty()) {
+        expr += '"' + m_wideRangeSelectorComment.toUtf8() + '"';
     }
     if (m_colonAfterWideRangeSelector) {
         expr += ':';

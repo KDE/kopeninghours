@@ -65,6 +65,7 @@ public:
     int selectorCount() const;
 
     QString m_comment;
+    QString m_wideRangeSelectorComment;
 
     std::unique_ptr<Timespan> m_timeSelector;
     std::unique_ptr<WeekdayRange> m_weekdaySelector;

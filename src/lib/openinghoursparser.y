@@ -25,6 +25,8 @@ static void initSelectors(Selectors &sels)
     sels.weekSelector = nullptr;
     sels.monthdaySelector = nullptr;
     sels.yearSelector = nullptr;
+    sels.wideRangeSelectorComment.str = nullptr;
+    sels.wideRangeSelectorComment.len = 0;
     sels.seen_24_7 = false;
     sels.colonAfterWideRangeSelector = false;
 }
@@ -38,6 +40,7 @@ static void applySelectors(const Selectors &sels, Rule *rule)
     rule->m_yearSelector.reset(sels.yearSelector);
     rule->m_seen_24_7 = sels.seen_24_7;
     rule->m_colonAfterWideRangeSelector = sels.colonAfterWideRangeSelector;
+    rule->m_wideRangeSelectorComment = QString::fromUtf8(sels.wideRangeSelectorComment.str, sels.wideRangeSelectorComment.len);
 }
 
 static bool extendMonthdaySelector(MonthdayRange *monthdaySelector, int day)
@@ -77,6 +80,7 @@ struct Selectors {
     Week *weekSelector;
     MonthdayRange *monthdaySelector;
     YearRange *yearSelector;
+    StringRef wideRangeSelectorComment;
     bool seen_24_7;
     bool colonAfterWideRangeSelector;
 };
@@ -326,7 +330,11 @@ WideRangeSelector:
     $$.monthdaySelector = $M.monthdaySelector;
     $$.weekSelector = $W.weekSelector;
   }
-| T_COMMENT T_COLON { initSelectors($$); }
+| T_COMMENT[C] T_COLON {
+    initSelectors($$);
+    $$.wideRangeSelectorComment = $C;
+    $$.colonAfterWideRangeSelector = true;
+  }
 ;
 
 SmallRangeSelector:
