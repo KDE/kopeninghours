@@ -180,6 +180,7 @@ typedef void* yyscan_t;
 %type <time> Time
 %type <time> VariableTime
 %type <time> ExtendedHourMinute
+%type <weekdayRange> HolidayAndWeekday
 %type <weekdayRange> WeekdaySequence
 %type <weekdayRange> WeekdayRange
 %type <weekdayRange> HolidaySequence
@@ -452,10 +453,20 @@ WeekdaySelector:
     $$.weekdaySelector = $W;
     appendSelector($$.weekdaySelector, $H);
   }
-| HolidaySequence[H] WeekdaySequence[W] { // ### enforce a space inbetween those
+| HolidayAndWeekday[HW] {
     initSelectors($$);
-    $$.weekdaySelector = $H;
-    $$.weekdaySelector->andSelector.reset($W);
+    $$.weekdaySelector = $HW;
+  }
+;
+
+HolidayAndWeekday:
+  HolidaySequence[H] WeekdaySequence[W] {
+    $$ = $H;
+    $$->andSelector.reset($W);
+  }
+| WeekdaySequence[W] HolidaySequence[H] { // wrong order according to the specification
+    $$ = $H;
+    $$->andSelector.reset($W);
   }
 ;
 

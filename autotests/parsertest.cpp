@@ -72,6 +72,8 @@ private Q_SLOTS:
         T("Aug Mo[1]-Aug Sa[-1] closed");
         T("2020/2");
         T("\"Außerhalb der Semesterferien\": Mo-Fr 08:00-22:00; Sa-Su 10:00-20:00; \"Innerhalb der Semesterferien\": Mo-Fr 08:00-18:00; Sa-Su 10:00-16:00");
+        T("PH Mo-Th 14:00-23:00");
+        T2("Mo-Th PH 14:00-23:00", "PH Mo-Th 14:00-23:00");
 
         // from https://wiki.openstreetmap.org/wiki/Key:opening_hours#Simple_examples
         T("Mo-Fr 08:00-17:30");
