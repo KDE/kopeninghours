@@ -101,7 +101,7 @@ typedef void* yyscan_t;
 %parse-param { yyscan_t scanner }
 
 %glr-parser
-%expect 16
+%expect 18
 // this is for "T_YEAR T_COMMA T_YEAR T_MONTH", which is syntactically invalid anyway
 %expect-rr 1
 
@@ -457,16 +457,23 @@ WeekdaySelector:
     initSelectors($$);
     $$.weekdaySelector = $HW;
   }
+| HolidayAndWeekday[HW1] T_COMMA HolidayAndWeekday[HW2] {
+    initSelectors($$);
+    $$.weekdaySelector = $HW1;
+    appendSelector($$.weekdaySelector, $HW2);
+  }
 ;
 
 HolidayAndWeekday:
   HolidaySequence[H] WeekdaySequence[W] {
-    $$ = $H;
-    $$->andSelector.reset($W);
+    $$ = new WeekdayRange;
+    $$->lhsAndSelector.reset($H);
+    $$->rhsAndSelector.reset($W);
   }
 | WeekdaySequence[W] HolidaySequence[H] { // wrong order according to the specification
-    $$ = $H;
-    $$->andSelector.reset($W);
+    $$ = new WeekdayRange;
+    $$->lhsAndSelector.reset($H);
+    $$->rhsAndSelector.reset($W);
   }
 ;
 

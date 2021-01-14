@@ -152,12 +152,10 @@ int WeekdayRange::requiredCapabilities() const
             c |= Capability::SchoolHoliday;
             break;
     }
-    if (andSelector) {
-        c |= andSelector->requiredCapabilities();
-    }
-    if (next) {
-        c |= next->requiredCapabilities();
-    }
+
+    c |= lhsAndSelector ? lhsAndSelector->requiredCapabilities() : Capability::None;
+    c |= rhsAndSelector ? rhsAndSelector->requiredCapabilities() : Capability::None;
+    c |= next ? next->requiredCapabilities() : Capability::None;
     return c;
 }
 
@@ -166,48 +164,49 @@ static constexpr const char* s_weekDays[] = { "ERROR", "Mo", "Tu", "We", "Th", "
 QByteArray WeekdayRange::toExpression() const
 {
     QByteArray expr;
-    switch (holiday) {
-    case NoHoliday: {
-        expr = s_weekDays[beginDay];
-        if (endDay != beginDay) {
-            expr += '-';
-            expr += s_weekDays[endDay];
-        }
-        break;
-    }
-    case PublicHoliday:
-        expr = "PH";
-        break;
-    case SchoolHoliday:
-        expr = "SH";
-        break;
-    }
-    if (nthMask > 0) {
-        ConsecutiveAccumulator accu([](int i) { return QByteArray::number(i); });
-        // Negative numbers
-        for (int i = 1; i <= 10; i += 2) {
-            if ((nthMask & (1 << i)) != 0) {
-                accu.add(-5 + (i / 2));
+    if (lhsAndSelector && rhsAndSelector) {
+        expr = lhsAndSelector->toExpression() + ' ' + rhsAndSelector->toExpression();
+    } else {
+        switch (holiday) {
+        case NoHoliday: {
+            expr = s_weekDays[beginDay];
+            if (endDay != beginDay) {
+                expr += '-';
+                expr += s_weekDays[endDay];
             }
+            break;
         }
-        // Positive numbers
-        for (int i = 2; i <= 10; i += 2) {
-            if ((nthMask & (1 << i)) != 0) {
-                accu.add(i / 2);
+        case PublicHoliday:
+            expr = "PH";
+            break;
+        case SchoolHoliday:
+            expr = "SH";
+            break;
+        }
+        if (nthMask > 0) {
+            ConsecutiveAccumulator accu([](int i) { return QByteArray::number(i); });
+            // Negative numbers
+            for (int i = 1; i <= 10; i += 2) {
+                if ((nthMask & (1 << i)) != 0) {
+                    accu.add(-5 + (i / 2));
+                }
             }
+            // Positive numbers
+            for (int i = 2; i <= 10; i += 2) {
+                if ((nthMask & (1 << i)) != 0) {
+                    accu.add(i / 2);
+                }
+            }
+            expr += '[' + accu.result() + ']';
         }
-        expr += '[' + accu.result() + ']';
-    }
-    if (offset > 0) {
-        expr += " +" + QByteArray::number(offset) + ' ' + (offset > 1 ? "days" : "day");
-    } else if (offset < 0) {
-        expr += " -" + QByteArray::number(-offset) + ' ' + (offset < -1 ? "days" : "day");
+        if (offset > 0) {
+            expr += " +" + QByteArray::number(offset) + ' ' + (offset > 1 ? "days" : "day");
+        } else if (offset < 0) {
+            expr += " -" + QByteArray::number(-offset) + ' ' + (offset < -1 ? "days" : "day");
+        }
     }
     if (next) {
         expr += ',' + next->toExpression();
-    }
-    if (andSelector) {
-        expr += ' ' + andSelector->toExpression();
     }
     return expr;
 }

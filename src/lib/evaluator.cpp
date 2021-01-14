@@ -93,27 +93,32 @@ static QDate nthWeekday(QDate month, int weekDay, int n)
 
 SelectorResult WeekdayRange::nextInterval(const Interval &interval, const QDateTime &dt, OpeningHoursPrivate *context) const
 {
-    SelectorResult r1;
+    SelectorResult r;
     for (auto s = this; s; s = s->next.get()) {
-        r1 = std::min(r1, s->nextIntervalLocal(interval, dt, context));
+        r = std::min(r, s->nextIntervalLocal(interval, dt, context));
     }
-    if (!andSelector || r1.matchOffset() > 0 || !r1.canMatch()) {
-        return r1;
-    }
-
-    const auto r2 = andSelector->nextInterval(interval, dt, context);
-    if (r2.matchOffset() > 0 || !r2.canMatch()) {
-        return r2;
-    }
-
-    auto i = r1.interval();
-    i.setBegin(std::max(i.begin(), r2.interval().begin()));
-    i.setEnd(std::min(i.end(), r2.interval().end()));
-    return i;
+    return r;
 }
 
 SelectorResult WeekdayRange::nextIntervalLocal(const Interval &interval, const QDateTime &dt, OpeningHoursPrivate *context) const
 {
+    if (lhsAndSelector && rhsAndSelector) {
+        const auto r1 = lhsAndSelector->nextInterval(interval, dt, context);
+        if (r1.matchOffset() > 0 || !r1.canMatch()) {
+            return r1;
+        }
+
+        const auto r2 = rhsAndSelector->nextInterval(interval, dt, context);
+        if (r2.matchOffset() > 0 || !r2.canMatch()) {
+            return r2;
+        }
+
+        auto i = r1.interval();
+        i.setBegin(std::max(i.begin(), r2.interval().begin()));
+        i.setEnd(std::min(i.end(), r2.interval().end()));
+        return i;
+    }
+
     switch (holiday) {
         case NoHoliday:
         {

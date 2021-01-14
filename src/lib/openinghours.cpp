@@ -54,8 +54,8 @@ void OpeningHoursPrivate::autocorrect()
             rule->m_yearSelector = std::move(prevRule->m_yearSelector);
             rule->m_colonAfterWideRangeSelector = prevRule->m_colonAfterWideRangeSelector;
             auto *selector = rule->m_weekdaySelector.get();
-            while (selector->andSelector)
-                selector = selector->andSelector.get();
+            while (selector->rhsAndSelector)
+                selector = selector->rhsAndSelector.get();
             appendSelector(selector, std::move(tmp));
             rule->m_ruleType = prevRule->m_ruleType;
             std::swap(*it, *std::prev(it));

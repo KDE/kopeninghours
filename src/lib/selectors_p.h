@@ -152,7 +152,8 @@ public:
     };
     Holiday holiday = NoHoliday;
     std::unique_ptr<WeekdayRange> next;
-    std::unique_ptr<WeekdayRange> andSelector;
+    std::unique_ptr<WeekdayRange> lhsAndSelector;
+    std::unique_ptr<WeekdayRange> rhsAndSelector;
 };
 
 /** Week */
