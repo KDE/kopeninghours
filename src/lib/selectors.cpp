@@ -184,12 +184,17 @@ QByteArray WeekdayRange::toExpression() const
     }
     if (nthMask > 0) {
         ConsecutiveAccumulator accu([](int i) { return QByteArray::number(i); });
-        for (int i = 1; i <= 10; ++i) {
-            if ((nthMask & (1 << i)) == 0) {
-                continue;
+        // Negative numbers
+        for (int i = 1; i <= 10; i += 2) {
+            if ((nthMask & (1 << i)) != 0) {
+                accu.add(-5 + (i / 2));
             }
-            const auto n = (i % 2) ? (-5 + (i / 2)) : (i / 2);
-            accu.add(n);
+        }
+        // Positive numbers
+        for (int i = 2; i <= 10; i += 2) {
+            if ((nthMask & (1 << i)) != 0) {
+                accu.add(i / 2);
+            }
         }
         expr += '[' + accu.result() + ']';
     }

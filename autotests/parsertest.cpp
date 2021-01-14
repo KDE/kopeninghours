@@ -154,6 +154,7 @@ private Q_SLOTS:
         T("Sa");
         T("Sa[1]");
         T("Sa[1-3]");
+        T("Su[-1,1]");
         T("Tu-Th");
         T("Fr-Mo");
         T("Mo-Su; We \"only after registration\"");
