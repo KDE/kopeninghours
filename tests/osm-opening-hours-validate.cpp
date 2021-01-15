@@ -22,9 +22,12 @@ int main(int argc, char **argv)
     parser.addHelpOption();
     parser.addVersionOption();
 
+    QCommandLineOption verifyNormalizationOpt({QStringLiteral("verify-normalization")}, QStringLiteral("verify normalized expression themselves have valid syntax"));
+    parser.addOption(verifyNormalizationOpt);
     parser.addPositionalArgument(QStringLiteral("expression"), QStringLiteral("OSM opening hours expression, omit for using stdin."));
     parser.process(app);
 
+    const auto verifyNormalization = parser.isSet(verifyNormalizationOpt);
     if (parser.positionalArguments().isEmpty()) {
         OpeningHours oh;
         QFile in;
@@ -46,6 +49,12 @@ int main(int argc, char **argv)
                 ++errors;
             } else {
                 const auto n = oh.normalizedExpression();
+                if (verifyNormalization) {
+                    oh.setExpression(n);
+                    if (oh.error() == OpeningHours::SyntaxError) {
+                        std::cerr << "Syntax error in normalized expression! " << QByteArray(line, size).constData() << " normalized: " << n.constData() << std::endl;
+                    }
+                }
                 if (n.size() != size || std::strncmp(line, n.constData(), size) != 0) {
                     ++normalized;
                     std::cerr << "Expression " << QByteArray(line, size).constData() << " normalized to " << n.constData() << std::endl;
