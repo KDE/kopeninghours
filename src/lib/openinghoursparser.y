@@ -102,8 +102,9 @@ typedef void* yyscan_t;
 
 %glr-parser
 %expect 18
-// this is for "T_YEAR T_COMMA T_YEAR T_MONTH", which is syntactically invalid anyway
-%expect-rr 1
+// (1) is for "T_YEAR T_COMMA T_YEAR T_MONTH", which is syntactically invalid anyway
+// (2) and (3) are for overlaps between weekday/holiday sequences and holiday-on-weekday selectors, which are also invalid
+%expect-rr 3
 
 %union {
     int num;
@@ -180,7 +181,9 @@ typedef void* yyscan_t;
 %type <time> Time
 %type <time> VariableTime
 %type <time> ExtendedHourMinute
+%type <weekdayRange> HolidayAndWeekdaySequence
 %type <weekdayRange> HolidayAndWeekday
+%type <weekdayRange> HolidayOrWeekdaySequence
 %type <weekdayRange> WeekdaySequence
 %type <weekdayRange> WeekdayRange
 %type <weekdayRange> HolidaySequence
@@ -435,32 +438,21 @@ VariableTime:
 
 // Weekday selector
 WeekdaySelector:
-  WeekdaySequence[W] {
+  HolidayOrWeekdaySequence[S] {
     initSelectors($$);
-    $$.weekdaySelector = $W;
+    $$.weekdaySelector = $S;
   }
-| HolidaySequence[H] {
+| HolidayAndWeekdaySequence[S] {
     initSelectors($$);
-    $$.weekdaySelector = $H;
+    $$.weekdaySelector = $S;
   }
-| HolidaySequence[H] T_COMMA WeekdaySequence[W] {
-    initSelectors($$);
-    $$.weekdaySelector = $H;
-    appendSelector($$.weekdaySelector, $W);
-  }
-| WeekdaySequence[W] T_COMMA HolidaySequence[H] {
-    initSelectors($$);
-    $$.weekdaySelector = $W;
-    appendSelector($$.weekdaySelector, $H);
-  }
-| HolidayAndWeekday[HW] {
-    initSelectors($$);
-    $$.weekdaySelector = $HW;
-  }
-| HolidayAndWeekday[HW1] T_COMMA HolidayAndWeekday[HW2] {
-    initSelectors($$);
-    $$.weekdaySelector = $HW1;
-    appendSelector($$.weekdaySelector, $HW2);
+;
+
+HolidayAndWeekdaySequence:
+  HolidayAndWeekday[HW] { $$ = $HW; }
+| HolidayAndWeekdaySequence[HW1] T_COMMA HolidayAndWeekday[HW2] {
+    $$ = $HW1;
+    appendSelector($$, $HW2);
   }
 ;
 
@@ -474,6 +466,19 @@ HolidayAndWeekday:
     $$ = new WeekdayRange;
     $$->lhsAndSelector.reset($H);
     $$->rhsAndSelector.reset($W);
+  }
+;
+
+HolidayOrWeekdaySequence:
+  WeekdayRange[W] { $$ = $W; }
+| Holiday[H] { $$ = $H; }
+| HolidayOrWeekdaySequence[S] T_COMMA WeekdayRange[W] {
+    $$ = $S;
+    appendSelector($$, $W);
+  }
+| HolidayOrWeekdaySequence[S] T_COMMA Holiday[H] {
+    $$ = $S;
+    appendSelector($$, $H);
   }
 ;
 
