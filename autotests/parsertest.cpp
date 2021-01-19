@@ -344,6 +344,7 @@ private Q_SLOTS:
         T("Dec 6,4");
         T("Dec 24-Jan 1,6");
         T("Dec 3,2,1");
+        T("Mo, 1:100");
 
         // from https://wiki.openstreetmap.org/wiki/Key:opening_hours#Common_mistakes
         T("7/8-23");
@@ -358,6 +359,9 @@ private Q_SLOTS:
         // from https://openingh.openstreetmap.de/evaluation_tool/
         T("00:00-24:00 week 6 Mo-Su Feb; PH off");
         T("monday, Tu, wE, TH 12:00 - 20:00 ; 14:00-16:00 Off ; closed public Holiday");
+
+        // from Osmose, should fail rather than silently drop the last part
+        T("Mo-Th, Su 17:00-01:00, Fr-Sa 1700:0300");
 #undef T
     }
 

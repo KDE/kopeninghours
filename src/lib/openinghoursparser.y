@@ -610,7 +610,7 @@ MonthdaySelector:
     $$ = $S;
     if (!extendMonthdaySelector($$.monthdaySelector, $D)) {
         delete $$.monthdaySelector;
-        YYERROR;
+        YYABORT;
     }
   }
 | MonthdaySelector[S] T_ADDITIONAL_RULE_SEPARATOR T_INTEGER[D] {
@@ -618,7 +618,7 @@ MonthdaySelector:
     $$ = $S;
     if (!extendMonthdaySelector($$.monthdaySelector, $D)) {
         delete $$.monthdaySelector;
-        YYERROR;
+        YYABORT;
     }
   }
 ;
@@ -796,53 +796,53 @@ YearRangeStandalone:
 ExtendedHourMinute:
   T_INTEGER[H] T_COLON T_INTEGER[M] {
     $$ = { Time::NoEvent, $H, $M };
-    if (!Time::isValid($$)) { YYERROR; }
+    if (!Time::isValid($$)) { YYABORT; }
   }
 | T_INTEGER[H] T_ALT_TIME_SEP T_INTEGER[M] {
     $$ = { Time::NoEvent, $H, $M };
-    if (!Time::isValid($$)) { YYERROR; }
+    if (!Time::isValid($$)) { YYABORT; }
   }
 | T_INTEGER[H] T_COLON T_INTEGER[M] T_ALT_TIME_SEP_OR_SUFFIX {
     $$ = { Time::NoEvent, $H, $M };
-    if (!Time::isValid($$)) { YYERROR; }
+    if (!Time::isValid($$)) { YYABORT; }
   }
 | T_INTEGER[H] T_ALT_TIME_SEP_OR_SUFFIX T_INTEGER[M] {
     $$ = { Time::NoEvent, $H, $M };
-    if (!Time::isValid($$)) { YYERROR; }
+    if (!Time::isValid($$)) { YYABORT; }
   }
 | T_INTEGER[H] T_ALT_TIME_SEP_OR_SUFFIX {
     $$ = { Time::NoEvent, $H, 0 };
-    if (!Time::isValid($$)) { YYERROR; }
+    if (!Time::isValid($$)) { YYABORT; }
   }
 | T_INTEGER[H] T_COLON T_ALT_TIME_AM[M] {
     $$ = { Time::NoEvent, $H, $M };
     Time::convertFromAm($$);
-    if (!Time::isValid($$)) { YYERROR; }
+    if (!Time::isValid($$)) { YYABORT; }
   }
 | T_INTEGER[H] T_ALT_TIME_SEP T_ALT_TIME_AM[M] {
     $$ = { Time::NoEvent, $H, $M };
     Time::convertFromAm($$);
-    if (!Time::isValid($$)) { YYERROR; }
+    if (!Time::isValid($$)) { YYABORT; }
   }
 | T_INTEGER[H] T_COLON T_ALT_TIME_PM[M] {
     $$ = { Time::NoEvent, $H, $M };
     Time::convertFromPm($$);
-    if (!Time::isValid($$)) { YYERROR; }
+    if (!Time::isValid($$)) { YYABORT; }
   }
 | T_INTEGER[H] T_ALT_TIME_SEP T_ALT_TIME_PM[M] {
     $$ = { Time::NoEvent, $H, $M };
     Time::convertFromPm($$);
-    if (!Time::isValid($$)) { YYERROR; }
+    if (!Time::isValid($$)) { YYABORT; }
   }
 | T_ALT_TIME_AM[H] {
     $$ = { Time::NoEvent, $H, 0 };
     Time::convertFromAm($$);
-    if (!Time::isValid($$)) { YYERROR; }
+    if (!Time::isValid($$)) { YYABORT; }
   }
 | T_ALT_TIME_PM[H] {
     $$ = { Time::NoEvent, $H, 0 };
     Time::convertFromPm($$);
-    if (!Time::isValid($$)) { YYERROR; }
+    if (!Time::isValid($$)) { YYABORT; }
   }
 ;
 
