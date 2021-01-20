@@ -119,8 +119,15 @@ void OpeningHoursPrivate::validate()
     m_error = OpeningHours::NoError;
 }
 
-void OpeningHoursPrivate::addRule(Rule *rule)
+void OpeningHoursPrivate::addRule(Rule *parsedRule)
 {
+    std::unique_ptr<Rule> rule(parsedRule);
+
+    // discard empty rules
+    if (rule->isEmpty()) {
+        return;
+    }
+
     if (m_initialRuleType != Rule::NormalRule && rule->m_ruleType == Rule::NormalRule) {
         rule->m_ruleType = m_initialRuleType;
         m_initialRuleType = Rule::NormalRule;
@@ -132,8 +139,7 @@ void OpeningHoursPrivate::addRule(Rule *rule)
         // missing separator was actually between time selectors, not rules
         if (m_rules.back()->m_timeSelector && rule->m_timeSelector && m_rules.back()->state() == rule->state()) {
             appendSelector(m_rules.back()->m_timeSelector.get(), std::move(rule->m_timeSelector));
-            delete rule;
-            rule = nullptr;
+            rule.reset();
         } else {
             m_error = OpeningHours::SyntaxError;
         }
@@ -141,7 +147,7 @@ void OpeningHoursPrivate::addRule(Rule *rule)
     m_ruleSeparatorRecovery = false;
 
     if (rule) {
-        m_rules.push_back(std::unique_ptr<Rule>(rule));
+        m_rules.push_back(std::move(rule));
     }
 }
 
@@ -214,6 +220,9 @@ void OpeningHours::setExpression(const char *openingHours, std::size_t size, Mod
     // so it's easier to just clean this here
     while (size > 0 && std::isspace(openingHours[size - 1])) {
         --size;
+    }
+    if (size == 0) {
+        return;
     }
 
     d->m_restartPosition = 0;

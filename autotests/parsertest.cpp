@@ -81,6 +81,7 @@ private Q_SLOTS:
         T("Sa,Su,PH,Mo");
         T2("Tu-Fr 10:00-17:00; Th 10:00-20:00; Sa,Su,PH Mo 11:00-18:00", "Tu-Fr 10:00-17:00; Th 10:00-20:00; Sa,Su,PH,Mo 11:00-18:00");
         T2("Mo,We,Th PH off", "PH Mo,We,Th off");
+        T2("PH closed \"\"", "PH closed");
 
         // from https://wiki.openstreetmap.org/wiki/Key:opening_hours#Simple_examples
         T("Mo-Fr 08:00-17:30");
@@ -391,6 +392,9 @@ private Q_SLOTS:
         QTest::newRow("single timepoint") << QByteArray("10:00") << OpeningHours::IncompatibleMode;
         QTest::newRow("month timepoint") << QByteArray("Dec 08:00") << OpeningHours::IncompatibleMode;
         QTest::newRow("wide range selector comment") << QByteArray("\"Außerhalb der Semesterferien\": Mo-Fr 08:00-22:00; Sa-Su 10:00-20:00; \"Innerhalb der Semesterferien\": Mo-Fr 08:00-18:00; Sa-Su 10:00-16:00;") << OpeningHours::UnsupportedFeature;
+
+        QTest::newRow("empty") << QByteArray("") << OpeningHours::Null;
+        QTest::newRow("empty comment") << QByteArray("\"\"") << OpeningHours::Null;
     }
 
     void testValidation()

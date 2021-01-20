@@ -27,7 +27,7 @@ public:
     void finalizeRecovery();
     void autocorrect();
     void validate();
-    void addRule(Rule *rule);
+    void addRule(Rule *parsedRule);
     void restartFrom(int pos, Rule::Type nextRuleType);
     bool isRecovering() const;
 

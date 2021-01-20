@@ -57,6 +57,8 @@ public:
     bool hasComment() const;
     void setComment(const char *str, int len);
     int requiredCapabilities() const;
+    /** Empty rules contain no selectors, have no comment and only implicit state. */
+    bool isEmpty() const;
 
     RuleResult nextInterval(const QDateTime &dt, OpeningHoursPrivate *context) const;
     QByteArray toExpression() const;

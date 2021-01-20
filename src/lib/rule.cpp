@@ -58,6 +58,15 @@ int Rule::requiredCapabilities() const
     return c;
 }
 
+bool Rule::isEmpty() const
+{
+    return !hasComment()
+        && hasImplicitState()
+        && (selectorCount() == 0)
+        && !m_seen_24_7
+        && m_wideRangeSelectorComment.isEmpty();
+}
+
 QByteArray Rule::toExpression() const
 {
     QByteArray expr;
