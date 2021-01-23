@@ -46,7 +46,7 @@ void OpeningHoursPrivate::autocorrect()
 
         // the previous rule has no time selector, the current rule only has a weekday selector
         // so we fold the two rules together
-        if (!prevRule->m_timeSelector && prevRule->m_weekdaySelector && rule->m_weekdaySelector) {
+        if (!prevRule->m_timeSelector && prevRule->m_weekdaySelector && rule->m_weekdaySelector && !rule->m_monthdaySelector && !rule->m_yearSelector && !rule->m_weekSelector) {
             auto tmp = std::move(rule->m_weekdaySelector);
             rule->m_weekdaySelector = std::move(prevRule->m_weekdaySelector);
             rule->m_weekSelector = std::move(prevRule->m_weekSelector);

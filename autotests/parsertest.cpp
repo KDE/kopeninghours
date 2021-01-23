@@ -179,6 +179,7 @@ private Q_SLOTS:
         T("Mo-Sa 09:00-20:00; Su[-2,-1] 12:30-18:00");
         T("Su off, Sa-Fr 08:30-13:00; Mo-Th 08:30-13:30,16:00-20:00");
         T("Mo-Tu 09:00-12:00,14:00-18:00, We closed, Th-Sa 09:00-12:00,14:00-18:00; Su 09:30-12:30,14:30-18:00");
+        T2("SH Sep-Jun Mo 10:52-15:52", "SH, Sep-Jun Mo 10:52-15:52"); // likely incorrect, but at least no information loss
 
         // weekday autocorrect
         T2("Tu, Th 13:30-19:00; SH Tu, Th 10:00-19:00; Fr 13:30-18:00; SH Fr 10:00-18:00; We, Sa 10:00-18:00; SH We, Sa 10:00-18:00", "Tu,Th 13:30-19:00; SH Tu,Th 10:00-19:00; Fr 13:30-18:00; SH Fr 10:00-18:00; We,Sa 10:00-18:00; SH We,Sa 10:00-18:00");
