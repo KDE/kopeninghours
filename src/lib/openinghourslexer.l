@@ -219,6 +219,15 @@ sexta   { yylval->num = 5; return T_WEEKDAY; }
 日|日曜|日曜日 { yylval->num = 7; return T_WEEKDAY; }
 祝日 { return T_PH; }
 
+  /* Indonesian localized day names */
+Senin   { yylval->num = 1; return T_WEEKDAY; }
+Selasa  { yylval->num = 2; return T_WEEKDAY; }
+Rabu    { yylval->num = 3; return T_WEEKDAY; }
+Kamis   { yylval->num = 4; return T_WEEKDAY; }
+Jumat   { yylval->num = 5; return T_WEEKDAY; }
+Sabtu   { yylval->num = 6; return T_WEEKDAY; }
+Minggu  { yylval->num = 7; return T_WEEKDAY; }
+
   /* creative rule separators */
 、|and|et|y|und|& { return T_ADDITIONAL_RULE_SEPARATOR; }
 
