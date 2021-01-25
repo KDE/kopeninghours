@@ -67,6 +67,11 @@ bool Rule::isEmpty() const
         && m_wideRangeSelectorComment.isEmpty();
 }
 
+bool Rule::hasWideRangeSelector() const
+{
+    return m_yearSelector || m_weekSelector || m_monthdaySelector || !m_wideRangeSelectorComment.isEmpty();
+}
+
 QByteArray Rule::toExpression() const
 {
     QByteArray expr;

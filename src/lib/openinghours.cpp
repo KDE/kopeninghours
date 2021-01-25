@@ -46,7 +46,7 @@ void OpeningHoursPrivate::autocorrect()
 
         // the previous rule has no time selector, the current rule only has a weekday selector
         // so we fold the two rules together
-        if (!prevRule->m_timeSelector && prevRule->m_weekdaySelector && rule->m_weekdaySelector && !rule->m_monthdaySelector && !rule->m_yearSelector && !rule->m_weekSelector) {
+        if (!prevRule->m_timeSelector && prevRule->m_weekdaySelector && rule->m_weekdaySelector && !rule->hasWideRangeSelector()) {
             auto tmp = std::move(rule->m_weekdaySelector);
             rule->m_weekdaySelector = std::move(prevRule->m_weekdaySelector);
             rule->m_weekSelector = std::move(prevRule->m_weekSelector);
@@ -135,20 +135,30 @@ void OpeningHoursPrivate::addRule(Rule *parsedRule)
 
     // error recovery after a missing rule separator
     // only continue here if whatever we got is somewhat plausible
-    if (m_ruleSeparatorRecovery && !m_rules.empty() && rule->selectorCount() <= 1) {
-        // missing separator was actually between time selectors, not rules
-        if (m_rules.back()->m_timeSelector && rule->m_timeSelector && m_rules.back()->state() == rule->state()) {
-            appendSelector(m_rules.back()->m_timeSelector.get(), std::move(rule->m_timeSelector));
-            rule.reset();
-        } else {
+    if (m_ruleSeparatorRecovery) {
+        m_ruleSeparatorRecovery = false;
+
+        if (!m_rules.empty() && rule->selectorCount() <= 1) {
+            // missing separator was actually between time selectors, not rules
+            if (m_rules.back()->m_timeSelector && rule->m_timeSelector && m_rules.back()->state() == rule->state()) {
+                appendSelector(m_rules.back()->m_timeSelector.get(), std::move(rule->m_timeSelector));
+                rule.reset();
+                return;
+            } else {
+                m_error = OpeningHours::SyntaxError;
+            }
+        }
+
+        // error recovery in case of a wide range selector followed by two wrongly separated small range selectors
+        // the likely meaning here is that the wide range selector should apply to both small range selectors,
+        // but that cannot be modeled without duplicating the wide range selector
+        // therefore we consider such a case invalid, to be on the safe side
+        if (!m_rules.empty() && m_rules.back()->hasWideRangeSelector() && !rule->hasWideRangeSelector()) {
             m_error = OpeningHours::SyntaxError;
         }
     }
-    m_ruleSeparatorRecovery = false;
 
-    if (rule) {
-        m_rules.push_back(std::move(rule));
-    }
+    m_rules.push_back(std::move(rule));
 }
 
 void OpeningHoursPrivate::restartFrom(int pos, Rule::Type nextRuleType)

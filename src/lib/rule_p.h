@@ -59,6 +59,7 @@ public:
     int requiredCapabilities() const;
     /** Empty rules contain no selectors, have no comment and only implicit state. */
     bool isEmpty() const;
+    bool hasWideRangeSelector() const;
 
     RuleResult nextInterval(const QDateTime &dt, OpeningHoursPrivate *context) const;
     QByteArray toExpression() const;
