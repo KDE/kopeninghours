@@ -182,6 +182,7 @@ Jeu(di)?    { yylval->num = 4; return T_WEEKDAY; }
 Ven(dredi)? { yylval->num = 5; return T_WEEKDAY; }
 Sam(edi)?   { yylval->num = 6; return T_WEEKDAY; }
 Dim(anche)? { yylval->num = 7; return T_WEEKDAY; }
+"jours fériés" { return T_PH; }
 
   /* Spanish localized day names */
 Lunes         { yylval->num = 1; return T_WEEKDAY; }
