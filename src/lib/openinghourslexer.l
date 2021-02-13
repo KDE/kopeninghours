@@ -170,6 +170,7 @@ Freitags?    { yylval->num = 5; return T_WEEKDAY; }
 Samstags?    { yylval->num = 6; return T_WEEKDAY; }
 Sonntags?    { yylval->num = 7; return T_WEEKDAY; }
 
+Lu { yylval->num = 1; return T_WEEKDAY; }
 Mi { yylval->num = 3; return T_WEEKDAY; }
  /* "Di" conflicts with French... "Do" conflicts with Spanish and Italian... */
 So { yylval->num = 7; return T_WEEKDAY; }
