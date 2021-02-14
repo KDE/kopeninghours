@@ -124,6 +124,20 @@ Oct\.? { yylval->num = 10; return T_MONTH; }
 Nov\.? { yylval->num = 11; return T_MONTH; }
 Dec\.? { yylval->num = 12; return T_MONTH; }
 
+ /* Month names in French */
+"Janvier" { yylval->num = 1; return T_MONTH; }
+"Février" { yylval->num = 2; return T_MONTH; }
+"Mars" { yylval->num = 3; return T_MONTH; }
+"Avril" { yylval->num = 4; return T_MONTH; }
+"Mai" { yylval->num = 5; return T_MONTH; }
+"Juin" { yylval->num = 6; return T_MONTH; }
+"Juillet" { yylval->num = 7; return T_MONTH; }
+"Août" { yylval->num = 8; return T_MONTH; }
+"Septembre" { yylval->num = 9; return T_MONTH; }
+"Octobre" { yylval->num = 10; return T_MONTH; }
+"Novembre" { yylval->num = 11; return T_MONTH; }
+"Décembre" { yylval->num = 12; return T_MONTH; }
+
  /* different quote types are sometimes mixed and/or used nested, so this is a compromise to catch most of them */
 ["][^"]*["] {
     yylval->strRef.str = yytext + 1;
