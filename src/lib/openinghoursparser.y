@@ -344,6 +344,7 @@ WideRangeSelector:
 SmallRangeSelector:
   TimeSelector[T] { $$ = $T; }
 | WeekdaySelector[W] { $$ = $W; }
+| WeekdaySelector[W] T_COLON { $$ = $W; }
 | WeekdaySelector[W] TimeSelector[T] {
     $$.timeSelector = $T.timeSelector;
     $$.weekdaySelector = $W.weekdaySelector;

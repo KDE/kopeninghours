@@ -261,6 +261,7 @@ private Q_SLOTS:
 
         // (mis)use of colon as a small-range selector separator
         T2("Fr: 17:00-19:00", "Fr 17:00-19:00");
+        T2("Fr: closed", "Fr closed");
         T2("Tu-Su:07:00-00:00", "Tu-Su 07:00-24:00");
         T2("Du lundi au vendredi : 9:00-18:00", "Mo-Fr 09:00-18:00");
 
