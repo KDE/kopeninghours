@@ -372,7 +372,7 @@ private Q_SLOTS:
         T("Mo-Th, Su 17:00-01:00, Fr-Sa 1700:0300");
 
         // creative uses found in the wild
-        T("May 01-Jun 15,Sep 01-30 Mo-Fr 10:00-18:00 Sa-Su 09:00-19:00");
+        T("May 01-Jun 15,Sept 01-30 Mo-Fr 10:00-18:00 Sa-Su 09:00-19:00");
 #undef T
     }
 
