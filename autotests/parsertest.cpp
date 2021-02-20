@@ -283,6 +283,7 @@ private Q_SLOTS:
         T("\"„Termine nach Vereinbarung“\"");
 
         // non-English
+        T2("Lundi au Vendredi 8h - 17h en continu", "Mo-Fr 08:00-17:00");
         T2("Lun-Ven 08:00-13:00", "Mo-Fr 08:00-13:00");
         T2("Lu-Sa 08:00-13:00", "Mo-Sa 08:00-13:00");
         T2("Domingo de 9: 00 am. a 1:00 pm", "Su 09:00-13:00");

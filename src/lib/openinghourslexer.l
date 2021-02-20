@@ -260,7 +260,7 @@ Minggu  { yylval->num = 7; return T_WEEKDAY; }
 、|and|et|y|und|& { return T_ADDITIONAL_RULE_SEPARATOR; }
 
   /* skip filler words */
-from|von|du|de|le|das|分 {}
+from|von|du|de|le|das|分|"en continu" {}
 
 . {
     //printf("unexpected character: %s at %d:%d\n", yytext, yylloc->first_line, yylloc->first_column);
