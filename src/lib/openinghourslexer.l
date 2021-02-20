@@ -184,10 +184,22 @@ Freitags?    { yylval->num = 5; return T_WEEKDAY; }
 Samstags?    { yylval->num = 6; return T_WEEKDAY; }
 Sonntags?    { yylval->num = 7; return T_WEEKDAY; }
 
+  /* French, Spanish, Italian */
 Lu { yylval->num = 1; return T_WEEKDAY; }
+Ma { yylval->num = 2; return T_WEEKDAY; }
+  /* French, Italian */
+Me { yylval->num = 3; return T_WEEKDAY; }
+  /* German, Spanish, Italian */
 Mi { yylval->num = 3; return T_WEEKDAY; }
- /* "Di" conflicts with French... "Do" conflicts with Spanish and Italian... */
+  /* French */
+Je { yylval->num = 4; return T_WEEKDAY; }
+  /* French, Italian */
+Ve { yylval->num = 5; return T_WEEKDAY; }
+  /* German */
 So { yylval->num = 7; return T_WEEKDAY; }
+
+ /* "Di" conflicts between German and French...
+    "Do" conflicts between German and Spanish+Italian... */
 
   /* French localized day names. */
 Lun(di)?    { yylval->num = 1; return T_WEEKDAY; }
