@@ -161,6 +161,8 @@ private Q_SLOTS:
 
         QTest::newRow("nth day month begin") << QByteArray("Nov Su[2]-Dec Su[-1] 09:00-12:00") << QDateTime({2020, 11, 8}, {9, 0}) << QDateTime({2020, 11, 8}, {12, 0});
         QTest::newRow("nth day month end") << QByteArray("Oct Su[1]-Nov Su[-4] 09:00-12:00") << QDateTime({2020, 11, 8}, {9, 0}) << QDateTime({2020, 11, 8}, {12, 0});
+        QTest::newRow("nth day only end") << QByteArray("Oct 1-Nov Su[-4] 09:00-12:00") << QDateTime({2020, 11, 8}, {9, 0}) << QDateTime({2020, 11, 8}, {12, 0});
+        QTest::newRow("nth day only end with weekday") << QByteArray("Oct 1-Nov Su[-4] Mo 09:00-12:00") << QDateTime({2020, 11, 9}, {9, 0}) << QDateTime({2020, 11, 9}, {12, 0});
     }
 
     void testNext()
