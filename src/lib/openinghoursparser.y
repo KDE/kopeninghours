@@ -695,6 +695,11 @@ MonthdayRangeAdditional:
     $$->begin = $F;
     $$->end = { 0, $M, 0, Date::FixedDate, $O };
   }
+| T_MONTH[M] AltMonthdayOffset[O] RangeSeparator DateTo[T] {
+    $$ = new MonthdayRange;
+    $$->begin = { 0, $M, 0, Date::FixedDate, $O };
+    $$->end = $T;
+  }
 | DateFrom[F] DateOffset[OF] RangeSeparator DateTo[T] DateOffset[OT] {
     $$ = new MonthdayRange;
     $$->begin = $F;
