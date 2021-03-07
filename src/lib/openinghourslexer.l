@@ -193,6 +193,8 @@ Me { yylval->num = 3; return T_WEEKDAY; }
 Mi { yylval->num = 3; return T_WEEKDAY; }
   /* French */
 Je { yylval->num = 4; return T_WEEKDAY; }
+  /* Italian */
+Gi { yylval->num = 4; return T_WEEKDAY; }
   /* French, Italian */
 Ve { yylval->num = 5; return T_WEEKDAY; }
   /* German */
@@ -221,13 +223,13 @@ S(á|a)b(ado)? { yylval->num = 6; return T_WEEKDAY; }
 Dom(ingo)?    { yylval->num = 7; return T_WEEKDAY; }
 
   /* Italian localized day names */
-Luned(ì|i)    { yylval->num = 1; return T_WEEKDAY; }
-Marted(ì|i)   { yylval->num = 2; return T_WEEKDAY; }
-Mercoled(ì|i) { yylval->num = 3; return T_WEEKDAY; }
-Gioved(ì|i)   { yylval->num = 4; return T_WEEKDAY; }
-Venerd(ì|i)   { yylval->num = 5; return T_WEEKDAY; }
-Sabato        { yylval->num = 6; return T_WEEKDAY; }
-Domenica      { yylval->num = 7; return T_WEEKDAY; }
+Luned(ì|i)     { yylval->num = 1; return T_WEEKDAY; }
+Marted(ì|i)    { yylval->num = 2; return T_WEEKDAY; }
+Mercoled(ì|i)  { yylval->num = 3; return T_WEEKDAY; }
+Gio(ved(ì|i))? { yylval->num = 4; return T_WEEKDAY; }
+Venerd(ì|i)    { yylval->num = 5; return T_WEEKDAY; }
+Sabato         { yylval->num = 6; return T_WEEKDAY; }
+Domenica       { yylval->num = 7; return T_WEEKDAY; }
 
   /* Portuguese localized day names */
 feira   { yylval->num = 1; return T_WEEKDAY; }
@@ -257,7 +259,7 @@ Sabtu   { yylval->num = 6; return T_WEEKDAY; }
 Minggu  { yylval->num = 7; return T_WEEKDAY; }
 
   /* creative rule separators */
-、|and|et|y|und|& { return T_ADDITIONAL_RULE_SEPARATOR; }
+、|and|et|e|y|und|& { return T_ADDITIONAL_RULE_SEPARATOR; }
 
   /* skip filler words */
 from|von|du|de|le|das|分|"en continu" {}
