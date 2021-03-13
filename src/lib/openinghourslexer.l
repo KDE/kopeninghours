@@ -47,7 +47,7 @@ YEAR        [1-2][019][0-9][0-9]
 "24/7" { return T_24_7; }
 
 "+" { return T_PLUS; }
--|‒|–|—|―|－|−|ー { return T_MINUS; }
+-|‒|–|‑|—|―|－|−|ー { return T_MINUS; }
 "/" { return T_SLASH; }
 ":" { return T_COLON; }
 ,/. { return T_COMMA; }
@@ -173,16 +173,17 @@ h|時 { return T_ALT_TIME_SEP_OR_SUFFIX; }
 ~|～|〜|to|à|bis|a|ás|às|as|au|al|→|до { return T_ALT_RANGE_SEP; }
 
   /* localized state names */
-ferm(e|é)|geschlossen|encerrado|chiuso { yylval->state = State::Closed;  return T_STATE; }
+ferm(e|é)|geschlossen|ruhetag|encerrado|chiuso { yylval->state = State::Closed;  return T_STATE; }
 
  /* German localized day names. */
 Montags?     { yylval->num = 1; return T_WEEKDAY; }
-Dienstags?   { yylval->num = 2; return T_WEEKDAY; }
+Die(nstags?)?   { yylval->num = 2; return T_WEEKDAY; }
 Mittwochs?   { yylval->num = 3; return T_WEEKDAY; }
 Donnerstags? { yylval->num = 4; return T_WEEKDAY; }
 Freitags?    { yylval->num = 5; return T_WEEKDAY; }
 Samstags?    { yylval->num = 6; return T_WEEKDAY; }
 Sonntags?    { yylval->num = 7; return T_WEEKDAY; }
+Feiertage?   { return T_PH; }
 
   /* French, Spanish, Italian */
 Lu { yylval->num = 1; return T_WEEKDAY; }
@@ -262,7 +263,7 @@ Minggu  { yylval->num = 7; return T_WEEKDAY; }
 、|and|et|e|y|und|& { return T_ADDITIONAL_RULE_SEPARATOR; }
 
   /* skip filler words */
-from|von|du|de|le|das|分|"en continu" {}
+from|von|du|de|le|das|分|uhr|"en continu" {}
 
 . {
     //printf("unexpected character: %s at %d:%d\n", yytext, yylloc->first_line, yylloc->first_column);
