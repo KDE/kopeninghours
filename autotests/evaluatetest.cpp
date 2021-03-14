@@ -195,6 +195,7 @@ private Q_SLOTS:
         QTest::newRow("date range") << QByteArray("1980 Jan 1-2020 Nov 6");
         QTest::newRow("year/month") << QByteArray("2020 Oct");
         QTest::newRow("incomplete coverage") << QByteArray("Su off");
+        QTest::newRow("past year/month range") << QByteArray("2019 Jul 22-Aug 18: Tu-Su 10:00-13:00");
     }
 
     void testNoMatch()
