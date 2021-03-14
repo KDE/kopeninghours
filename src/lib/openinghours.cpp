@@ -22,6 +22,21 @@
 
 using namespace KOpeningHours;
 
+static bool isWiderThan(Rule *lhs, Rule *rhs)
+{
+    if ((lhs->m_yearSelector && !rhs->m_yearSelector)) {
+        return true;
+    }
+    if (lhs->m_monthdaySelector && rhs->m_monthdaySelector) {
+        if (lhs->m_monthdaySelector->begin.year > 0 && rhs->m_monthdaySelector->end.year == 0) {
+            return true;
+        }
+    }
+
+    // this is far from handling all cases, expand as needed
+    return false;
+}
+
 void OpeningHoursPrivate::autocorrect()
 {
     if (m_rules.size() <= 1 || m_error == OpeningHours::SyntaxError) {
@@ -69,7 +84,7 @@ void OpeningHoursPrivate::autocorrect()
         }
 
         // previous is a single monthday selector
-        else if (rule->m_monthdaySelector && prevRuleSingleSelector && prevRule->m_monthdaySelector) {
+        else if (rule->m_monthdaySelector && prevRuleSingleSelector && prevRule->m_monthdaySelector && !isWiderThan(prevRule, rule)) {
             auto tmp = std::move(rule->m_monthdaySelector);
             rule->m_monthdaySelector = std::move(prevRule->m_monthdaySelector);
             appendSelector(rule->m_monthdaySelector.get(), std::move(tmp));
@@ -135,10 +150,8 @@ void OpeningHoursPrivate::addRule(Rule *parsedRule)
 
     // error recovery after a missing rule separator
     // only continue here if whatever we got is somewhat plausible
-    if (m_ruleSeparatorRecovery) {
-        m_ruleSeparatorRecovery = false;
-
-        if (!m_rules.empty() && rule->selectorCount() <= 1) {
+    if (m_ruleSeparatorRecovery && !m_rules.empty()) {
+        if (rule->selectorCount() <= 1) {
             // missing separator was actually between time selectors, not rules
             if (m_rules.back()->m_timeSelector && rule->m_timeSelector && m_rules.back()->state() == rule->state()) {
                 appendSelector(m_rules.back()->m_timeSelector.get(), std::move(rule->m_timeSelector));
@@ -149,15 +162,26 @@ void OpeningHoursPrivate::addRule(Rule *parsedRule)
             }
         }
 
+        // error recovery in the middle of a wide-range selector
+        // the likely meaning is that the wide-range selectors should be merged, which we can only do if the first
+        // part is "wider" than the right hand side
+        if (m_rules.back()->hasWideRangeSelector() && rule->hasWideRangeSelector()
+            && !m_rules.back()->hasSmallRangeSelector() && rule->hasSmallRangeSelector()
+            && isWiderThan(rule.get(), m_rules.back().get()))
+        {
+            m_error = OpeningHours::SyntaxError;
+        }
+
         // error recovery in case of a wide range selector followed by two wrongly separated small range selectors
         // the likely meaning here is that the wide range selector should apply to both small range selectors,
         // but that cannot be modeled without duplicating the wide range selector
         // therefore we consider such a case invalid, to be on the safe side
-        if (!m_rules.empty() && m_rules.back()->hasWideRangeSelector() && !rule->hasWideRangeSelector()) {
+        if (m_rules.back()->hasWideRangeSelector() && !rule->hasWideRangeSelector()) {
             m_error = OpeningHours::SyntaxError;
         }
     }
 
+    m_ruleSeparatorRecovery = false;
     m_rules.push_back(std::move(rule));
 }
 

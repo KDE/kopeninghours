@@ -381,6 +381,7 @@ private Q_SLOTS:
 
         // creative uses found in the wild
         T("May 01-Jun 15,Sept 01-30 Mo-Fr 10:00-18:00 Sa-Su 09:00-19:00");
+        T("Jul 22-Aug 18 2019: Tu-Su 10:00-13:00");
 #undef T
     }
 
