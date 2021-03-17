@@ -76,7 +76,18 @@ SelectorResult Timespan::nextInterval(const Interval &interval, const QDateTime 
     return dt < beginDt ? dt.secsTo(beginDt) : dt.secsTo(beginDt.addDays(1));
 }
 
-static QDate nthWeekday(QDate month, int weekDay, int n)
+static QDate nthWeekdayFromDate(QDate start, int weekDay, int n)
+{
+    if (n > 0) {
+        const auto delta = (7 + weekDay - start.dayOfWeek()) % 7;
+        return start.addDays(7 * (n - 1) + (delta == 0 ? 7 : delta));
+    } else {
+        const auto delta = (7 + start.dayOfWeek() - weekDay) % 7;
+        return start.addDays(7 * (n + 1) - (delta == 0 ? 7 : delta));
+    }
+}
+
+static QDate nthWeekdayInMonth(QDate month, int weekDay, int n)
 {
     if (n > 0) {
         const auto firstOfMonth = QDate{month.year(), month.month(), 1};
@@ -128,7 +139,7 @@ SelectorResult WeekdayRange::nextIntervalLocal(const Interval &interval, const Q
                         continue;
                     }
                     const auto n = (i % 2) ? (-5 + (i /2)) : (i / 2);
-                    const auto d = nthWeekday(dt.date().addDays(-offset), beginDay, n);
+                    const auto d = nthWeekdayInMonth(dt.date().addDays(-offset), beginDay, n);
                     if (!d.isValid() || d.addDays(offset) < dt.date()) {
                         continue;
                     }
@@ -240,7 +251,11 @@ static QDate resolveDate(Date d, int year)
     }
 
     if (d.offset.weekday && d.offset.nthWeekday) {
-        date = nthWeekday(date, d.offset.weekday, d.offset.nthWeekday);
+        if (d.variableDate == Date::Easter) {
+            date = nthWeekdayFromDate(date, d.offset.weekday, d.offset.nthWeekday);
+        } else {
+            date = nthWeekdayInMonth(date, d.offset.weekday, d.offset.nthWeekday);
+        }
     }
     date = date.addDays(d.offset.dayOffset);
 
