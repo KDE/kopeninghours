@@ -107,7 +107,7 @@ void OpeningHoursPrivate::autocorrect()
             else if (rule->selectorCount() == prevRule->selectorCount()
                      && rule->m_timeSelector
                      && prevRule->m_timeSelector
-                     && rule->selectorCount() == 2 && rule->m_weekdaySelector
+                     && rule->selectorCount() == 2 && rule->m_weekdaySelector && prevRule->m_weekdaySelector
                      // slower than writing an operator==, but so much easier to write :)
                      && rule->m_weekdaySelector->toExpression() == prevRule->m_weekdaySelector->toExpression()
                      ) {

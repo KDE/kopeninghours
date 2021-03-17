@@ -86,6 +86,7 @@ private Q_SLOTS:
         T("Mar 01-Mar Su[-2] Mo 17:00-18:00; PH off");
         T("Oct Su[-1]-Dec 31 08:00-18:00");
         T("Oct Su[-1]-Dec 31 Su 08:00-18:00");
+        T("Mar Su[1]-Oct Su[1]: 11:00-20:00; PH 11:00-20:00");
 
         // from https://wiki.openstreetmap.org/wiki/Key:opening_hours#Simple_examples
         T("Mo-Fr 08:00-17:30");
