@@ -52,45 +52,68 @@ void OpeningHoursPrivate::autocorrect()
         auto rule = (*it).get();
         auto prevRule = (*(std::prev(it))).get();
 
-        if (rule->m_ruleType != Rule::AdditionalRule || rule->hasComment() || prevRule->hasComment() || !prevRule->hasImplicitState()) {
+        if (rule->hasComment() || prevRule->hasComment() || !prevRule->hasImplicitState()) {
             continue;
         }
-
         const auto prevRuleSingleSelector = prevRule->selectorCount() == 1;
         const auto curRuleSingleSelector = rule->selectorCount() == 1;
 
-        // the previous rule has no time selector, the current rule only has a weekday selector
-        // so we fold the two rules together
-        if (!prevRule->m_timeSelector && prevRule->m_weekdaySelector && rule->m_weekdaySelector && !rule->hasWideRangeSelector()) {
-            auto tmp = std::move(rule->m_weekdaySelector);
-            rule->m_weekdaySelector = std::move(prevRule->m_weekdaySelector);
-            rule->m_weekSelector = std::move(prevRule->m_weekSelector);
-            rule->m_monthdaySelector = std::move(prevRule->m_monthdaySelector);
-            rule->m_yearSelector = std::move(prevRule->m_yearSelector);
-            rule->m_colonAfterWideRangeSelector = prevRule->m_colonAfterWideRangeSelector;
-            auto *selector = rule->m_weekdaySelector.get();
-            while (selector->rhsAndSelector)
-                selector = selector->rhsAndSelector.get();
-            appendSelector(selector, std::move(tmp));
-            rule->m_ruleType = prevRule->m_ruleType;
-            std::swap(*it, *std::prev(it));
-            it = std::prev(m_rules.erase(it));
-        }
+        if (rule->m_ruleType == Rule::AdditionalRule) {
+            // the previous rule has no time selector, the current rule only has a weekday selector
+            // so we fold the two rules together
+            if (!prevRule->m_timeSelector && prevRule->m_weekdaySelector && rule->m_weekdaySelector && !rule->hasWideRangeSelector()) {
+                auto tmp = std::move(rule->m_weekdaySelector);
+                rule->m_weekdaySelector = std::move(prevRule->m_weekdaySelector);
+                rule->m_weekSelector = std::move(prevRule->m_weekSelector);
+                rule->m_monthdaySelector = std::move(prevRule->m_monthdaySelector);
+                rule->m_yearSelector = std::move(prevRule->m_yearSelector);
+                rule->m_colonAfterWideRangeSelector = prevRule->m_colonAfterWideRangeSelector;
+                auto *selector = rule->m_weekdaySelector.get();
+                while (selector->rhsAndSelector)
+                    selector = selector->rhsAndSelector.get();
+                appendSelector(selector, std::move(tmp));
+                rule->m_ruleType = prevRule->m_ruleType;
+                std::swap(*it, *std::prev(it));
+                it = std::prev(m_rules.erase(it));
+            }
 
-        // the current rule only has a time selector, so we append that to the previous rule
-        else if (curRuleSingleSelector && rule->m_timeSelector && prevRule->m_timeSelector) {
-            appendSelector(prevRule->m_timeSelector.get(), std::move(rule->m_timeSelector));
-            it = std::prev(m_rules.erase(it));
-        }
+            // the current rule only has a time selector, so we append that to the previous rule
+            else if (curRuleSingleSelector && rule->m_timeSelector && prevRule->m_timeSelector) {
+                appendSelector(prevRule->m_timeSelector.get(), std::move(rule->m_timeSelector));
+                it = std::prev(m_rules.erase(it));
+            }
 
-        // previous is a single monthday selector
-        else if (rule->m_monthdaySelector && prevRuleSingleSelector && prevRule->m_monthdaySelector && !isWiderThan(prevRule, rule)) {
-            auto tmp = std::move(rule->m_monthdaySelector);
-            rule->m_monthdaySelector = std::move(prevRule->m_monthdaySelector);
-            appendSelector(rule->m_monthdaySelector.get(), std::move(tmp));
-            rule->m_ruleType = prevRule->m_ruleType;
-            std::swap(*it, *std::prev(it));
-            it = std::prev(m_rules.erase(it));
+            // previous is a single monthday selector
+            else if (rule->m_monthdaySelector && prevRuleSingleSelector && prevRule->m_monthdaySelector && !isWiderThan(prevRule, rule)) {
+                auto tmp = std::move(rule->m_monthdaySelector);
+                rule->m_monthdaySelector = std::move(prevRule->m_monthdaySelector);
+                appendSelector(rule->m_monthdaySelector.get(), std::move(tmp));
+                rule->m_ruleType = prevRule->m_ruleType;
+                std::swap(*it, *std::prev(it));
+                it = std::prev(m_rules.erase(it));
+            }
+        } else if (rule->m_ruleType == Rule::NormalRule) {
+            // Previous rule has time and other selectors
+            // Current rule is only a time selector
+            // "Mo-Sa 12:00-15:00; 18:00-24:00" => "Mo-Sa 12:00-15:00,18:00-24:00"
+            if (curRuleSingleSelector && rule->m_timeSelector
+                    && prevRule->selectorCount() > 1 && prevRule->m_timeSelector) {
+                appendSelector(prevRule->m_timeSelector.get(), std::move(rule->m_timeSelector));
+                it = std::prev(m_rules.erase(it));
+            }
+
+            // Both rules have exactly the same selector apart from time
+            // For now this only supports weekday selectors, could be extended
+            else if (rule->selectorCount() == prevRule->selectorCount()
+                     && rule->m_timeSelector
+                     && prevRule->m_timeSelector
+                     && rule->selectorCount() == 2 && rule->m_weekdaySelector
+                     // slower than writing an operator==, but so much easier to write :)
+                     && rule->m_weekdaySelector->toExpression() == prevRule->m_weekdaySelector->toExpression()
+                     ) {
+                appendSelector(prevRule->m_timeSelector.get(), std::move(rule->m_timeSelector));
+                it = std::prev(m_rules.erase(it));
+            }
         }
     }
 
