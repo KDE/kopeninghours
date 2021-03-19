@@ -133,6 +133,11 @@ private Q_SLOTS:
         QTest::newRow("day offset range f") << QByteArray("easter -10 days-easter") << QDateTime({2021, 3, 25}, {0, 0}) << QDateTime({2021, 4, 5}, {0, 0});
         QTest::newRow("day offset range t") << QByteArray("easter-easter +12 days") << QDateTime({2021, 4, 4}, {0, 0}) << QDateTime({2021, 4, 17}, {0, 0});
 
+        QTest::newRow("easter weekday offset negative") << QByteArray("easter -Fr") << QDateTime({2021, 4, 2}, {0, 0}) << QDateTime({2021, 4, 3}, {0, 0});
+        QTest::newRow("easter weekday offset positive") << QByteArray("easter +Fr") << QDateTime({2021, 4, 9}, {0, 0}) << QDateTime({2021, 4, 10}, {0, 0});
+        QTest::newRow("easter weekday offset -Su") << QByteArray("easter -Su") << QDateTime({2021, 3, 28}, {0, 0}) << QDateTime({2021, 3, 29}, {0, 0});
+        QTest::newRow("easter weekday offset +Su") << QByteArray("easter +Su") << QDateTime({2021, 4, 11}, {0, 0}) << QDateTime({2021, 4, 12}, {0, 0});
+
         QTest::newRow("nth day") << QByteArray("Sa[1]") << QDateTime({2020, 11, 7}, {0, 0}) << QDateTime({2020, 11, 8}, {0, 0});
         QTest::newRow("nth day next week") << QByteArray("Sa[2]") << QDateTime({2020, 11, 14}, {0, 0}) << QDateTime({2020, 11, 15}, {0, 0});
         QTest::newRow("nth day next day") << QByteArray("Su[2]") << QDateTime({2020, 11, 8}, {0, 0}) << QDateTime({2020, 11, 9}, {0, 0});
