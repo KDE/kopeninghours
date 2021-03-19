@@ -101,10 +101,12 @@ void OpeningHoursPrivate::autocorrect()
                 appendSelector(prevRule->m_timeSelector.get(), std::move(rule->m_timeSelector));
                 it = std::prev(m_rules.erase(it));
             }
+        }
 
+        if (rule->m_ruleType == Rule::AdditionalRule || rule->m_ruleType == Rule::NormalRule) {
             // Both rules have exactly the same selector apart from time
             // For now this only supports weekday selectors, could be extended
-            else if (rule->selectorCount() == prevRule->selectorCount()
+            if (rule->selectorCount() == prevRule->selectorCount()
                      && rule->m_timeSelector
                      && prevRule->m_timeSelector
                      && rule->selectorCount() == 2 && rule->m_weekdaySelector && prevRule->m_weekdaySelector
