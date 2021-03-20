@@ -101,14 +101,14 @@ void OpeningHoursPrivate::autocorrect()
                 appendSelector(prevRule->m_timeSelector.get(), std::move(rule->m_timeSelector));
                 it = std::prev(m_rules.erase(it));
             }
-        }
 
-        if (rule->m_ruleType == Rule::AdditionalRule || rule->m_ruleType == Rule::NormalRule) {
             // Both rules have exactly the same selector apart from time
+            // Ex: "Mo-Sa 12:00-15:00; Mo-Sa 18:00-24:00" => "Mo-Sa 12:00-15:00,18:00-24:00"
+            // Obviously a bug, it was overwriting the 12:00-15:00 range.
             // For now this only supports weekday selectors, could be extended
-            if (rule->selectorCount() == prevRule->selectorCount()
-                     && rule->m_timeSelector
-                     && prevRule->m_timeSelector
+            else if (rule->selectorCount() == prevRule->selectorCount()
+                     && rule->m_timeSelector && prevRule->m_timeSelector
+                     && !rule->hasComment() && !prevRule->hasComment()
                      && rule->selectorCount() == 2 && rule->m_weekdaySelector && prevRule->m_weekdaySelector
                      // slower than writing an operator==, but so much easier to write :)
                      && rule->m_weekdaySelector->toExpression() == prevRule->m_weekdaySelector->toExpression()
@@ -136,7 +136,6 @@ void OpeningHoursPrivate::simplify()
                 return selector->holiday == WeekdayRange::NoHoliday
                         && !selector->lhsAndSelector;
             };
-
             // Both rules have the same time and a different weekday selector
             // Mo 08:00-13:00; Tu 08:00-13:00 => Mo,Tu 08:00-13:00
             if (rule->selectorCount() == prevRule->selectorCount()
@@ -148,6 +147,23 @@ void OpeningHoursPrivate::simplify()
                     ) {
                 // We could of course also turn Mo,Tu,We,Th into Mo-Th...
                 appendSelector(prevRule->m_weekdaySelector.get(), std::move(rule->m_weekdaySelector));
+                it = std::prev(m_rules.erase(it));
+                continue;
+            }
+        }
+
+        if (rule->m_ruleType == Rule::AdditionalRule) {
+            // Both rules have exactly the same selector apart from time
+            // Ex: "Mo 12:00-15:00, Mo 18:00-24:00" => "Mo 12:00-15:00,18:00-24:00"
+            // For now this only supports weekday selectors, could be extended
+            if (rule->selectorCount() == prevRule->selectorCount()
+                    && rule->m_timeSelector && prevRule->m_timeSelector
+                    && !rule->hasComment() && !prevRule->hasComment()
+                    && rule->selectorCount() == 2 && rule->m_weekdaySelector && prevRule->m_weekdaySelector
+                    // slower than writing an operator==, but so much easier to write :)
+                    && rule->m_weekdaySelector->toExpression() == prevRule->m_weekdaySelector->toExpression()
+                    ) {
+                appendSelector(prevRule->m_timeSelector.get(), std::move(rule->m_timeSelector));
                 it = std::prev(m_rules.erase(it));
             }
         }
