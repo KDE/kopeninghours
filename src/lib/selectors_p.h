@@ -124,6 +124,7 @@ public:
     bool isMultiDay(QDate date, OpeningHoursPrivate *context) const;
     SelectorResult nextInterval(const Interval &interval, const QDateTime &dt, OpeningHoursPrivate *context) const;
     QByteArray toExpression() const;
+    bool operator==(Timespan &other) const;
 
     Time begin = { Time::NoEvent, -1, -1 };
     Time end = { Time::NoEvent, -1, -1 };

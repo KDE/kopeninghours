@@ -118,7 +118,40 @@ void OpeningHoursPrivate::autocorrect()
             }
         }
     }
+}
 
+void OpeningHoursPrivate::simplify()
+{
+    if (m_rules.size() <= 1 || m_error == OpeningHours::SyntaxError) {
+        return;
+    }
+
+    for (auto it = std::next(m_rules.begin()); it != m_rules.end(); ++it) {
+        auto rule = (*it).get();
+        auto prevRule = (*(std::prev(it))).get();
+
+        if (rule->m_ruleType == Rule::AdditionalRule || rule->m_ruleType == Rule::NormalRule) {
+
+            auto hasNoHoliday = [](WeekdayRange *selector) {
+                return selector->holiday == WeekdayRange::NoHoliday
+                        && !selector->lhsAndSelector;
+            };
+
+            // Both rules have the same time and a different weekday selector
+            // Mo 08:00-13:00; Tu 08:00-13:00 => Mo,Tu 08:00-13:00
+            if (rule->selectorCount() == prevRule->selectorCount()
+                    && rule->m_timeSelector && prevRule->m_timeSelector
+                    && rule->selectorCount() == 2 && rule->m_weekdaySelector && prevRule->m_weekdaySelector
+                    && hasNoHoliday(rule->m_weekdaySelector.get())
+                    && hasNoHoliday(prevRule->m_weekdaySelector.get())
+                    && *rule->m_timeSelector == *prevRule->m_timeSelector
+                    ) {
+                // We could of course also turn Mo,Tu,We,Th into Mo-Th...
+                appendSelector(prevRule->m_weekdaySelector.get(), std::move(rule->m_weekdaySelector));
+                it = std::prev(m_rules.erase(it));
+            }
+        }
+    }
 }
 
 void OpeningHoursPrivate::validate()
@@ -349,6 +382,12 @@ QByteArray OpeningHours::normalizedExpression() const
         ret += rule->toExpression();
     }
     return ret;
+}
+
+QByteArray OpeningHours::simplifiedExpression() const
+{
+    d->simplify();
+    return normalizedExpression();
 }
 
 QString OpeningHours::normalizedExpressionString() const

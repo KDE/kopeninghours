@@ -92,6 +92,12 @@ public:
      */
     QByteArray normalizedExpression() const;
 
+    /** Returns a simplified OSM opening hours expression reconstructed from this object.
+     * In many cases it will be the same as normalizedExpression(), but further
+     * simplifications can happen, to make the expression shorter/simpler.
+     */
+    QByteArray simplifiedExpression() const;
+
     /** Geographic coordinate at which this expression should be evaluated.
      *  This is needed for expressions containing location-based variable time references,
      *  such as "sunset". If the expression requires a location, error() returns @c MissingLocation

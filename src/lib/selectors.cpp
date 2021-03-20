@@ -133,6 +133,16 @@ QByteArray Timespan::toExpression() const
     return expr;
 }
 
+bool Timespan::operator==(Timespan &other) const
+{
+    return begin == other.begin &&
+            end == other.end &&
+            openEnd == other.openEnd &&
+            interval == other.interval &&
+            bool(next) == (bool)other.next &&
+            (!next || *next == *other.next);
+}
+
 int WeekdayRange::requiredCapabilities() const
 {
     // only ranges or nthMask are allowed, not both at the same time, enforced by parser

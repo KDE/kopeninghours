@@ -18,9 +18,11 @@ private Q_SLOTS:
     {
         QTest::addColumn<QByteArray>("input");
         QTest::addColumn<QByteArray>("expectedOutput");
+        QTest::addColumn<QByteArray>("expectedSimplifiedOutput");
 
-#define T(x) QTest::newRow(x) << QByteArray(x) << QByteArray(x)
-#define T2(x, y) QTest::newRow(x) << QByteArray(x) << QByteArray(y)
+#define T(x) QTest::newRow(x) << QByteArray(x) << QByteArray(x) << QByteArray(x)
+#define T2(x, y) QTest::newRow(x) << QByteArray(x) << QByteArray(y) << QByteArray(y)
+#define T3(x, y, z) QTest::newRow(x) << QByteArray(x) << QByteArray(y) << QByteArray(z)
         T("24/7");
         T("24/7 \"comment\"");
         T("24/7 closed");
@@ -77,7 +79,9 @@ private Q_SLOTS:
         T("PH Fr,SH Fr 11:30-02:00");
         T2("PH Fr, SH Fr 11:30-02:00", "PH Fr,SH Fr 11:30-02:00");
         T2("PH Th,Fr, SH Tu,Fr 11:30-02:00", "PH Th,Fr,SH Tu,Fr 11:30-02:00");
-        T2("Mo-Th 17:00-23:00, Mo-Th SH 14:00-23:00, Fr 14:00-02:00, Sa 11:30-22:00, Su 11:30-22:00, PH Mo-Th 11:30-23:00, PH Fr, SH Fr 11:30-02:00, PH Sa-Su 11:30-22:00", "Mo-Th 17:00-23:00, SH Mo-Th 14:00-23:00, Fr 14:00-02:00, Sa 11:30-22:00, Su 11:30-22:00, PH Mo-Th 11:30-23:00, PH Fr,SH Fr 11:30-02:00, PH Sa-Su 11:30-22:00");
+        T3("Mo-Th 17:00-23:00, Mo-Th SH 14:00-23:00, Fr 14:00-02:00, Sa 11:30-22:00, Su 11:30-22:00, PH Mo-Th 11:30-23:00, PH Fr, SH Fr 11:30-02:00, PH Sa-Su 11:30-22:00",
+           "Mo-Th 17:00-23:00, SH Mo-Th 14:00-23:00, Fr 14:00-02:00, Sa 11:30-22:00, Su 11:30-22:00, PH Mo-Th 11:30-23:00, PH Fr,SH Fr 11:30-02:00, PH Sa-Su 11:30-22:00",
+           "Mo-Th 17:00-23:00, SH Mo-Th 14:00-23:00, Fr 14:00-02:00, Sa,Su 11:30-22:00, PH Mo-Th 11:30-23:00, PH Fr,SH Fr 11:30-02:00, PH Sa-Su 11:30-22:00");
         T("Sa,Su,PH,Mo");
         T2("Tu-Fr 10:00-17:00; Th 10:00-20:00; Sa,Su,PH Mo 11:00-18:00", "Tu-Fr 10:00-17:00; Th 10:00-20:00; Sa,Su,PH,Mo 11:00-18:00");
         T2("Mo,We,Th PH off", "PH Mo,We,Th off");
@@ -277,7 +281,7 @@ private Q_SLOTS:
         T2("10：00－17：00", "10:00-17:00");
         T2("11:00−23:00", "11:00-23:00");
         T2("11:00ー15:00", "11:00-15:00");
-        T2("We 09:00-18:00\xC2\xA0; Sa-Su 09:00-18:00", "We 09:00-18:00; Sa-Su 09:00-18:00"); // weird space
+        T2("We 09:00-18:00\xC2\xA0; Sa-Su 09:00-19:00", "We 09:00-18:00; Sa-Su 09:00-19:00"); // weird space
         T2("LUNDI 08:30 – 17:00", "Mo 08:30-17:00");
         T2("月,木,金,土,日 11:00-19:00", "Mo,Th,Fr,Sa,Su 11:00-19:00");
         T2("月-土 09:00-18:00", "Mo-Sa 09:00-18:00");
@@ -317,28 +321,42 @@ private Q_SLOTS:
         T2("Mo 12:00-15:00, Mo 18:00-24:00", "Mo 12:00-15:00,18:00-24:00");
 
         // recovery from wrong time selector separators
-        T2("Dimanche Fermé Lundi 08:00 – 12:30 14:00 – 19:00 Mardi 08:00 – 12:30 14:00 – 19:00 Mercredi 08:00 – 12:30 14:00 – 19:00 Jeudi 08:00 – 12:30 14:00 – 19:00 Vendredi 08:00 – 12:30 14:00 – 19:00 Samedi 08:00 – 12:30 14:30 – 18:00", "Su closed; Mo 08:00-12:30,14:00-19:00; Tu 08:00-12:30,14:00-19:00; We 08:00-12:30,14:00-19:00; Th 08:00-12:30,14:00-19:00; Fr 08:00-12:30,14:00-19:00; Sa 08:00-12:30,14:30-18:00");
+        T3("Dimanche Fermé Lundi 08:00 – 12:30 14:00 – 19:00 Mardi 08:00 – 12:30 14:00 – 19:00 Mercredi 08:00 – 12:30 14:00 – 19:00 Jeudi 08:00 – 12:30 14:00 – 19:00 Vendredi 08:00 – 12:30 14:00 – 19:00 Samedi 08:00 – 12:30 14:30 – 18:00",
+           "Su closed; Mo 08:00-12:30,14:00-19:00; Tu 08:00-12:30,14:00-19:00; We 08:00-12:30,14:00-19:00; Th 08:00-12:30,14:00-19:00; Fr 08:00-12:30,14:00-19:00; Sa 08:00-12:30,14:30-18:00",
+           "Su closed; Mo,Tu,We,Th,Fr 08:00-12:30,14:00-19:00; Sa 08:00-12:30,14:30-18:00");
 
         // recovery from slashes abused as rule or timespan separators
         T2("09:00-12:00/13:00-19:00", "09:00-12:00,13:00-19:00");
         T2("10:00 - 13:30 / 17:00 - 20:30", "10:00-13:30,17:00-20:30");
         T2("Mo-Fr 6:00-18:00 / Sa 6:00-13:00 / So 7:00-17:00", "Mo-Fr 06:00-18:00; Sa 06:00-13:00; Su 07:00-17:00");
+
+        // Simplification of the output
+        T3("Mo 08:00-13:00; Tu 08:00-13:00", "Mo 08:00-13:00; Tu 08:00-13:00", "Mo,Tu 08:00-13:00");
+        T3("Mo-Th 08:00-13:00; Sa[1],Su[2] 08:00-13:00", "Mo-Th 08:00-13:00; Sa[1],Su[-1] 08:00-13:00", "Mo-Th,Sa[1],Su[-1] 08:00-13:00");
+        T("easter +1 day 08:00-13:00; Tu,Sa-Su 08:00-13:00"); // does not simplify
 #undef T
 #undef T2
+#undef T3
     }
 
     void testSuccess()
     {
         QFETCH(QByteArray, input);
         QFETCH(QByteArray, expectedOutput);
+        QFETCH(QByteArray, expectedSimplifiedOutput);
         OpeningHours oh(input);
         QVERIFY(oh.error() != OpeningHours::SyntaxError);
         QCOMPARE(oh.normalizedExpression(), expectedOutput);
+        QCOMPARE(oh.simplifiedExpression(), expectedSimplifiedOutput);
 
         // verify the expressions we generate are parsed correctly as well
         OpeningHours oh2(oh.normalizedExpression());
-        QVERIFY(oh.error() != OpeningHours::SyntaxError);
+        QVERIFY(oh2.error() != OpeningHours::SyntaxError);
         QCOMPARE(oh2.normalizedExpression(), oh.normalizedExpression());
+
+        OpeningHours oh3(oh.simplifiedExpression());
+        QVERIFY(oh3.error() != OpeningHours::SyntaxError);
+        QCOMPARE(oh3.normalizedExpression(), oh.simplifiedExpression());
     }
 
     void testFail_data()

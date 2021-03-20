@@ -26,6 +26,7 @@ class OpeningHoursPrivate : public QSharedData {
 public:
     void finalizeRecovery();
     void autocorrect();
+    void simplify();
     void validate();
     void addRule(Rule *parsedRule);
     void restartFrom(int pos, Rule::Type nextRuleType);
