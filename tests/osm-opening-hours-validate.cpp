@@ -34,6 +34,7 @@ int main(int argc, char **argv)
         in.open(stdin, QFile::ReadOnly);
         int total = 0;
         int normalized = 0;
+        int simplified = 0;
         int errors = 0;
         char line[4096];
         while (!in.atEnd()) {
@@ -59,10 +60,18 @@ int main(int argc, char **argv)
                     ++normalized;
                     std::cerr << "Expression " << QByteArray(line, size).constData() << " normalized to " << n.constData() << std::endl;
                 }
+                const auto simplifiedExpr = oh.simplifiedExpression();
+                if (n != simplifiedExpr) {
+                    ++simplified;
+                    std::cerr << "Expression " << n.constData() << " simplified to " << simplifiedExpr.constData() << std::endl;
+                }
             }
         }
 
-        std::cerr << total << " expressions checked, " << errors << " invalid, " << normalized << " not in normal form" << std::endl;
+        std::cerr << total << " expressions checked, "
+                  << errors << " invalid, "
+                  << normalized << " not in normal form, "
+                  << simplified << " can be simplified" << std::endl;
         return errors;
     } else {
         OpeningHours oh(parser.positionalArguments().at(0).toUtf8());
