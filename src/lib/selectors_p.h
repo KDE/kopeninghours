@@ -176,6 +176,7 @@ class DateOffset
 {
 public:
     bool operator==(DateOffset other) const;
+    DateOffset &operator+=(DateOffset other);
 
     int16_t dayOffset;
     int8_t weekday;

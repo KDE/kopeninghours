@@ -296,6 +296,18 @@ bool DateOffset::operator==(DateOffset other) const
     return weekday == other.weekday && nthWeekday == other.nthWeekday && dayOffset == other.dayOffset;
 }
 
+DateOffset &DateOffset::operator+=(DateOffset other)
+{
+    // Only dayOffset really supports += (this is for whitsun)
+    dayOffset += other.dayOffset;
+    // The others can't possibly be set already
+    Q_ASSERT(weekday == 0);
+    Q_ASSERT(nthWeekday == 0);
+    weekday = other.weekday;
+    nthWeekday = other.nthWeekday;
+    return *this;
+}
+
 bool Date::operator==(Date other) const
 {
     if (variableDate != other.variableDate)

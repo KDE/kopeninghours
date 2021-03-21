@@ -668,7 +668,7 @@ MonthdayRangeAdditional:
 | DateFrom[D] DateOffset[O] {
     $$ = new MonthdayRange;
     $$->begin = $D;
-    $$->begin.offset = $O;
+    $$->begin.offset += $O;
     $$->end = $$->begin;
   }
 | DateFrom[F] RangeSeparator DateTo[T] {
@@ -681,7 +681,7 @@ MonthdayRangeAdditional:
 | DateFrom[F] DateOffset[OF] RangeSeparator DateTo[T] {
     $$ = new MonthdayRange;
     $$->begin = $F;
-    $$->begin.offset = $OF;
+    $$->begin.offset += $OF;
     $$->end = $T;
     if ($$->end.year == 0) { $$->end.year = $$->begin.year; }
     if ($$->end.month == 0) { $$->end.month = $$->begin.month; }
@@ -692,7 +692,7 @@ MonthdayRangeAdditional:
     $$->end = $T;
     if ($$->end.year == 0) { $$->end.year = $$->begin.year; }
     if ($$->end.month == 0) { $$->end.month = $$->begin.month; }
-    $$->end.offset = $OT;
+    $$->end.offset += $OT;
   }
 | DateFrom[F] RangeSeparator T_MONTH[M] AltMonthdayOffset[O] {
     $$ = new MonthdayRange;
@@ -707,11 +707,11 @@ MonthdayRangeAdditional:
 | DateFrom[F] DateOffset[OF] RangeSeparator DateTo[T] DateOffset[OT] {
     $$ = new MonthdayRange;
     $$->begin = $F;
-    $$->begin.offset = $OF;
+    $$->begin.offset += $OF;
     $$->end = $T;
     if ($$->end.year == 0) { $$->end.year = $$->begin.year; }
     if ($$->end.month == 0) { $$->end.month = $$->begin.month; }
-    $$->end.offset = $OT;
+    $$->end.offset += $OT;
   }
 ;
 
