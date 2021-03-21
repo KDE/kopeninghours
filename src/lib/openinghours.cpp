@@ -123,7 +123,7 @@ void OpeningHoursPrivate::autocorrect()
 
 void OpeningHoursPrivate::simplify()
 {
-    if (m_error == OpeningHours::SyntaxError) {
+    if (m_error == OpeningHours::SyntaxError || m_rules.empty()) {
         return;
     }
 

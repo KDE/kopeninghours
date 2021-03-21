@@ -454,6 +454,8 @@ private Q_SLOTS:
 
         OpeningHours oh(expression);
         QCOMPARE(oh.error(), error);
+        (void)oh.normalizedExpression(); // don't crash
+        (void)oh.simplifiedExpression(); // don't crash
     }
 };
 
