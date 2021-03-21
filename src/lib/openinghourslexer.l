@@ -71,6 +71,7 @@ YEAR        [1-2][019][0-9][0-9]
 " days" { return T_KEYWORD_DAY; }
 "week" { return T_KEYWORD_WEEK; }
 "easter" { return T_EASTER; }
+"whitsun" { return T_WHITSUN; } // non-standard, will be turned into "easter +49 days"
 
   /* am/pm time format support, non-standard and has to appear before the generic number token. */
 [0-5]?[0-9](\ ?a\.?m\.?|a) { yylval->num = std::strtol(yytext, nullptr, 10); return T_ALT_TIME_AM; }

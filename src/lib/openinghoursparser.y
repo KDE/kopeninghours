@@ -158,6 +158,7 @@ typedef void* yyscan_t;
 %token T_KEYWORD_WEEK
 
 %token T_EASTER
+%token T_WHITSUN
 
 %token <num> T_WEEKDAY
 %token <num> T_MONTH
@@ -737,6 +738,7 @@ DateTo:
 
 VariableDate:
   T_EASTER { $$ = { 0, 0, 0, Date::Easter, { 0, 0, 0 } }; }
+| T_WHITSUN { $$ = { 0, 0, 0, Date::Easter, { 49, 0, 0 } }; }
 ;
 
 AltMonthdayOffset:

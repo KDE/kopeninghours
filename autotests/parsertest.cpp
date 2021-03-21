@@ -43,6 +43,7 @@ private Q_SLOTS:
         T("easter off");
         T("easter +1 day off");
         T("easter -2 days off");
+        T2("whitsun off", "easter +49 days off");
         T("2020");
         T("2020-2021");
         T("1970-2022/2");
