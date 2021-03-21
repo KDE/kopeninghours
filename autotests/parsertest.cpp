@@ -22,7 +22,7 @@ private Q_SLOTS:
 
 #define T(x) QTest::newRow(x) << QByteArray(x) << QByteArray(x) << QByteArray(x)
 #define T2(x, y) QTest::newRow(x) << QByteArray(x) << QByteArray(y) << QByteArray(y)
-#define T3(x, y, z) QTest::newRow(x) << QByteArray(x) << QByteArray(y) << QByteArray(z)
+#define T3(x, y, z) QTest::newRow(x) << QByteArray(x) << QByteArray(y ? y : x) << QByteArray(z)
         T("24/7");
         T("24/7 \"comment\"");
         T("24/7 closed");
@@ -75,7 +75,7 @@ private Q_SLOTS:
         T2("Dec 01 -Su 08:00-12:00", "Dec 01 Su[-1] 08:00-12:00");
         T("Aug Mo[1]-Aug Sa[-1] closed");
         T("2020/2");
-        T("\"Außerhalb der Semesterferien\": Mo-Fr 08:00-22:00; Sa-Su 10:00-20:00; \"Innerhalb der Semesterferien\": Mo-Fr 08:00-18:00; Sa-Su 10:00-16:00");
+        T("\"Außerhalb der Semesterferien\": Mo-Fr 08:00-22:00; Sa,Su 10:00-20:00; \"Innerhalb der Semesterferien\": Mo-Fr 08:00-18:00; Sa,Su 10:00-16:00");
         T("PH Mo-Th 14:00-23:00");
         T2("Mo-Th PH 14:00-23:00", "PH Mo-Th 14:00-23:00");
         T("PH Fr,SH Fr 11:30-02:00");
@@ -102,7 +102,7 @@ private Q_SLOTS:
         T("Mo-Fr 08:00-12:00,13:00-17:30; Sa 08:00-12:00; PH 09:00-12:00");
 
         // from https://wiki.openstreetmap.org/wiki/Key:opening_hours#Examples
-        T("Sa-Su 00:00-24:00");
+        T3("Sa-Su 00:00-24:00", nullptr, "Sa,Su 00:00-24:00");
         T("Mo-Fr 08:30-20:00");
         T("Mo 10:00-12:00,12:30-15:00; Tu-Fr 08:00-12:00,12:30-15:00; Sa 08:00-12:00");
         T("Mo-Su 08:00-18:00; Apr 10-15 off; Jun 08:00-14:00; Aug off; Dec 25 off");
@@ -112,14 +112,14 @@ private Q_SLOTS:
         T("Su 10:00+");
         T2("week 1-53/2 Fr 09:00-12:00; week 2-52/2 We 09:00-12:00", "week 01-53/2 Fr 09:00-12:00; week 02-52/2 We 09:00-12:00");
         T("Mo-Sa 08:00-13:00,14:00-17:00 || \"by appointment\"");
-        T("Su-Tu 11:00-01:00, We-Th 11:00-03:00, Fr 11:00-06:00, Sa 11:00-07:00");
+        T3("Su-Tu 11:00-01:00, We-Th 11:00-03:00, Fr 11:00-06:00, Sa 11:00-07:00", nullptr, "Su-Tu 11:00-01:00, We,Th 11:00-03:00, Fr 11:00-06:00, Sa 11:00-07:00");
         T("Mo-Su,PH 15:00-03:00; easter -2 days off");
 
         // from https://openingh.openstreetmap.de/evaluation_tool/
         T("Mo-Fr 10:00-20:00; PH off");
         T("Mo,Tu,Th,Fr 12:00-18:00; Sa,PH 12:00-17:00; Th[3],Th[-1] off");
         T("00:00-24:00; Tu-Su,PH 08:30-09:00 off; Tu-Su 14:00-14:30 off; Mo 08:00-13:00 off");
-        T("Fr-Sa 18:00-06:00; PH off");
+        T3("Fr-Sa 18:00-06:00; PH off", nullptr, "Fr,Sa 18:00-06:00; PH off");
         T("Mo 10:00-12:00,12:30-15:00");
         T("Mo 10:00-12:00,12:30-15:00; Tu-Fr 08:00-12:00,12:30-15:00; Sa 08:00-12:00");
         T("\"only after registration\"; PH off");
@@ -129,7 +129,7 @@ private Q_SLOTS:
         T("Mo-Su 22:00-23:00; We,PH off");
         T("We-Fr 10:00-24:00 open \"it is open\" || \"please call\"; PH off");
         T("Mo-Fr 08:00-11:00 || Tu-Th,PH open \"Emergency only\"");
-        T("Tu-Th,We 22:00-23:00 open \"Hot meals\"; PH off");
+        T3("Tu-Th,We 22:00-23:00 open \"Hot meals\"; PH off", nullptr, "Tu-Th 22:00-23:00 open \"Hot meals\"; PH off"); // We redundant
         T("Mo 12:00-14:00 open \"female only\", Mo 14:00-16:00 open \"male only\"; PH off");
         T("Apr: 22:00-23:00; PH off");
         T("Jul-Jan: 22:00-23:00; PH off");
@@ -141,7 +141,7 @@ private Q_SLOTS:
         T("Mar Su[-1]-Dec Su[1] -2 days: 22:00-23:00; PH off");
         T("Sa[1],Sa[1] +1 day 10:00-12:00 open \"first weekend in the month\"; PH off");
         T("Sa[-1],Sa[-1] +1 day 10:00-12:00 open \"last weekend in the month\"; PH off");
-        T("Sa-Su 00:00-24:00; PH off");
+        T3("Sa-Su 00:00-24:00; PH off", nullptr, "Sa,Su 00:00-24:00; PH off");
         T("Mo-Fr 00:00-24:00; PH off");
         T("sunrise-sunset open \"Beware of sunburn!\"; PH off");
         T("sunset-sunrise open \"Beware of vampires!\"; PH off");
@@ -180,7 +180,8 @@ private Q_SLOTS:
         T("Oct: We[1]");
 
         // from https://github.com/dfaure/DataNovaImportScripts/blob/master/saved_opening_hours
-        T("Mo-Tu,Th-Fr 09:30-12:00; 2020 Dec 28 off; 2020 Dec 22,2020 Dec 29 off; We 15:00-17:00; 2020 Dec 23,2020 Dec 30 off; 2020 Dec 24,2020 Dec 31 off; Sa 10:00-12:00; 2020 Dec 26,2021 Jan 02 off; PH off");
+        T3("Mo-Tu,Th-Fr 09:30-12:00; 2020 Dec 28 off; 2020 Dec 22,2020 Dec 29 off; We 15:00-17:00; 2020 Dec 23,2020 Dec 30 off; 2020 Dec 24,2020 Dec 31 off; Sa 10:00-12:00; 2020 Dec 26,2021 Jan 02 off; PH off", nullptr,
+           "Mo,Tu,Th,Fr 09:30-12:00; 2020 Dec 28 off; 2020 Dec 22,2020 Dec 29 off; We 15:00-17:00; 2020 Dec 23,2020 Dec 30 off; 2020 Dec 24,2020 Dec 31 off; Sa 10:00-12:00; 2020 Dec 26,2021 Jan 02 off; PH off");
 
         // real-world tests from Osmose that we were handling wrongly
         T("Tu-Fr 11:30-14:30 open, 14:30-18:00 open \"pickup only\", 18:00-22:00 open");
@@ -189,7 +190,8 @@ private Q_SLOTS:
         T2("week 23-37 12:30-15:00,20:00-23:00; week 01-22,38-53 off", "week 23-37 12:30-15:00,20:00-23:00; week 01-22,38-53 off");
         T("Mo-Sa 09:00-20:00; Su[-2,-1] 12:30-18:00");
         T("Su off, Sa-Fr 08:30-13:00; Mo-Th 08:30-13:30,16:00-20:00");
-        T("Mo-Tu 09:00-12:00,14:00-18:00, We closed, Th-Sa 09:00-12:00,14:00-18:00; Su 09:30-12:30,14:30-18:00");
+        T3("Mo-Tu 09:00-12:00,14:00-18:00, We closed, Th-Sa 09:00-12:00,14:00-18:00; Su 09:30-12:30,14:30-18:00", nullptr,
+           "Mo,Tu 09:00-12:00,14:00-18:00, We closed, Th-Sa 09:00-12:00,14:00-18:00; Su 09:30-12:30,14:30-18:00");
         T2("SH Sep-Jun Mo 10:52-15:52", "SH, Sep-Jun Mo 10:52-15:52"); // likely incorrect, but at least no information loss
 
         // weekday autocorrect
@@ -277,15 +279,15 @@ private Q_SLOTS:
         T2("Du lundi au vendredi : 9:00-18:00", "Mo-Fr 09:00-18:00");
 
         // Unicode symbols
-        T2("Mo–Tu", "Mo-Tu");
+        T3("Mo–Tu", "Mo-Tu", "Mo,Tu");
         T2("13：41", "13:41");
         T2("10：00〜19：00", "10:00-19:00");
         T2("10：00－17：00", "10:00-17:00");
         T2("11:00−23:00", "11:00-23:00");
         T2("11:00ー15:00", "11:00-15:00");
-        T2("We 09:00-18:00\xC2\xA0; Sa-Su 09:00-19:00", "We 09:00-18:00; Sa-Su 09:00-19:00"); // weird space
+        T2("We 09:00-18:00\xC2\xA0; Sa 09:00-19:00", "We 09:00-18:00; Sa 09:00-19:00"); // weird space
         T2("LUNDI 08:30 – 17:00", "Mo 08:30-17:00");
-        T2("月,木,金,土,日 11:00-19:00", "Mo,Th,Fr,Sa,Su 11:00-19:00");
+        T3("月,木,金,土,日 11:00-19:00", "Mo,Th,Fr,Sa,Su 11:00-19:00", "Mo,Th-Su 11:00-19:00");
         T2("月-土 09:00-18:00", "Mo-Sa 09:00-18:00");
         T2("水曜日～土曜日10:00～19:00", "We-Sa 10:00-19:00");
         T2("月～土 　17:00～23:00", "Mo-Sa 17:00-23:00");
@@ -306,12 +308,12 @@ private Q_SLOTS:
         T2("Senin-Sabtu 09:00-16:00, Minggu 09:00-18:00", "Mo-Sa 09:00-16:00, Su 09:00-18:00");
         T2("Lundi-samedi 8H00-12H00 16H00-20H00 dimanche,jours fériés 9H00-12H00 17H00-20H00", "Mo-Sa 08:00-12:00,16:00-20:00; Su,PH 09:00-12:00,17:00-20:00");
         T2("De février à novembre", "Feb-Nov");
-        T2("Ma,Me,Je,Ve 8h-12h30, 14h-19h; Sa 8h-12h30, 14h-18h", "Tu,We,Th,Fr 08:00-12:30,14:00-19:00; Sa 08:00-12:30,14:00-18:00");
+        T3("Ma,Me,Je,Ve 8h-12h30, 14h-19h; Sa 8h-12h30, 14h-18h", "Tu,We,Th,Fr 08:00-12:30,14:00-19:00; Sa 08:00-12:30,14:00-18:00", "Tu-Fr 08:00-12:30,14:00-19:00; Sa 08:00-12:30,14:00-18:00");
         T2("Mo-Fr: 10:00-18:30 Uhr Sa: 10:00-13:30 Uhr", "Mo-Fr 10:00-18:30; Sa 10:00-13:30");
         T2("Montag & Dienstag Ruhetag", "Mo,Tu closed");
 
         // recovery from wrong rule separators
-        T2("Fr-Sa 10:00-02:00,Su 10:00-20:00", "Fr-Sa 10:00-02:00, Su 10:00-20:00");
+        T2("Fr,Sa 10:00-02:00,Su 10:00-20:00", "Fr,Sa 10:00-02:00, Su 10:00-20:00");
         T2("tu-sa 12:00-14:30,mo-sa 18:30-22:00", "Tu-Sa 12:00-14:30, Mo-Sa 18:30-22:00");
         T2("Mo 07:00-12:00,Tu 15:00-20:00,We 07:00-12:00,Fr 15:00-20:00", "Mo 07:00-12:00, Tu 15:00-20:00, We 07:00-12:00, Fr 15:00-20:00");
         T2("Mo-Fr 09:00-17:00 Sa 09:00-14:00", "Mo-Fr 09:00-17:00; Sa 09:00-14:00");
@@ -323,7 +325,7 @@ private Q_SLOTS:
         // recovery from wrong time selector separators
         T3("Dimanche Fermé Lundi 08:00 – 12:30 14:00 – 19:00 Mardi 08:00 – 12:30 14:00 – 19:00 Mercredi 08:00 – 12:30 14:00 – 19:00 Jeudi 08:00 – 12:30 14:00 – 19:00 Vendredi 08:00 – 12:30 14:00 – 19:00 Samedi 08:00 – 12:30 14:30 – 18:00",
            "Su closed; Mo 08:00-12:30,14:00-19:00; Tu 08:00-12:30,14:00-19:00; We 08:00-12:30,14:00-19:00; Th 08:00-12:30,14:00-19:00; Fr 08:00-12:30,14:00-19:00; Sa 08:00-12:30,14:30-18:00",
-           "Su closed; Mo,Tu,We,Th,Fr 08:00-12:30,14:00-19:00; Sa 08:00-12:30,14:30-18:00");
+           "Su closed; Mo-Fr 08:00-12:30,14:00-19:00; Sa 08:00-12:30,14:30-18:00");
 
         // recovery from slashes abused as rule or timespan separators
         T2("09:00-12:00/13:00-19:00", "09:00-12:00,13:00-19:00");
@@ -331,11 +333,14 @@ private Q_SLOTS:
         T2("Mo-Fr 6:00-18:00 / Sa 6:00-13:00 / So 7:00-17:00", "Mo-Fr 06:00-18:00; Sa 06:00-13:00; Su 07:00-17:00");
 
         // Simplification of the output
-        T3("Mo 08:00-13:00; Tu 08:00-13:00", "Mo 08:00-13:00; Tu 08:00-13:00", "Mo,Tu 08:00-13:00");
+        T3("Mo 08:00-13:00; Tu 08:00-13:00", nullptr, "Mo,Tu 08:00-13:00");
         T3("Mo-Th 08:00-13:00; Sa[1],Su[-1] 08:00-13:00", "Mo-Th 08:00-13:00; Sa[1],Su[-1] 08:00-13:00", "Mo-Th,Sa[1],Su[-1] 08:00-13:00");
-        T("easter +1 day 08:00-13:00; Tu,Sa-Su 08:00-13:00"); // does not simplify
+        T("easter +1 day 08:00-13:00; Tu,Sa,Su 08:00-13:00"); // does not simplify
         T3("Mo-Sa 12:00-15:00, Mo-Sa 18:00-24:00", "Mo-Sa 12:00-15:00, Mo-Sa 18:00-24:00", "Mo-Sa 12:00-15:00,18:00-24:00");
         T3("Mo 12:00-15:00, Mo 18:00-24:00", "Mo 12:00-15:00, Mo 18:00-24:00", "Mo 12:00-15:00,18:00-24:00");
+        T("Mo-We,Fr,Su 08:00-13:00");
+        T3("Mo,We,Th,Tu,Sa 08:00-13:00", "Mo,We,Th,Tu,Sa 08:00-13:00", "Mo-Th,Sa 08:00-13:00"); // reordering
+        T3("Mo-Fr,Tu,We 08:00-13:00", "Mo-Fr,Tu,We 08:00-13:00", "Mo-Fr 08:00-13:00"); // Tu,We already included
 #undef T
 #undef T2
 #undef T3

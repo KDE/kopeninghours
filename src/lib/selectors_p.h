@@ -141,8 +141,9 @@ public:
     SelectorResult nextInterval(const Interval &interval, const QDateTime &dt, OpeningHoursPrivate *context) const;
     SelectorResult nextIntervalLocal(const Interval &interval, const QDateTime &dt, OpeningHoursPrivate *context) const;
     QByteArray toExpression() const;
+    void simplify();
 
-    uint8_t beginDay = 0;
+    uint8_t beginDay = 0; // Mo=1, Tu=2, ..., Su=7
     uint8_t endDay = 0;
     uint16_t nthMask = 0;
     int16_t offset = 0;

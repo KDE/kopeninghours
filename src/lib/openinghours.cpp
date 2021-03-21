@@ -12,6 +12,7 @@
 #include "interval.h"
 #include "rule_p.h"
 #include "logging.h"
+#include "consecutiveaccumulator_p.h"
 
 #include <QDateTime>
 #include <QJsonArray>
@@ -122,7 +123,7 @@ void OpeningHoursPrivate::autocorrect()
 
 void OpeningHoursPrivate::simplify()
 {
-    if (m_rules.size() <= 1 || m_error == OpeningHours::SyntaxError) {
+    if (m_error == OpeningHours::SyntaxError) {
         return;
     }
 
@@ -166,6 +167,14 @@ void OpeningHoursPrivate::simplify()
                 appendSelector(prevRule->m_timeSelector.get(), std::move(rule->m_timeSelector));
                 it = std::prev(m_rules.erase(it));
             }
+        }
+    }
+
+    // Now try collapsing adjacent week days: Mo,Tu,We => Mo-We
+    for (auto it = m_rules.begin(); it != m_rules.end(); ++it) {
+        auto rule = (*it).get();
+        if (rule->m_weekdaySelector) {
+            rule->m_weekdaySelector->simplify();
         }
     }
 }

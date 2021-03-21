@@ -221,6 +221,69 @@ QByteArray WeekdayRange::toExpression() const
     return expr;
 }
 
+void WeekdayRange::simplify()
+{
+    QMap<int, WeekdayRange *> endToSelectorMap;
+    bool seenDays[8];
+    const int endIdx = sizeof(seenDays);
+    std::fill(std::begin(seenDays), std::end(seenDays), false);
+    for (WeekdayRange *selector = this; selector; selector = selector->next.get()) {
+        // Ensure it's all just week days, no other features
+        if (selector->nthMask || selector->lhsAndSelector || selector->holiday != NoHoliday || selector->offset) {
+            return;
+        }
+        for (int day = selector->beginDay; day <= selector->endDay; ++day) {
+            seenDays[day] = true;
+        }
+        endToSelectorMap.insert(selector->endDay, selector);
+    }
+
+    QString str;
+    for (int idx = 1; idx < endIdx; ++idx) {
+        str += QLatin1Char(seenDays[idx] ? '1' : '0');
+    }
+
+    // Clear everything and refill
+    next.reset(nullptr);
+
+    // like std::find, but let's use indexes
+    auto find = [&](int idx, bool value) {
+        for (; idx < endIdx; ++idx) {
+            if (seenDays[idx] == value)
+                return idx;
+        }
+        return endIdx;
+    };
+
+    WeekdayRange *prev = nullptr;
+    WeekdayRange *selector = this;
+
+    auto addRange = [&](int from, int to) {
+        if (prev) {
+            selector = new WeekdayRange;
+            prev->next.reset(selector);
+        }
+        selector->beginDay = from;
+        selector->endDay = to;
+        prev = selector;
+
+    };
+
+    int idx = find(1, true);
+    while (idx < endIdx) {
+        // find end of 'true' range
+        const int finishIdx = find(idx, false);
+        // if the range is only 2 items, prefer Mo,Tu over Mo-Tu
+        if (finishIdx == idx + 2) {
+            addRange(idx, idx);
+            addRange(idx + 1, idx + 1);
+        } else {
+            addRange(idx, finishIdx - 1);
+        }
+        idx = find(finishIdx, true);
+    }
+}
+
 int Week::requiredCapabilities() const
 {
     if (endWeek < beginWeek) { // is this even officially allowed?
