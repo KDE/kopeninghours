@@ -99,6 +99,14 @@ Fri? { yylval->num = 5; return T_WEEKDAY; }
 Sat? { yylval->num = 6; return T_WEEKDAY; }
 Sun? { yylval->num = 7; return T_WEEKDAY; }
 
+Mo\. { yylval->num = 1; return T_WEEKDAY; }
+Tu\. { yylval->num = 2; return T_WEEKDAY; }
+We\. { yylval->num = 3; return T_WEEKDAY; }
+Th\. { yylval->num = 4; return T_WEEKDAY; }
+Fr\. { yylval->num = 5; return T_WEEKDAY; }
+Sa\. { yylval->num = 6; return T_WEEKDAY; }
+Su\. { yylval->num = 7; return T_WEEKDAY; }
+
  /* same for month names, technically those should be three letter English abbreviations */
 "January" { yylval->num = 1; return T_MONTH; }
 "February" { yylval->num = 2; return T_MONTH; }
