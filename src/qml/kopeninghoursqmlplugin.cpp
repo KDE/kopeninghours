@@ -9,6 +9,7 @@
 #include <KOpeningHours/IntervalModel>
 #include <KOpeningHours/OpeningHours>
 
+#include <QCoreApplication>
 #include <QQmlContext>
 #include <QQmlEngine>
 #include <QQmlExtensionPlugin>
@@ -47,9 +48,12 @@ void KOpeningHoursQmlPlugin::registerTypes(const char*)
 
     qmlRegisterType<KOpeningHours::IntervalModel>("org.kde.kopeninghours", 1, 0, "IntervalModel");
 
-    qmlRegisterSingletonType("org.kde.kopeninghours", 1, 0, "OpeningHoursParser", [](QQmlEngine*, QJSEngine *engine) -> QJSValue {
-        return engine->toScriptValue(KOpeningHours::OpeningHoursFactory());
-    });
+    // HACK qmlplugindump chokes on gadget singletons, to the point of breaking ecm_find_qmlmodule()
+    if (QCoreApplication::applicationName() != QLatin1String("qmlplugindump")) {
+        qmlRegisterSingletonType("org.kde.kopeninghours", 1, 0, "OpeningHoursParser", [](QQmlEngine*, QJSEngine *engine) -> QJSValue {
+            return engine->toScriptValue(KOpeningHours::OpeningHoursFactory());
+        });
+    }
 }
 
 #include "kopeninghoursqmlplugin.moc"
