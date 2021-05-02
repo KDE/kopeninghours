@@ -232,8 +232,9 @@ void WeekdayRange::simplify()
         if (selector->nthMask || selector->lhsAndSelector || selector->holiday != NoHoliday || selector->offset) {
             return;
         }
-        for (int day = selector->beginDay; day <= selector->endDay; ++day) {
-            seenDays[day] = true;
+        const bool wrap = selector->beginDay > selector->endDay;
+        for (int day = selector->beginDay; day <= selector->endDay + (wrap ? 7 : 0); ++day) {
+            seenDays[(day - 1) % 7 + 1] = true;
         }
         endToSelectorMap.insert(selector->endDay, selector);
     }
@@ -246,13 +247,33 @@ void WeekdayRange::simplify()
     // Clear everything and refill
     next.reset(nullptr);
 
-    // like std::find, but let's use indexes
+    int startIdx = 1;
+
+    // -1 and +1 in a wrapping world
+    auto prevIdx = [&](int idx) {
+        Q_ASSERT(idx > 0 && idx < 8);
+        return idx == 1 ? 7 : (idx - 1);
+    };
+    auto nextIdx = [&](int idx) {
+        Q_ASSERT(idx > 0 && idx < 8);
+        return idx % 7 + 1;
+    };
+
+    // like std::find, but let's use indexes - and wrap at 8
     auto find = [&](int idx, bool value) {
-        for (; idx < endIdx; ++idx) {
+        do {
+            if (seenDays[idx] == value)
+                return idx;
+            idx = nextIdx(idx);
+        } while(idx != startIdx);
+        return idx;
+    };
+    auto findPrev = [&](int idx, bool value) {
+        for (; idx > 0; --idx) {
             if (seenDays[idx] == value)
                 return idx;
         }
-        return endIdx;
+        return 0;
     };
 
     WeekdayRange *prev = nullptr;
@@ -269,19 +290,33 @@ void WeekdayRange::simplify()
 
     };
 
-    int idx = find(1, true);
-    while (idx < endIdx) {
+    int idx = 0;
+    if (seenDays[1]) {
+        // monday is set, try going further back
+        idx = findPrev(7, false);
+        if (idx) {
+            idx = nextIdx(idx);
+        }
+    }
+    if (idx == 0) {
+        // start at first day being set (Tu or more)
+        idx = find(1, true);
+    }
+    startIdx = idx;
+    Q_ASSERT(startIdx > 0);
+    do {
         // find end of 'true' range
         const int finishIdx = find(idx, false);
         // if the range is only 2 items, prefer Mo,Tu over Mo-Tu
-        if (finishIdx == idx + 2) {
+        if (finishIdx == nextIdx(nextIdx(idx))) {
             addRange(idx, idx);
-            addRange(idx + 1, idx + 1);
+            const int n = nextIdx(idx);
+            addRange(n, n);
         } else {
-            addRange(idx, finishIdx - 1);
+            addRange(idx, prevIdx(finishIdx));
         }
         idx = find(finishIdx, true);
-    }
+    } while (idx != startIdx);
 }
 
 int Week::requiredCapabilities() const
