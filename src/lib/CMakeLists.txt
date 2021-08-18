@@ -80,3 +80,26 @@ install(FILES
     ${CMAKE_CURRENT_BINARY_DIR}/kopeninghours_export.h
     DESTINATION ${KDE_INSTALL_INCLUDEDIR}/kopeninghours
 )
+
+if (BUILD_QCH)
+    ecm_add_qch(
+        KOpeningHours_QCH
+        NAME KOpeningHours
+        BASE_NAME KOpeningHours
+        VERSION ${RELEASE_SERVICE_VERSION}
+        ORG_DOMAIN org.kde
+        SOURCES # using only public headers, to cover only public API
+        ${KOpeningHours_HEADERS}
+        MD_MAINPAGE "${CMAKE_SOURCE_DIR}/README.md"
+        #IMAGE_DIRS "${CMAKE_SOURCE_DIR}/docs/pics"
+        LINK_QCHS
+            Qt5Core_QCH
+        INCLUDE_DIRS
+            ${CMAKE_CURRENT_BINARY_DIR}
+        BLANK_MACROS
+            KOPENINGHOURS_EXPORT
+        TAGFILE_INSTALL_DESTINATION ${KDE_INSTALL_QTQCHDIR}
+        QCH_INSTALL_DESTINATION ${KDE_INSTALL_QTQCHDIR}
+        COMPONENT Devel
+    )
+endif()
