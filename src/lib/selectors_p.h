@@ -124,12 +124,14 @@ public:
     bool isMultiDay(QDate date, OpeningHoursPrivate *context) const;
     SelectorResult nextInterval(const Interval &interval, const QDateTime &dt, OpeningHoursPrivate *context) const;
     QByteArray toExpression() const;
+    Time adjustedEnd() const;
     bool operator==(Timespan &other) const;
 
     Time begin = { Time::NoEvent, -1, -1 };
     Time end = { Time::NoEvent, -1, -1 };
     int interval = 0;
     bool openEnd = false;
+    bool pointInTime = false;
     std::unique_ptr<Timespan> next;
 };
 

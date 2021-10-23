@@ -382,27 +382,23 @@ Timespan:
   Time[T] {
     $$ = new Timespan;
     $$->begin = $$->end = $T;
+    $$->pointInTime = true;
   }
 | Time[T] T_PLUS {
     $$ = new Timespan;
     $$->begin = $$->end = $T;
+    $$->pointInTime = true;
     $$->openEnd = true;
   }
 | Time[T1] RangeSeparator Time[T2] {
     $$ = new Timespan;
     $$->begin = $T1;
     $$->end = $T2;
-    if ($$->begin == $$->end) {
-        $$->end.hour += 24;
-    }
   }
 | Time[T1] RangeSeparator Time[T2] T_PLUS {
     $$ = new Timespan;
     $$->begin = $T1;
     $$->end = $T2;
-    if ($$->begin == $$->end) {
-        $$->end.hour += 24;
-    }
     $$->openEnd = true;
   }
 | Time[T1] RangeSeparator Time[T2] T_SLASH T_INTEGER[I] {

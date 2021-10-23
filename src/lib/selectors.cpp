@@ -68,7 +68,7 @@ QByteArray Time::toExpression(bool end) const
     case Time::NoEvent:
         if (hour % 24 == 0 && minute == 0 && end)
             return "24:00";
-        return twoDigits(hour % 24) + ':' + twoDigits(minute);
+        return twoDigits(hour) + ':' + twoDigits(minute);
     case Time::Dawn:
         expr = "dawn";
         break;
@@ -84,7 +84,7 @@ QByteArray Time::toExpression(bool end) const
     }
     const int minutes = hour * 60 + minute;
     if (minutes != 0) {
-        const QByteArray hhmm = twoDigits(qAbs(hour) % 24) + ':' + twoDigits(qAbs(minute));
+        const QByteArray hhmm = twoDigits(qAbs(hour)) + ':' + twoDigits(qAbs(minute));
         expr = '(' + expr + (minutes > 0 ? '+' : '-') + hhmm + ')';
     }
     return expr;
@@ -93,7 +93,7 @@ QByteArray Time::toExpression(bool end) const
 int Timespan::requiredCapabilities() const
 {
     int c = Capability::None;
-    if ((interval > 0 || begin == end) && !openEnd) {
+    if ((interval > 0 || pointInTime) && !openEnd) {
         c |= Capability::PointInTime;
     } else {
         c |= Capability::Interval;
@@ -118,7 +118,7 @@ static QByteArray intervalToExpression(int minutes)
 QByteArray Timespan::toExpression() const
 {
     QByteArray expr = begin.toExpression(false);
-    if (!(end == begin)) {
+    if (!pointInTime) {
         expr += '-' + end.toExpression(true);
     }
     if (openEnd) {
@@ -131,6 +131,14 @@ QByteArray Timespan::toExpression() const
         expr += ',' + next->toExpression();
     }
     return expr;
+}
+
+Time Timespan::adjustedEnd() const
+{
+    if (begin == end) {
+        return { end.event, end.hour + 24, end.minute };
+    }
+    return end;
 }
 
 bool Timespan::operator==(Timespan &other) const
