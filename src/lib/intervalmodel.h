@@ -38,7 +38,7 @@ class KOPENINGHOURS_EXPORT IntervalModel : public QAbstractListModel
 
 public:
     explicit IntervalModel(QObject *parent = nullptr);
-    ~IntervalModel();
+    ~IntervalModel() override;
 
     OpeningHours openingHours() const;
     void setOpeningHours(const OpeningHours &oh);
