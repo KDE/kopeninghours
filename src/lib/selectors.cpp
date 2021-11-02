@@ -135,7 +135,7 @@ QByteArray Timespan::toExpression() const
 
 Time Timespan::adjustedEnd() const
 {
-    if (begin == end) {
+    if (begin == end && !pointInTime) {
         return { end.event, end.hour + 24, end.minute };
     }
     return end;
