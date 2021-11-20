@@ -268,6 +268,15 @@ Jumat   { yylval->num = 5; return T_WEEKDAY; }
 Sabtu   { yylval->num = 6; return T_WEEKDAY; }
 Minggu  { yylval->num = 7; return T_WEEKDAY; }
 
+  /* Russian localized day names */
+Понедельник|Пон|Пк  { yylval->num = 1; return T_WEEKDAY; }
+Вторник|Вто|Вт      { yylval->num = 2; return T_WEEKDAY; }
+Среда|Сре|Ср        { yylval->num = 3; return T_WEEKDAY; }
+Четверг|Чет|Чт      { yylval->num = 4; return T_WEEKDAY; }
+Пятница|Пят|Пя|Пт   { yylval->num = 5; return T_WEEKDAY; }
+Суббота|Суб|Су|Сб   { yylval->num = 6; return T_WEEKDAY; }
+Воскресенье|Вос|Во  { yylval->num = 7; return T_WEEKDAY; }
+
   /* creative rule separators */
 、|and|et|e|y|und|& { return T_ADDITIONAL_RULE_SEPARATOR; }
 
