@@ -296,7 +296,8 @@ Minggu  { yylval->num = 7; return T_WEEKDAY; }
 、|and|et|e|y|und|& { return T_ADDITIONAL_RULE_SEPARATOR; }
 
   /* skip filler words */
-from|von|du|de|le|das|分|uhr|"en continu" {}
+  /* Note: the 'с' is not an ASCII 'c'! */
+from|von|du|de|le|das|分|uhr|"en continu"|с {}
 
 . {
     //printf("unexpected character: %s at %d:%d\n", yytext, yylloc->first_line, yylloc->first_column);
