@@ -314,6 +314,7 @@ private Q_SLOTS:
         T2("Montag & Dienstag Ruhetag", "Mo,Tu closed");
         T2("Понедельник - Суббота 09:00 - 21:00", "Mo-Sa 09:00-21:00");
         T2("Пон-Пт 08:00-20:00, Суб 08:00-19:00", "Mo-Fr 08:00-20:00, Sa 08:00-19:00");
+        T2("Ноябрь-Март", "Nov-Mar");
 
         // recovery from wrong rule separators
         T2("Fr,Sa 10:00-02:00,Su 10:00-20:00", "Fr,Sa 10:00-02:00, Su 10:00-20:00");

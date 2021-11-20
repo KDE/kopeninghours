@@ -147,6 +147,21 @@ Dec\.? { yylval->num = 12; return T_MONTH; }
 "Novembre" { yylval->num = 11; return T_MONTH; }
 "Décembre" { yylval->num = 12; return T_MONTH; }
 
+ /* Month names in Russian */
+"Январь"   { yylval->num = 1; return T_MONTH; }
+"Февраль"  { yylval->num = 2; return T_MONTH; }
+"Март"     { yylval->num = 3; return T_MONTH; }
+"Апрель"   { yylval->num = 4; return T_MONTH; }
+"Май"      { yylval->num = 5; return T_MONTH; }
+"Июнь"     { yylval->num = 6; return T_MONTH; }
+"Июль"     { yylval->num = 7; return T_MONTH; }
+"Август"   { yylval->num = 8; return T_MONTH; }
+"Сентябрь" { yylval->num = 9; return T_MONTH; }
+"Октябрь"  { yylval->num = 10; return T_MONTH; }
+"Ноябрь"   { yylval->num = 11; return T_MONTH; }
+"Декабрь"  { yylval->num = 12; return T_MONTH; }
+
+
  /* different quote types are sometimes mixed and/or used nested, so this is a compromise to catch most of them */
 ["][^"]*["] {
     yylval->strRef.str = yytext + 1;
