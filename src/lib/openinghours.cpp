@@ -84,6 +84,12 @@ void OpeningHoursPrivate::autocorrect()
                 it = std::prev(m_rules.erase(it));
             }
 
+            // previous is a single weekday selector and current is a single time selector
+            else if (curRuleSingleSelector && prevRuleSingleSelector && rule->m_timeSelector && prevRule->m_weekdaySelector) {
+                prevRule->m_timeSelector = std::move(rule->m_timeSelector);
+                it = std::prev(m_rules.erase(it));
+            }
+
             // previous is a single monthday selector
             else if (rule->m_monthdaySelector && prevRuleSingleSelector && prevRule->m_monthdaySelector && !isWiderThan(prevRule, rule)) {
                 auto tmp = std::move(rule->m_monthdaySelector);

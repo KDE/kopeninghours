@@ -205,6 +205,7 @@ private Q_SLOTS:
         T2("week 1-3 Mo[2], Tu-Fr, Sa [-1] 09:00-14:00", "week 01-03 Mo[2],Tu-Fr,Sa[-1] 09:00-14:00");
         T2("Mo Fr 09:30-12:30 13:30-18:30", "Mo,Fr 09:30-12:30,13:30-18:30");
         T2("Mo, We, Fr 06:30-21:30; Tu, Th 09:00-21:30; Sa 09:00-17:00; Su 09:00-14:00", "Mo,We,Fr 06:30-21:30; Tu,Th 09:00-21:30; Sa 09:00-17:00; Su 09:00-14:00");
+        T2("Lunes a sábado, 9:30 AM-5:30 PM", "Mo-Sa 09:30-17:30"); // bug 445784
 
         // technically wrong but often found content in OSM for which we have error recovery
         T2("So", "Su");
