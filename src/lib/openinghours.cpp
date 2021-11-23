@@ -93,6 +93,15 @@ void OpeningHoursPrivate::autocorrect()
                 std::swap(*it, *std::prev(it));
                 it = std::prev(m_rules.erase(it));
             }
+
+            // previous has no time selector and the current one is a misplaced 24/7 rule:
+            // convert the 24/7 to a 00:00-24:00 time selector
+            else if (rule->selectorCount() == 0 && rule->m_seen_24_7 && !prevRule->m_timeSelector) {
+                prevRule->m_timeSelector.reset(new Timespan);
+                prevRule->m_timeSelector->begin = { Time::NoEvent, 0, 0 };
+                prevRule->m_timeSelector->end = { Time::NoEvent, 24, 0 };
+                it = std::prev(m_rules.erase(it));
+            }
         } else if (rule->m_ruleType == Rule::NormalRule) {
             // Previous rule has time and other selectors
             // Current rule is only a time selector

@@ -356,6 +356,12 @@ private Q_SLOTS:
         T3("Sa-Mo 10:00-23:00, Th 10:00-23:00", "Sa-Mo 10:00-23:00, Th 10:00-23:00", "Sa-Mo,Th 10:00-23:00"); // beginDay > endDay
         T3("Sa-Mo 10:00-23:00, Fr 10:00-23:00", "Sa-Mo 10:00-23:00, Fr 10:00-23:00", "Fr-Mo 10:00-23:00"); // beginDay > endDay
         T3("Su-Th 10:00-23:00, Fr-Sa 10:00-23:00", "Su-Th 10:00-23:00, Fr-Sa 10:00-23:00", "Mo-Su 10:00-23:00"); // beginDay > endDay
+
+        // complex or creative 24/7 use
+        T("06:00-01:00 open \"Dining in\" || 24/7 \"Drive-through\"");
+        T2("Friday and Saturday 24/7 Sunday-Thursday 4:00 am to 12:00 am", "Fr,Sa 00:00-24:00; Su-Th 04:00-24:00"); // bug 445962
+        // 24/7 as standalone small range selector not supported yet
+        //T2("Apr-Oct: 24/7; Nov-Mar: Mo-Su 06:00-22:00", "Apr-Oct: 00:00-24:00; Nov-Mar: Mo-Su 06:00-22:00");
 #undef T
 #undef T2
 #undef T3
