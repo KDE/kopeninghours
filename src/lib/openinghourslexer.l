@@ -26,6 +26,7 @@
 SPACE       ([ \t\r\n]| | |　)+
 
 INTEGER     [0-9]+
+CYRILLIC    (а|б|в|г|д|е|ё|ж|з|и|й|к|л|м|н|о|п|р|с|т|у|ф|х|ц|ч|ш|щ|ъ|ы|ь|э|ю|я)
 
 YEAR        [1-2][019][0-9][0-9]
 
@@ -194,10 +195,12 @@ Dec\.? { yylval->num = 12; return T_MONTH; }
 h|時 { return T_ALT_TIME_SEP_OR_SUFFIX; }
 
   /* alternative range separators */
-~|～|〜|to|à|bis|a|ás|às|as|au|al|→|до { return T_ALT_RANGE_SEP; }
+~|～|〜|to|à|bis|a|ás|às|as|au|al|→|до|дo|пo { return T_ALT_RANGE_SEP; }
 
   /* localized state names */
-ferm(e|é)|geschlossen|ruhetag|encerrado|chiuso { yylval->state = State::Closed;  return T_STATE; }
+ferm(e|é)|geschlossen|ruhetag|encerrado|chiuso|закры{CYRILLIC}*|Вых{CYRILLIC}* { yylval->state = State::Closed; return T_STATE; }
+откры{CYRILLIC}* { yylval->state = State::Open;    return T_STATE; }
+неизв{CYRILLIC}* { yylval->state = State::Unknown; return T_STATE; }
 
  /* German localized day names. */
 Montags?     { yylval->num = 1; return T_WEEKDAY; }
@@ -297,7 +300,13 @@ Minggu  { yylval->num = 7; return T_WEEKDAY; }
 
   /* skip filler words */
   /* Note: the 'с' is not an ASCII 'c'! */
-from|von|du|de|le|das|分|uhr|"en continu"|с {}
+from|von|du|de|le|das|分|uhr|"en continu"|с|от {}
+
+  /* localized time event names */
+рассвет{CYRILLIC}*           { yylval->time = { Time::Dawn,    0, 0 }; return T_EVENT; }
+сумер{CYRILLIC}?к{CYRILLIC}* { yylval->time = { Time::Dusk,    0, 0 }; return T_EVENT; }
+восход{CYRILLIC}*            { yylval->time = { Time::Sunrise, 0, 0 }; return T_EVENT; }
+закат{CYRILLIC}*             { yylval->time = { Time::Sunset , 0, 0 }; return T_EVENT; }
 
 . {
     //printf("unexpected character: %s at %d:%d\n", yytext, yylloc->first_line, yylloc->first_column);
