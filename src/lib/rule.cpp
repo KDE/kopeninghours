@@ -101,7 +101,7 @@ QByteArray Rule::toExpression() const
     }
     if (m_monthdaySelector) {
         maybeSpace();
-        expr += m_monthdaySelector->toExpression();
+        expr += m_monthdaySelector->toExpression({});
     }
     if (m_weekSelector) {
         maybeSpace();

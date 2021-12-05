@@ -352,7 +352,7 @@ QByteArray Week::toExpression() const
     return expr;
 }
 
-QByteArray Date::toExpression(Date refDate) const
+QByteArray Date::toExpression(const Date &refDate, const MonthdayRange &prev) const
 {
     QByteArray expr;
     auto maybeSpace = [&]() {
@@ -361,20 +361,26 @@ QByteArray Date::toExpression(Date refDate) const
         }
     };
     switch (variableDate) {
-    case FixedDate:
-        if (year && year != refDate.year) {
+    case FixedDate: {
+        const bool needYear = year && year != refDate.year && year != prev.begin.year && year != prev.end.year;
+        if (needYear) {
             expr += QByteArray::number(year);
         }
-        if (month && ((year && year != refDate.year) || month != refDate.month || hasOffset())) {
-            static const char* s_monthName[] = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
-            maybeSpace();
-            expr += s_monthName[month-1];
+        if (month) {
+            const bool combineWithPrev = prev.begin.month == prev.end.month && month == prev.begin.month;
+            const bool implicitMonth = month == refDate.month || (refDate.month == 0 && combineWithPrev);
+            if (needYear || !implicitMonth || hasOffset()) {
+                static const char* s_monthName[] = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
+                maybeSpace();
+                expr += s_monthName[month-1];
+            }
         }
         if (day && *this != refDate) {
             maybeSpace();
             expr += twoDigits(day);
         }
         break;
+    }
     case Date::Easter:
         if (year) {
             expr += QByteArray::number(year) + ' ';
@@ -436,14 +442,14 @@ int MonthdayRange::requiredCapabilities() const
     return Capability::None;
 }
 
-QByteArray MonthdayRange::toExpression() const
+QByteArray MonthdayRange::toExpression(const MonthdayRange &prev) const
 {
-    QByteArray expr = begin.toExpression({});
+    QByteArray expr = begin.toExpression({}, prev);
     if (end != begin) {
-        expr += '-' + end.toExpression(begin);
+        expr += '-' + end.toExpression(begin, prev);
     }
     if (next) {
-        expr += ',' + next->toExpression();
+        expr += ',' + next->toExpression(*this);
     }
     return expr;
 }

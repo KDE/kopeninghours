@@ -32,12 +32,12 @@ private Q_SLOTS:
         T("Dec off");
         T("Dec 25 off");
         T("Dec 25-26 off");
-        T2("Dec 24-26,31 off", "Dec 24-26,Dec 31 off");
-        T2("Jan 1,6 off", "Jan 01,Jan 06 off");
-        T2("Dec 24,25,26", "Dec 24,Dec 25,Dec 26");
-        T2("Jan 03,Dec 04,24 off", "Jan 03,Dec 04,Dec 24 off");
-        T2("Jan 03, Dec 04, 24 off", "Jan 03,Dec 04,Dec 24 off");
-        T2("07:30-20:00; Jan 03,13,23,Dec 04,14,24 off", "07:30-20:00; Jan 03,Jan 13,Jan 23,Dec 04,Dec 14,Dec 24 off");
+        T("Dec 24-26,31 off");
+        T2("Jan 1,6 off", "Jan 01,06 off");
+        T("Dec 24,25,26");
+        T2("Jan 03,Dec 04,24 off", "Jan 03,Dec 04,24 off");
+        T2("Jan 03, Dec 04, 24 off", "Jan 03,Dec 04,24 off");
+        T2("07:30-20:00; Jan 03,13,23,Dec 04,14,24 off", "07:30-20:00; Jan 03,13,23,Dec 04,14,24 off");
         T("Dec 08:00");
         T("Dec 08:00-14:00");
         T("easter off");
@@ -156,7 +156,7 @@ private Q_SLOTS:
         T("2012 easter -2 days-2012 easter +2 days: open \"Around easter\"; PH off");
         T("24/7 closed \"always closed\"");
         T2("2013,2015,2050-2053,2055/2,2020-2029/3,2060+ Jan 1", "2013,2015,2050-2053,2055/2,2020-2029/3,2060+ Jan 01");
-        T("Jan 23-Feb 11,Feb 12 00:00-24:00; PH off");
+        T2("Jan 23-Feb 11,Feb 12 00:00-24:00; PH off", "Jan 23-Feb 11,Feb 12 00:00-24:00; PH off");
         T("Apr-Oct Su[2] 14:00-18:00; Aug Su[-1] -1 day 10:00-18:00; Aug Su[-1] 10:00-18:00; PH off");
         T("Mo-Fr 08:00-12:00, We 14:00-18:00; Su,PH off"); // open We morning too
         T("Mo-Fr 08:00-12:00; We 14:00-18:00; Su,PH off"); // closed We morning
@@ -181,8 +181,9 @@ private Q_SLOTS:
         T("Oct: We[1]");
 
         // from https://github.com/dfaure/DataNovaImportScripts/blob/master/saved_opening_hours
-        T3("Mo-Tu,Th-Fr 09:30-12:00; 2020 Dec 28 off; 2020 Dec 22,2020 Dec 29 off; We 15:00-17:00; 2020 Dec 23,2020 Dec 30 off; 2020 Dec 24,2020 Dec 31 off; Sa 10:00-12:00; 2020 Dec 26,2021 Jan 02 off; PH off", nullptr,
-           "Mo,Tu,Th,Fr 09:30-12:00; 2020 Dec 28 off; 2020 Dec 22,2020 Dec 29 off; We 15:00-17:00; 2020 Dec 23,2020 Dec 30 off; 2020 Dec 24,2020 Dec 31 off; Sa 10:00-12:00; 2020 Dec 26,2021 Jan 02 off; PH off");
+        T3("Mo-Tu,Th-Fr 09:30-12:00; 2020 Dec 28 off; 2020 Dec 22,2020 Dec 29 off; We 15:00-17:00; 2020 Dec 23,2020 Dec 30 off; 2020 Dec 24,2020 Dec 31 off; Sa 10:00-12:00; 2020 Dec 26,2021 Jan 02 off; PH off",
+           "Mo-Tu,Th-Fr 09:30-12:00; 2020 Dec 28 off; 2020 Dec 22,29 off; We 15:00-17:00; 2020 Dec 23,30 off; 2020 Dec 24,31 off; Sa 10:00-12:00; 2020 Dec 26,2021 Jan 02 off; PH off",
+           "Mo,Tu,Th,Fr 09:30-12:00; 2020 Dec 28 off; 2020 Dec 22,29 off; We 15:00-17:00; 2020 Dec 23,30 off; 2020 Dec 24,31 off; Sa 10:00-12:00; 2020 Dec 26,2021 Jan 02 off; PH off");
 
         // real-world tests from Osmose that we were handling wrongly
         T("Tu-Fr 11:30-14:30 open, 14:30-18:00 open \"pickup only\", 18:00-22:00 open");
@@ -223,9 +224,10 @@ private Q_SLOTS:
         T2("Friday 08:00-12:00", "Fr 08:00-12:00");
         T2("Sat", "Sa");
         T2("december", "Dec");
-        T2("Dec 24,25,26, Jan 1,6 off", "Dec 24,Dec 25,Dec 26,Jan 01,Jan 06 off");
-        T2("Dec 24,25,26 open, Jan 1,6 off", "Dec 24,Dec 25,Dec 26 open, Jan 01,Jan 06 off");
-        T2("07:30-20:00; Jan 03, 13, 23, Feb 03, 13, 23, Mar 03, 13, 23, Apr 03, 13, 23, Jun 03, 13, 23, Jul 03, 13, 23, Aug 03, 13, 23, Sep 03, 13, 23, Oct 03, 13, 23, Nov 03, 13, 23, Dec 03, 13, 23 off", "07:30-20:00; Jan 03,Jan 13,Jan 23,Feb 03,Feb 13,Feb 23,Mar 03,Mar 13,Mar 23,Apr 03,Apr 13,Apr 23,Jun 03,Jun 13,Jun 23,Jul 03,Jul 13,Jul 23,Aug 03,Aug 13,Aug 23,Sep 03,Sep 13,Sep 23,Oct 03,Oct 13,Oct 23,Nov 03,Nov 13,Nov 23,Dec 03,Dec 13,Dec 23 off");
+        T2("Dec 24,25,26, Jan 1,6 off", "Dec 24,25,26,Jan 01,06 off");
+        T2("Dec 24,25,26 open, Jan 1,6 off", "Dec 24,25,26 open, Jan 01,06 off");
+        T2("07:30-20:00; Jan 03, 13, 23, Feb 03, 13, 23, Mar 03, 13, 23, Apr 03, 13, 23, Jun 03, 13, 23, Jul 03, 13, 23, Aug 03, 13, 23, Sep 03, 13, 23, Oct 03, 13, 23, Nov 03, 13, 23, Dec 03, 13, 23 off",
+           "07:30-20:00; Jan 03,13,23,Feb 03,13,23,Mar 03,13,23,Apr 03,13,23,Jun 03,13,23,Jul 03,13,23,Aug 03,13,23,Sep 03,13,23,Oct 03,13,23,Nov 03,13,23,Dec 03,13,23 off");
         T2("Apr, May, Oct, Nov, Dec: Mo-Su, 10:00-19:00; Jun-Sep: Mo-Su:10:00-20:00", "Apr,May,Oct,Nov,Dec: Mo-Su, 10:00-19:00; Jun-Sep: Mo-Su 10:00-20:00");
 
         // Tolerance for incorrect casing

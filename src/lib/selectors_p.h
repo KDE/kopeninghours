@@ -186,11 +186,13 @@ public:
     int8_t nthWeekday;
 };
 
+class MonthdayRange;
+
 /** Date */
 class Date
 {
 public:
-    QByteArray toExpression(Date refDate) const;
+    QByteArray toExpression(const Date &refDate, const MonthdayRange &prev) const;
     bool operator==(Date other) const;
     bool operator!=(Date other) const { return !operator==(other); }
     bool hasOffset() const;
@@ -212,7 +214,7 @@ class MonthdayRange
 public:
     int requiredCapabilities() const;
     SelectorResult nextInterval(const Interval &interval, const QDateTime &dt, OpeningHoursPrivate *context) const;
-    QByteArray toExpression() const;
+    QByteArray toExpression(const MonthdayRange &prev) const;
 
     Date begin = { 0, 0, 0, Date::FixedDate, { 0, 0, 0 } };
     Date end = { 0, 0, 0, Date::FixedDate, { 0, 0, 0 } };
