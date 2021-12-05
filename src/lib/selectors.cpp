@@ -454,6 +454,24 @@ QByteArray MonthdayRange::toExpression(const MonthdayRange &prev) const
     return expr;
 }
 
+void MonthdayRange::simplify()
+{
+    // "Feb 1-29" => "Feb" (#446252)
+    if (begin.variableDate == Date::FixedDate &&
+            end.variableDate == Date::FixedDate &&
+            begin.year == end.year &&
+            begin.month && end.month  &&
+            begin.month == end.month  &&
+            begin.day && end.day) {
+        // The year doesn't matter, but take one with a leap day, for Feb 1-29
+         const int lastDay = QDate{2004, end.month, end.day}.daysInMonth();
+         if (begin.day == 1 && end.day == lastDay) {
+             begin.day = 0;
+             end.day = 0;
+         }
+    }
+}
+
 int YearRange::requiredCapabilities() const
 {
     return Capability::None;

@@ -366,6 +366,9 @@ private Q_SLOTS:
         T3("Sa-Mo 10:00-23:00, Th 10:00-23:00", "Sa-Mo 10:00-23:00, Th 10:00-23:00", "Sa-Mo,Th 10:00-23:00"); // beginDay > endDay
         T3("Sa-Mo 10:00-23:00, Fr 10:00-23:00", "Sa-Mo 10:00-23:00, Fr 10:00-23:00", "Fr-Mo 10:00-23:00"); // beginDay > endDay
         T3("Su-Th 10:00-23:00, Fr-Sa 10:00-23:00", "Su-Th 10:00-23:00, Fr-Sa 10:00-23:00", "Mo-Su 10:00-23:00"); // beginDay > endDay
+        T3("Feb 1-Feb 29 Mo-Su 10:30-20:30; Aug 1-Aug 31 Mo-Fr 10:30-12:00; PH closed",
+           "Feb 01-29 Mo-Su 10:30-20:30; Aug 01-31 Mo-Fr 10:30-12:00; PH closed",
+           "Feb Mo-Su 10:30-20:30; Aug Mo-Fr 10:30-12:00; PH closed");
 
         // complex or creative 24/7 use
         T("06:00-01:00 open \"Dining in\" || 24/7 \"Drive-through\"");

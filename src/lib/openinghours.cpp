@@ -194,6 +194,9 @@ void OpeningHoursPrivate::simplify()
         if (rule->m_weekdaySelector) {
             rule->m_weekdaySelector->simplify();
         }
+        if (rule->m_monthdaySelector) {
+            rule->m_monthdaySelector->simplify();
+        }
     }
 }
 

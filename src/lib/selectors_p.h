@@ -215,6 +215,7 @@ public:
     int requiredCapabilities() const;
     SelectorResult nextInterval(const Interval &interval, const QDateTime &dt, OpeningHoursPrivate *context) const;
     QByteArray toExpression(const MonthdayRange &prev) const;
+    void simplify();
 
     Date begin = { 0, 0, 0, Date::FixedDate, { 0, 0, 0 } };
     Date end = { 0, 0, 0, Date::FixedDate, { 0, 0, 0 } };
