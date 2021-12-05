@@ -35,6 +35,12 @@ void Rule::setState(State state)
     }
 }
 
+void Rule::copyStateFrom(const Rule &otherRule)
+{
+    m_state = otherRule.m_state;
+    m_stateFlags = otherRule.m_stateFlags;
+}
+
 bool Rule::hasComment() const
 {
     return !m_comment.isEmpty();
