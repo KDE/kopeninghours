@@ -54,6 +54,7 @@ public:
     Interval::State state() const;
     bool hasImplicitState() const;
     void setState(State state);
+    void copyStateFrom(const Rule &otherRule);
     bool hasComment() const;
     void setComment(const char *str, int len);
     int requiredCapabilities() const;

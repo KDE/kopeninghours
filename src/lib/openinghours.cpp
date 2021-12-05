@@ -81,6 +81,7 @@ void OpeningHoursPrivate::autocorrect()
             // the current rule only has a time selector, so we append that to the previous rule
             else if (curRuleSingleSelector && rule->m_timeSelector && prevRule->m_timeSelector) {
                 appendSelector(prevRule->m_timeSelector.get(), std::move(rule->m_timeSelector));
+                prevRule->copyStateFrom(*rule);
                 it = std::prev(m_rules.erase(it));
             }
 
@@ -113,7 +114,8 @@ void OpeningHoursPrivate::autocorrect()
             // Current rule is only a time selector
             // "Mo-Sa 12:00-15:00; 18:00-24:00" => "Mo-Sa 12:00-15:00,18:00-24:00"
             if (curRuleSingleSelector && rule->m_timeSelector
-                    && prevRule->selectorCount() > 1 && prevRule->m_timeSelector) {
+                    && prevRule->selectorCount() > 1 && prevRule->m_timeSelector
+                    && rule->state() == prevRule->state()) {
                 appendSelector(prevRule->m_timeSelector.get(), std::move(rule->m_timeSelector));
                 it = std::prev(m_rules.erase(it));
             }
@@ -128,6 +130,7 @@ void OpeningHoursPrivate::autocorrect()
                      && rule->selectorCount() == 2 && rule->m_weekdaySelector && prevRule->m_weekdaySelector
                      // slower than writing an operator==, but so much easier to write :)
                      && rule->m_weekdaySelector->toExpression() == prevRule->m_weekdaySelector->toExpression()
+                     && rule->state() == prevRule->state()
                      ) {
                 appendSelector(prevRule->m_timeSelector.get(), std::move(rule->m_timeSelector));
                 it = std::prev(m_rules.erase(it));
