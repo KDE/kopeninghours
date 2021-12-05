@@ -324,6 +324,7 @@ private Q_SLOTS:
         T2("от восхода дo заката", "sunrise-sunset");
         T2("Среда открыто; Пятница закрыто; Суббота неизвестно", "We open; Fr closed; Sa unknown");
         T2("Вт Выходной", "Tu closed");
+        T2("Mo Cerrado; Tu Abierto, Fr libre", "Mo closed; Tu open, Fr closed");
 
         // recovery from wrong rule separators
         T2("Fr,Sa 10:00-02:00,Su 10:00-20:00", "Fr,Sa 10:00-02:00, Su 10:00-20:00");

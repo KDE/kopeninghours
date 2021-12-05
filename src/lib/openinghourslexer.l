@@ -204,8 +204,8 @@ h|時 { return T_ALT_TIME_SEP_OR_SUFFIX; }
 ~|～|〜|to|à|bis|a|ás|às|as|au|al|→|до|дo|пo { return T_ALT_RANGE_SEP; }
 
   /* localized state names */
-ferm(e|é)|geschlossen|ruhetag|encerrado|chiuso|закры{CYRILLIC}*|Вых{CYRILLIC}* { yylval->state = State::Closed; return T_STATE; }
-откры{CYRILLIC}* { yylval->state = State::Open;    return T_STATE; }
+ferm(e|é)|geschlossen|ruhetag|encerrado|chiuso|закры{CYRILLIC}*|Вых{CYRILLIC}*|cerrado|libre { yylval->state = State::Closed; return T_STATE; }
+откры{CYRILLIC}*|abierto { yylval->state = State::Open;    return T_STATE; }
 неизв{CYRILLIC}* { yylval->state = State::Unknown; return T_STATE; }
 
  /* German localized day names. */
