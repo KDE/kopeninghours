@@ -363,6 +363,11 @@ private Q_SLOTS:
         T2("Friday and Saturday 24/7 Sunday-Thursday 4:00 am to 12:00 am", "Fr,Sa 00:00-24:00; Su-Th 04:00-24:00"); // bug 445962
         // 24/7 as standalone small range selector not supported yet
         //T2("Apr-Oct: 24/7; Nov-Mar: Mo-Su 06:00-22:00", "Apr-Oct: 00:00-24:00; Nov-Mar: Mo-Su 06:00-22:00");
+
+        // 4 digit times
+        T2("0600-1800", "06:00-18:00");
+        T2("0700-2000", "07:00-20:00");
+        T2("Tu-Th 8:30-17:30, Fr 8:30-1700", "Tu-Th 08:30-17:30, Fr 08:30-17:00");
 #undef T
 #undef T2
 #undef T3
@@ -417,7 +422,6 @@ private Q_SLOTS:
 
         // from https://wiki.openstreetmap.org/wiki/Key:opening_hours#Common_mistakes
         T("7/8-23");
-        T("0600-1800");
         T("07;00-2;00pm");
         T("08.00-16.00, public room till 03.00 a.m");
         T("09:00-21:00 TEL/072(360)3200");

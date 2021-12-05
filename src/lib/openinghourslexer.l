@@ -25,16 +25,24 @@
 
 SPACE       ([ \t\r\n]| | |　)+
 
-INTEGER     [0-9]+
 CYRILLIC    (а|б|в|г|д|е|ё|ж|з|и|й|к|л|м|н|о|п|р|с|т|у|ф|х|ц|ч|ш|щ|ъ|ы|ь|э|ю|я)
-
-YEAR        [1-2][019][0-9][0-9]
 
 %%
 
 {SPACE} {}
 
-{YEAR} { yylval->num = std::strtol(yytext, nullptr, 10); return T_YEAR; }
+[0-9]+ {
+    yylval->num = std::strtol(yytext, nullptr, 10);
+    if (yyleng == 4) {
+        if ((yylval->num > 2000 && yylval->num < 2100) || (yylval->num >= 1000 && (yylval->num % 100) >= 60)) {
+            return T_YEAR;
+        }
+        if (yylval->num <= 2400 && (yylval->num % 100) < 60) {
+            return T_4DIGIT_TIME;
+        }
+    }
+    return T_INTEGER;
+}
 
 ;/. { return T_NORMAL_RULE_SEPARATOR; } // technically this should have space after the semicolon, but that is not always followed in OSM data
 ", " { return T_ADDITIONAL_RULE_SEPARATOR; }
@@ -77,8 +85,6 @@ YEAR        [1-2][019][0-9][0-9]
   /* am/pm time format support, non-standard and has to appear before the generic number token. */
 [0-5]?[0-9](\ ?a\.?m\.?|a) { yylval->num = std::strtol(yytext, nullptr, 10); return T_ALT_TIME_AM; }
 [0-5]?[0-9](\ ?p\.?m\.?|p) { yylval->num = std::strtol(yytext, nullptr, 10); return T_ALT_TIME_PM; }
-
-{INTEGER} { yylval->num = std::strtol(yytext, nullptr, 10); return T_INTEGER; }
 
  /* technically weekday names should be two letter English abbreviations, but reality is more creative */
 Mondays?    { yylval->num = 1; return T_WEEKDAY; }
