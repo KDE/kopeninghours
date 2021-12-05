@@ -394,6 +394,8 @@ private Q_SLOTS:
         QVERIFY(oh.error() != OpeningHours::SyntaxError);
         QCOMPARE(oh.normalizedExpression(), expectedOutput);
         QCOMPARE(oh.simplifiedExpression(), expectedSimplifiedOutput);
+        // verify that simplifiedExpression() doesn't alter `oh`
+        QCOMPARE(oh.normalizedExpression(), expectedOutput);
 
         // verify the expressions we generate are parsed correctly as well
         OpeningHours oh2(oh.normalizedExpression());

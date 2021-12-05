@@ -432,8 +432,9 @@ QByteArray OpeningHours::normalizedExpression() const
 
 QByteArray OpeningHours::simplifiedExpression() const
 {
-    d->simplify();
-    return normalizedExpression();
+    OpeningHours copy(normalizedExpression());
+    copy.d->simplify();
+    return copy.normalizedExpression();
 }
 
 QString OpeningHours::normalizedExpressionString() const
