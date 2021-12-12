@@ -141,6 +141,7 @@ typedef void* yyscan_t;
 %token T_ALT_TIME_SEP_OR_SUFFIX
 %token <num> T_ALT_TIME_AM
 %token <num> T_ALT_TIME_PM
+%token <num> T_4DIGIT_TIME
 
 %token T_ALT_RANGE_SEP
 
@@ -857,6 +858,9 @@ ExtendedHourMinute:
     Time::convertFromPm($$);
     if (!Time::isValid($$)) { YYABORT; }
   }
+| T_4DIGIT_TIME[T] {
+    $$ = { Time::NoEvent, $T / 100, $T % 100 }; // lexer ensures this is always a valid time
+}
 ;
 
 RangeSeparator:

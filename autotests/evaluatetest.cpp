@@ -76,7 +76,7 @@ private Q_SLOTS:
         QTest::newRow("year open end") << QByteArray("2010+") << QDateTime({2010, 1, 1}, {0, 0}) << QDateTime();
         QTest::newRow("year interval odd") << QByteArray("2011-2031/2") << QDateTime({2021, 1, 1}, {0, 0}) << QDateTime({2022, 1, 1}, {0, 0});
         QTest::newRow("year interval even") << QByteArray("2010-2030/2") << QDateTime({2020, 1, 1}, {0, 0}) << QDateTime({2021, 1, 1}, {0, 0});
-        QTest::newRow("year interval 4") << QByteArray("2000-2100/4") << QDateTime({2020, 1, 1}, {0, 0}) << QDateTime({2021, 1, 1}, {0, 0});
+        QTest::newRow("year interval 4") << QByteArray("2004-2096/4") << QDateTime({2020, 1, 1}, {0, 0}) << QDateTime({2021, 1, 1}, {0, 0});
         QTest::newRow("year time") << QByteArray("2021 10:00-20:00") << QDateTime({2021, 1, 1}, {10, 0}) << QDateTime({2021, 1, 1}, {20, 0});
         QTest::newRow("year open end interval") << QByteArray("2016/5") << QDateTime({2021, 1, 1}, {0, 0}) << QDateTime({2022, 1, 1}, {0, 0});
 
@@ -195,7 +195,7 @@ private Q_SLOTS:
     void testNoMatch_data()
     {
         QTest::addColumn<QByteArray>("expression");
-        QTest::newRow("year range") << QByteArray("1980-2000");
+        QTest::newRow("year range") << QByteArray("1980-1999");
         QTest::newRow("full date") << QByteArray("2020 Nov 6");
         QTest::newRow("date range") << QByteArray("1980 Jan 1-2020 Nov 6");
         QTest::newRow("year/month") << QByteArray("2020 Oct");

@@ -25,15 +25,24 @@
 
 SPACE       ([ \t\r\n]| | |　)+
 
-INTEGER     [0-9]+
-
-YEAR        [1-2][019][0-9][0-9]
+CYRILLIC    (а|б|в|г|д|е|ё|ж|з|и|й|к|л|м|н|о|п|р|с|т|у|ф|х|ц|ч|ш|щ|ъ|ы|ь|э|ю|я)
 
 %%
 
 {SPACE} {}
 
-{YEAR} { yylval->num = std::strtol(yytext, nullptr, 10); return T_YEAR; }
+[0-9]+ {
+    yylval->num = std::strtol(yytext, nullptr, 10);
+    if (yyleng == 4) {
+        if ((yylval->num > 2000 && yylval->num < 2100) || (yylval->num >= 1000 && (yylval->num % 100) >= 60)) {
+            return T_YEAR;
+        }
+        if (yylval->num <= 2400 && (yylval->num % 100) < 60) {
+            return T_4DIGIT_TIME;
+        }
+    }
+    return T_INTEGER;
+}
 
 ;/. { return T_NORMAL_RULE_SEPARATOR; } // technically this should have space after the semicolon, but that is not always followed in OSM data
 ", " { return T_ADDITIONAL_RULE_SEPARATOR; }
@@ -76,8 +85,6 @@ YEAR        [1-2][019][0-9][0-9]
   /* am/pm time format support, non-standard and has to appear before the generic number token. */
 [0-5]?[0-9](\ ?a\.?m\.?|a) { yylval->num = std::strtol(yytext, nullptr, 10); return T_ALT_TIME_AM; }
 [0-5]?[0-9](\ ?p\.?m\.?|p) { yylval->num = std::strtol(yytext, nullptr, 10); return T_ALT_TIME_PM; }
-
-{INTEGER} { yylval->num = std::strtol(yytext, nullptr, 10); return T_INTEGER; }
 
  /* technically weekday names should be two letter English abbreviations, but reality is more creative */
 Mondays?    { yylval->num = 1; return T_WEEKDAY; }
@@ -147,6 +154,21 @@ Dec\.? { yylval->num = 12; return T_MONTH; }
 "Novembre" { yylval->num = 11; return T_MONTH; }
 "Décembre" { yylval->num = 12; return T_MONTH; }
 
+ /* Month names in Russian */
+"Январь"   { yylval->num = 1; return T_MONTH; }
+"Февраль"  { yylval->num = 2; return T_MONTH; }
+"Март"     { yylval->num = 3; return T_MONTH; }
+"Апрель"   { yylval->num = 4; return T_MONTH; }
+"Май"      { yylval->num = 5; return T_MONTH; }
+"Июнь"     { yylval->num = 6; return T_MONTH; }
+"Июль"     { yylval->num = 7; return T_MONTH; }
+"Август"   { yylval->num = 8; return T_MONTH; }
+"Сентябрь" { yylval->num = 9; return T_MONTH; }
+"Октябрь"  { yylval->num = 10; return T_MONTH; }
+"Ноябрь"   { yylval->num = 11; return T_MONTH; }
+"Декабрь"  { yylval->num = 12; return T_MONTH; }
+
+
  /* different quote types are sometimes mixed and/or used nested, so this is a compromise to catch most of them */
 ["][^"]*["] {
     yylval->strRef.str = yytext + 1;
@@ -179,10 +201,12 @@ Dec\.? { yylval->num = 12; return T_MONTH; }
 h|時 { return T_ALT_TIME_SEP_OR_SUFFIX; }
 
   /* alternative range separators */
-~|～|〜|to|à|bis|a|ás|às|as|au|al|→|до { return T_ALT_RANGE_SEP; }
+~|～|〜|to|through|à|bis|a|ás|às|as|au|al|→|до|дo|пo { return T_ALT_RANGE_SEP; }
 
   /* localized state names */
-ferm(e|é)|geschlossen|ruhetag|encerrado|chiuso { yylval->state = State::Closed;  return T_STATE; }
+ferm(e|é)|geschlossen|ruhetag|encerrado|chiuso|закры{CYRILLIC}*|Вых{CYRILLIC}*|cerrado|libre { yylval->state = State::Closed; return T_STATE; }
+откры{CYRILLIC}*|abierto { yylval->state = State::Open;    return T_STATE; }
+неизв{CYRILLIC}* { yylval->state = State::Unknown; return T_STATE; }
 
  /* German localized day names. */
 Montags?     { yylval->num = 1; return T_WEEKDAY; }
@@ -268,11 +292,27 @@ Jumat   { yylval->num = 5; return T_WEEKDAY; }
 Sabtu   { yylval->num = 6; return T_WEEKDAY; }
 Minggu  { yylval->num = 7; return T_WEEKDAY; }
 
+  /* Russian localized day names */
+Понедельник|Пон|Пк  { yylval->num = 1; return T_WEEKDAY; }
+Вторник|Вто|Вт      { yylval->num = 2; return T_WEEKDAY; }
+Среда|Сре|Ср        { yylval->num = 3; return T_WEEKDAY; }
+Четверг|Чет|Чт      { yylval->num = 4; return T_WEEKDAY; }
+Пятница|Пят|Пя|Пт   { yylval->num = 5; return T_WEEKDAY; }
+Суббота|Суб|Су|Сб   { yylval->num = 6; return T_WEEKDAY; }
+Воскресенье|Вос|Во  { yylval->num = 7; return T_WEEKDAY; }
+
   /* creative rule separators */
 、|and|et|e|y|und|& { return T_ADDITIONAL_RULE_SEPARATOR; }
 
   /* skip filler words */
-from|von|du|de|le|das|分|uhr|"en continu" {}
+  /* Note: the 'с' is not an ASCII 'c'! */
+from|von|du|de|le|das|分|uhr|"en continu"|с|от {}
+
+  /* localized time event names */
+рассвет{CYRILLIC}*           { yylval->time = { Time::Dawn,    0, 0 }; return T_EVENT; }
+сумер{CYRILLIC}?к{CYRILLIC}* { yylval->time = { Time::Dusk,    0, 0 }; return T_EVENT; }
+восход{CYRILLIC}*            { yylval->time = { Time::Sunrise, 0, 0 }; return T_EVENT; }
+закат{CYRILLIC}*             { yylval->time = { Time::Sunset , 0, 0 }; return T_EVENT; }
 
 . {
     //printf("unexpected character: %s at %d:%d\n", yytext, yylloc->first_line, yylloc->first_column);

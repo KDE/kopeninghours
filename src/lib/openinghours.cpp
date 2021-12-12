@@ -85,6 +85,12 @@ void OpeningHoursPrivate::autocorrect()
                 it = std::prev(m_rules.erase(it));
             }
 
+            // previous is a single weekday selector and current is a single time selector
+            else if (curRuleSingleSelector && prevRuleSingleSelector && rule->m_timeSelector && prevRule->m_weekdaySelector) {
+                prevRule->m_timeSelector = std::move(rule->m_timeSelector);
+                it = std::prev(m_rules.erase(it));
+            }
+
             // previous is a single monthday selector
             else if (rule->m_monthdaySelector && prevRuleSingleSelector && prevRule->m_monthdaySelector && !isWiderThan(prevRule, rule)) {
                 auto tmp = std::move(rule->m_monthdaySelector);
@@ -92,6 +98,15 @@ void OpeningHoursPrivate::autocorrect()
                 appendSelector(rule->m_monthdaySelector.get(), std::move(tmp));
                 rule->m_ruleType = prevRule->m_ruleType;
                 std::swap(*it, *std::prev(it));
+                it = std::prev(m_rules.erase(it));
+            }
+
+            // previous has no time selector and the current one is a misplaced 24/7 rule:
+            // convert the 24/7 to a 00:00-24:00 time selector
+            else if (rule->selectorCount() == 0 && rule->m_seen_24_7 && !prevRule->m_timeSelector) {
+                prevRule->m_timeSelector.reset(new Timespan);
+                prevRule->m_timeSelector->begin = { Time::NoEvent, 0, 0 };
+                prevRule->m_timeSelector->end = { Time::NoEvent, 24, 0 };
                 it = std::prev(m_rules.erase(it));
             }
         } else if (rule->m_ruleType == Rule::NormalRule) {
@@ -178,6 +193,9 @@ void OpeningHoursPrivate::simplify()
         auto rule = (*it).get();
         if (rule->m_weekdaySelector) {
             rule->m_weekdaySelector->simplify();
+        }
+        if (rule->m_monthdaySelector) {
+            rule->m_monthdaySelector->simplify();
         }
     }
 }
@@ -414,8 +432,9 @@ QByteArray OpeningHours::normalizedExpression() const
 
 QByteArray OpeningHours::simplifiedExpression() const
 {
-    d->simplify();
-    return normalizedExpression();
+    OpeningHours copy(normalizedExpression());
+    copy.d->simplify();
+    return copy.normalizedExpression();
 }
 
 QString OpeningHours::normalizedExpressionString() const
