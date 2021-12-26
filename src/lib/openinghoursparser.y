@@ -47,9 +47,7 @@ static bool extendMonthdaySelector(MonthdayRange *monthdaySelector, int beginDay
 {
     const auto prevSelector = lastSelector(monthdaySelector);
     if (prevSelector->begin.year == prevSelector->end.year
-     && prevSelector->begin.month == prevSelector->end.month
-     && prevSelector->begin.day < day
-     && prevSelector->end.day < day)
+     && prevSelector->begin.month == prevSelector->end.month)
     {
         auto sel = new MonthdayRange;
         sel->begin = sel->end = prevSelector->end;

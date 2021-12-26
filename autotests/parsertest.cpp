@@ -231,6 +231,8 @@ private Q_SLOTS:
         T2("december", "Dec");
         T2("Dec 24,25,26, Jan 1,6 off", "Dec 24,25,26,Jan 01,06 off");
         T2("Dec 24,25,26 open, Jan 1,6 off", "Dec 24,25,26 open, Jan 01,06 off");
+        T2("Dec 6,4", "Dec 06,04");
+        T2("Dec 3,2,1", "Dec 03,02,01");
         T2("07:30-20:00; Jan 03, 13, 23, Feb 03, 13, 23, Mar 03, 13, 23, Apr 03, 13, 23, Jun 03, 13, 23, Jul 03, 13, 23, Aug 03, 13, 23, Sep 03, 13, 23, Oct 03, 13, 23, Nov 03, 13, 23, Dec 03, 13, 23 off",
            "07:30-20:00; Jan 03,13,23,Feb 03,13,23,Mar 03,13,23,Apr 03,13,23,Jun 03,13,23,Jul 03,13,23,Aug 03,13,23,Sep 03,13,23,Oct 03,13,23,Nov 03,13,23,Dec 03,13,23 off");
         T2("Apr, May, Oct, Nov, Dec: Mo-Su, 10:00-19:00; Jun-Sep: Mo-Su:10:00-20:00", "Apr,May,Oct,Nov,Dec: Mo-Su, 10:00-19:00; Jun-Sep: Mo-Su 10:00-20:00");
@@ -434,9 +436,7 @@ private Q_SLOTS:
         T("12:61");
         T("60p");
 
-        T("Dec 6,4");
         T("Dec 24-Jan 1,6");
-        T("Dec 3,2,1");
         T("Mo, 1:100");
 
         // from https://wiki.openstreetmap.org/wiki/Key:opening_hours#Common_mistakes
