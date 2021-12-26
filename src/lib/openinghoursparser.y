@@ -43,7 +43,7 @@ static void applySelectors(const Selectors &sels, Rule *rule)
     rule->m_wideRangeSelectorComment = QString::fromUtf8(sels.wideRangeSelectorComment.str, sels.wideRangeSelectorComment.len);
 }
 
-static bool extendMonthdaySelector(MonthdayRange *monthdaySelector, int day)
+static bool extendMonthdaySelector(MonthdayRange *monthdaySelector, int beginDay, int endDay)
 {
     const auto prevSelector = lastSelector(monthdaySelector);
     if (prevSelector->begin.year == prevSelector->end.year
@@ -53,7 +53,8 @@ static bool extendMonthdaySelector(MonthdayRange *monthdaySelector, int day)
     {
         auto sel = new MonthdayRange;
         sel->begin = sel->end = prevSelector->end;
-        sel->begin.day = sel->end.day = day;
+        sel->begin.day = beginDay;
+        sel->end.day = endDay;
         appendSelector(prevSelector, sel);
         return true;
     }
@@ -607,7 +608,7 @@ MonthdaySelector:
     // month day sets, not covered the official grammar but in the
     // description in https://wiki.openstreetmap.org/wiki/Key:opening_hours#Summary_syntax
     $$ = $S;
-    if (!extendMonthdaySelector($$.monthdaySelector, $D)) {
+    if (!extendMonthdaySelector($$.monthdaySelector, $D, $D)) {
         delete $$.monthdaySelector;
         YYABORT;
     }
@@ -615,7 +616,23 @@ MonthdaySelector:
 | MonthdaySelector[S] T_ADDITIONAL_RULE_SEPARATOR T_INTEGER[D] {
     // same as the above, just with the wrong ", " separator
     $$ = $S;
-    if (!extendMonthdaySelector($$.monthdaySelector, $D)) {
+    if (!extendMonthdaySelector($$.monthdaySelector, $D, $D)) {
+        delete $$.monthdaySelector;
+        YYABORT;
+    }
+  }
+| MonthdaySelector[S] T_COMMA T_INTEGER[D1] T_MINUS T_INTEGER[D2] {
+    // same with a range of days
+    $$ = $S;
+    if (!extendMonthdaySelector($$.monthdaySelector, $D1, $D2)) {
+        delete $$.monthdaySelector;
+        YYABORT;
+    }
+  }
+| MonthdaySelector[S] T_ADDITIONAL_RULE_SEPARATOR T_INTEGER[D1] T_MINUS T_INTEGER[D2] {
+    // same as the above, just with the wrong ", " separator
+    $$ = $S;
+    if (!extendMonthdaySelector($$.monthdaySelector, $D1, $D2)) {
         delete $$.monthdaySelector;
         YYABORT;
     }

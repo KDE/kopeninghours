@@ -209,6 +209,11 @@ private Q_SLOTS:
         T2("Mo, We, Fr 06:30-21:30; Tu, Th 09:00-21:30; Sa 09:00-17:00; Su 09:00-14:00", "Mo,We,Fr 06:30-21:30; Tu,Th 09:00-21:30; Sa 09:00-17:00; Su 09:00-14:00");
         T2("Lunes a sábado, 9:30 AM-5:30 PM", "Mo-Sa 09:30-17:30"); // bug 445784
 
+        // lists of specific days
+        T("2021 Dec 26-28,30-31,2022 Jan 02-03 off");
+        T2("2021 Dec 26-28,Dec 30-31,2022 Jan 02-03 off", "2021 Dec 26-28,30-31,2022 Jan 02-03 off");
+        T2("2021 Dec 22, 26-28, 29, 31, 2022 Jan 02-03 off", "2021 Dec 22,26-28,29,31,2022 Jan 02-03 off");
+
         // technically wrong but often found content in OSM for which we have error recovery
         T2("So", "Su");
         T2("Ph", "PH");
