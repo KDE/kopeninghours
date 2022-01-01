@@ -12,7 +12,6 @@
 #include "interval.h"
 #include "rule_p.h"
 #include "logging.h"
-#include "consecutiveaccumulator_p.h"
 
 #include <QDateTime>
 #include <QJsonArray>

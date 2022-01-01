@@ -7,7 +7,6 @@
 #include "selectors_p.h"
 #include "logging.h"
 #include "openinghours_p.h"
-#include "consecutiveaccumulator_p.h"
 
 #include <cstdlib>
 #include <cassert>
@@ -153,13 +152,13 @@ bool Timespan::operator==(Timespan &other) const
 
 int WeekdayRange::requiredCapabilities() const
 {
-    // only ranges or nthMask are allowed, not both at the same time, enforced by parser
-    assert(beginDay == endDay || nthMask == 0);
+    // only ranges or nthSequence are allowed, not both at the same time, enforced by parser
+    assert(beginDay == endDay || !nthSequence);
 
     int c = Capability::None;
     switch (holiday) {
         case NoHoliday:
-            if ((offset > 0 && nthMask == 0)) {
+            if ((offset > 0 && !nthSequence)) {
                 c |= Capability::NotImplemented;
             }
             break;
@@ -201,21 +200,8 @@ QByteArray WeekdayRange::toExpression() const
             expr = "SH";
             break;
         }
-        if (nthMask > 0) {
-            ConsecutiveAccumulator accu([](int i) { return QByteArray::number(i); });
-            // Negative numbers
-            for (int i = 1; i <= 10; i += 2) {
-                if ((nthMask & (1 << i)) != 0) {
-                    accu.add(-5 + (i / 2));
-                }
-            }
-            // Positive numbers
-            for (int i = 2; i <= 10; i += 2) {
-                if ((nthMask & (1 << i)) != 0) {
-                    accu.add(i / 2);
-                }
-            }
-            expr += '[' + accu.result() + ']';
+        if (nthSequence) {
+            expr += '[' + nthSequence->toExpression() + ']';
         }
         if (offset > 0) {
             expr += " +" + QByteArray::number(offset) + ' ' + (offset > 1 ? "days" : "day");
@@ -237,7 +223,7 @@ void WeekdayRange::simplify()
     std::fill(std::begin(seenDays), std::end(seenDays), false);
     for (WeekdayRange *selector = this; selector; selector = selector->next.get()) {
         // Ensure it's all just week days, no other features
-        if (selector->nthMask || selector->lhsAndSelector || selector->holiday != NoHoliday || selector->offset) {
+        if (selector->nthSequence || selector->lhsAndSelector || selector->holiday != NoHoliday || selector->offset) {
             return;
         }
         const bool wrap = selector->beginDay > selector->endDay;
@@ -494,4 +480,27 @@ QByteArray YearRange::toExpression() const
         expr += ',' + next->toExpression();
     }
     return expr;
+}
+
+void NthSequence::add(NthEntry range)
+{
+    sequence.push_back(std::move(range));
+}
+
+QByteArray NthSequence::toExpression() const
+{
+    QByteArray ret;
+    for (const NthEntry &entry : sequence) {
+        if (!ret.isEmpty())
+            ret += ',';
+        ret += entry.toExpression();
+    }
+    return ret;
+}
+
+QByteArray NthEntry::toExpression() const
+{
+    if (begin == end)
+        return QByteArray::number(begin);
+    return QByteArray::number(begin) + '-' + QByteArray::number(end);
 }

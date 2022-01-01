@@ -95,6 +95,12 @@ private Q_SLOTS:
         T("Mar Su[1]-Oct Su[1]: 11:00-20:00; PH 11:00-20:00");
         T2("Mo 20:00-26:00", "Mo 20:00-26:00"); // https://github.com/osm-fr/osmose-backend/issues/1344
 
+        // https://bugs.kde.org/show_bug.cgi?id=445963
+        T("Th[1-2] 09:30-11:45");
+        T("Th[1,2] 09:30-11:45");
+        T("Mo[1,3,-1]"); // order as desired, -1 means last
+        T("Mo[1,3,2]"); // currently not normalized
+
         // from https://wiki.openstreetmap.org/wiki/Key:opening_hours#Simple_examples
         T("Mo-Fr 08:00-17:30");
         T("Mo-Fr 08:00-12:00,13:00-17:30");
