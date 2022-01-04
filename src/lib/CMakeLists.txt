@@ -23,6 +23,10 @@ if (NOT VALIDATOR_ONLY)
         evaluator.cpp
         holidaycache.cpp
         intervalmodel.cpp
+        display.h
+        easter_p.h
+        holidaycache_p.h
+        intervalmodel.h
     )
 endif()
 
@@ -34,6 +38,10 @@ add_library(KOpeningHours
     openinghours.cpp
     rule.cpp
     selectors.cpp
+    interval.h
+    openinghours.h
+    rule_p.h
+    selectors_p.h
 )
 
 generate_export_header(KOpeningHours BASE_NAME KOpeningHours)
