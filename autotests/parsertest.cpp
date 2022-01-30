@@ -95,6 +95,12 @@ private Q_SLOTS:
         T("Mar Su[1]-Oct Su[1]: 11:00-20:00; PH 11:00-20:00");
         T2("Mo 20:00-26:00", "Mo 20:00-26:00"); // https://github.com/osm-fr/osmose-backend/issues/1344
 
+        // https://bugs.kde.org/show_bug.cgi?id=445963
+        T("Th[1-2] 09:30-11:45");
+        T("Th[1,2] 09:30-11:45");
+        T("Mo[1,3,-1]"); // order as desired, -1 means last
+        T("Mo[1,3,2]"); // currently not normalized
+
         // from https://wiki.openstreetmap.org/wiki/Key:opening_hours#Simple_examples
         T("Mo-Fr 08:00-17:30");
         T("Mo-Fr 08:00-12:00,13:00-17:30");
@@ -209,6 +215,11 @@ private Q_SLOTS:
         T2("Mo, We, Fr 06:30-21:30; Tu, Th 09:00-21:30; Sa 09:00-17:00; Su 09:00-14:00", "Mo,We,Fr 06:30-21:30; Tu,Th 09:00-21:30; Sa 09:00-17:00; Su 09:00-14:00");
         T2("Lunes a sábado, 9:30 AM-5:30 PM", "Mo-Sa 09:30-17:30"); // bug 445784
 
+        // lists of specific days
+        T("2021 Dec 26-28,30-31,2022 Jan 02-03 off");
+        T2("2021 Dec 26-28,Dec 30-31,2022 Jan 02-03 off", "2021 Dec 26-28,30-31,2022 Jan 02-03 off");
+        T2("2021 Dec 22, 26-28, 29, 31, 2022 Jan 02-03 off", "2021 Dec 22,26-28,29,31,2022 Jan 02-03 off");
+
         // technically wrong but often found content in OSM for which we have error recovery
         T2("So", "Su");
         T2("Ph", "PH");
@@ -226,6 +237,8 @@ private Q_SLOTS:
         T2("december", "Dec");
         T2("Dec 24,25,26, Jan 1,6 off", "Dec 24,25,26,Jan 01,06 off");
         T2("Dec 24,25,26 open, Jan 1,6 off", "Dec 24,25,26 open, Jan 01,06 off");
+        T2("Dec 6,4", "Dec 06,04");
+        T2("Dec 3,2,1", "Dec 03,02,01");
         T2("07:30-20:00; Jan 03, 13, 23, Feb 03, 13, 23, Mar 03, 13, 23, Apr 03, 13, 23, Jun 03, 13, 23, Jul 03, 13, 23, Aug 03, 13, 23, Sep 03, 13, 23, Oct 03, 13, 23, Nov 03, 13, 23, Dec 03, 13, 23 off",
            "07:30-20:00; Jan 03,13,23,Feb 03,13,23,Mar 03,13,23,Apr 03,13,23,Jun 03,13,23,Jul 03,13,23,Aug 03,13,23,Sep 03,13,23,Oct 03,13,23,Nov 03,13,23,Dec 03,13,23 off");
         T2("Apr, May, Oct, Nov, Dec: Mo-Su, 10:00-19:00; Jun-Sep: Mo-Su:10:00-20:00", "Apr,May,Oct,Nov,Dec: Mo-Su, 10:00-19:00; Jun-Sep: Mo-Su 10:00-20:00");
@@ -429,9 +442,7 @@ private Q_SLOTS:
         T("12:61");
         T("60p");
 
-        T("Dec 6,4");
         T("Dec 24-Jan 1,6");
-        T("Dec 3,2,1");
         T("Mo, 1:100");
 
         // from https://wiki.openstreetmap.org/wiki/Key:opening_hours#Common_mistakes

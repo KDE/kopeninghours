@@ -135,6 +135,21 @@ public:
     std::unique_ptr<Timespan> next;
 };
 
+struct NthEntry {
+    int begin;
+    int end;
+    QByteArray toExpression() const;
+};
+
+/** Nth week days, like 1-2,4,6-8 */
+class NthSequence
+{
+public:
+    void add(NthEntry range);
+    QByteArray toExpression() const;
+    std::vector<NthEntry> sequence;
+};
+
 /** Weekday range. */
 class WeekdayRange
 {
@@ -147,7 +162,7 @@ public:
 
     uint8_t beginDay = 0; // Mo=1, Tu=2, ..., Su=7
     uint8_t endDay = 0;
-    uint16_t nthMask = 0;
+    std::unique_ptr<NthSequence> nthSequence;
     int16_t offset = 0;
     enum Holiday : uint8_t {
         NoHoliday = 0,

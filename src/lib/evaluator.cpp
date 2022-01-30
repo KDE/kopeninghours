@@ -135,24 +135,27 @@ SelectorResult WeekdayRange::nextIntervalLocal(const Interval &interval, const Q
     switch (holiday) {
         case NoHoliday:
         {
-            if (nthMask > 0) {
-                for (int i = 1; i <= 10; ++i) {
-                    if ((nthMask & (1 << i)) == 0) {
-                        continue;
+            if (nthSequence) {
+                qint64 smallestOffset = INT_MAX;
+                for (const NthEntry &entry : nthSequence->sequence) {
+                    Q_ASSERT(entry.begin <= entry.end);
+                    for (int n = entry.begin; n <= entry.end; ++n) {
+                        const auto d = nthWeekdayInMonth(dt.date().addDays(-offset), beginDay, n);
+                        if (!d.isValid() || d.addDays(offset) < dt.date()) {
+                            continue;
+                        }
+                        if (d.addDays(offset) == dt.date()) {
+                            auto i = interval;
+                            i.setBegin(QDateTime(d.addDays(offset), {0, 0}));
+                            i.setEnd(QDateTime(d.addDays(offset + 1), {0, 0}));
+                            return i;
+                        }
+                        // d > dt.date()
+                        smallestOffset = qMin(smallestOffset, dt.secsTo(QDateTime(d.addDays(offset), {0, 0})));
                     }
-                    const auto n = (i % 2) ? (-5 + (i /2)) : (i / 2);
-                    const auto d = nthWeekdayInMonth(dt.date().addDays(-offset), beginDay, n);
-                    if (!d.isValid() || d.addDays(offset) < dt.date()) {
-                        continue;
-                    }
-                    if (d.addDays(offset) == dt.date()) {
-                        auto i = interval;
-                        i.setBegin(QDateTime(d.addDays(offset), {0, 0}));
-                        i.setEnd(QDateTime(d.addDays(offset + 1), {0, 0}));
-                        return i;
-                    }
-                    // d > dt.date()
-                    return dt.secsTo(QDateTime(d.addDays(offset), {0, 0}));
+                }
+                if (smallestOffset < INT_MAX) {
+                    return smallestOffset;
                 }
 
                 // skip to next month

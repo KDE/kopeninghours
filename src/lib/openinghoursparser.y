@@ -5,8 +5,8 @@
 */
 
 #include "openinghours_p.h"
-#include "openinghoursparser_p.h"
-#include "openinghoursscanner_p.h"
+#include "openinghoursparser_p.h" // generated
+#include "openinghoursscanner_p.h" // generated
 #include "logging.h"
 
 using namespace KOpeningHours;
@@ -43,17 +43,16 @@ static void applySelectors(const Selectors &sels, Rule *rule)
     rule->m_wideRangeSelectorComment = QString::fromUtf8(sels.wideRangeSelectorComment.str, sels.wideRangeSelectorComment.len);
 }
 
-static bool extendMonthdaySelector(MonthdayRange *monthdaySelector, int day)
+static bool extendMonthdaySelector(MonthdayRange *monthdaySelector, int beginDay, int endDay)
 {
     const auto prevSelector = lastSelector(monthdaySelector);
     if (prevSelector->begin.year == prevSelector->end.year
-     && prevSelector->begin.month == prevSelector->end.month
-     && prevSelector->begin.day < day
-     && prevSelector->end.day < day)
+     && prevSelector->begin.month == prevSelector->end.month)
     {
         auto sel = new MonthdayRange;
         sel->begin = sel->end = prevSelector->end;
-        sel->begin.day = sel->end.day = day;
+        sel->begin.day = beginDay;
+        sel->end.day = endDay;
         appendSelector(prevSelector, sel);
         return true;
     }
@@ -114,6 +113,8 @@ typedef void* yyscan_t;
     Time time;
     Selectors selectors;
     Timespan *timespan;
+    NthEntry nthEntry;
+    NthSequence *nthSequence;
     WeekdayRange *weekdayRange;
     Week *week;
     Date date;
@@ -190,8 +191,8 @@ typedef void* yyscan_t;
 %type <weekdayRange> WeekdayRange
 %type <weekdayRange> HolidaySequence
 %type <weekdayRange> Holiday
-%type <num> NthSequence
-%type <num> NthEntry
+%type <nthSequence> NthSequence
+%type <nthEntry> NthEntry
 %type <num> DayOffset
 %type <dateOffset> DateOffset
 %type <week> Week
@@ -213,6 +214,7 @@ typedef void* yyscan_t;
     delete $$.yearSelector;
 } <selectors>
 %destructor { delete $$; } <timespan>
+%destructor { delete $$; } <nthSequence>
 %destructor { delete $$; } <weekdayRange>
 %destructor { delete $$; } <week>
 %destructor { delete $$; } <monthdayRange>
@@ -503,12 +505,12 @@ WeekdayRange:
 | T_WEEKDAY[D] T_LBRACKET NthSequence[N] T_RBRACKET {
     $$ = new WeekdayRange;
     $$->beginDay = $$->endDay = $D;
-    $$->nthMask = $N;
+    $$->nthSequence.reset($N);
   }
 | T_WEEKDAY[D] T_LBRACKET NthSequence[N] T_RBRACKET DayOffset[O] {
     $$ = new WeekdayRange;
     $$->beginDay = $$->endDay = $D;
-    $$->nthMask = $N;
+    $$->nthSequence.reset($N);
     $$->offset = $O;
   }
 ;
@@ -535,24 +537,27 @@ Holiday:
 ;
 
 NthSequence:
-  NthEntry[N] { $$ = $N; }
-| NthSequence[N1] T_COMMA NthEntry[N2] { $$ = $N1 | $N2; }
+  NthEntry[N] {
+      $$ = new NthSequence;
+      $$->add($N);
+  }
+| NthSequence[N1] T_COMMA NthEntry[N2] {
+      $N1->add($N2);
+      $$ = $N1;
+  }
 
 NthEntry:
   T_INTEGER[N] {
     if ($N < 1 || $N > 5) { YYABORT; }
-    $$ = (1 << (2 * $N));
+    $$ = {$N,$N};
   }
 | T_INTEGER[N1] T_MINUS T_INTEGER[N2] {
     if ($N1 < 1 || $N1 > 5 || $N2 < 1 || $N2 > 5 || $N2 <= $N1) { YYABORT; }
-    $$ = 0;
-    for (int i = $N1; i <= $N2; ++i) {
-        $$ |= (1 << (2 * i));
-    }
+    $$ = {$N1,$N2};
   }
 | T_MINUS T_INTEGER[N] {
     if ($N < 1 || $N > 5) { YYABORT; }
-    $$ = (1 << ((2 * (6 - $N)) - 1));
+    $$ = {-$N,-$N};
   }
 ;
 
@@ -607,7 +612,7 @@ MonthdaySelector:
     // month day sets, not covered the official grammar but in the
     // description in https://wiki.openstreetmap.org/wiki/Key:opening_hours#Summary_syntax
     $$ = $S;
-    if (!extendMonthdaySelector($$.monthdaySelector, $D)) {
+    if (!extendMonthdaySelector($$.monthdaySelector, $D, $D)) {
         delete $$.monthdaySelector;
         YYABORT;
     }
@@ -615,7 +620,23 @@ MonthdaySelector:
 | MonthdaySelector[S] T_ADDITIONAL_RULE_SEPARATOR T_INTEGER[D] {
     // same as the above, just with the wrong ", " separator
     $$ = $S;
-    if (!extendMonthdaySelector($$.monthdaySelector, $D)) {
+    if (!extendMonthdaySelector($$.monthdaySelector, $D, $D)) {
+        delete $$.monthdaySelector;
+        YYABORT;
+    }
+  }
+| MonthdaySelector[S] T_COMMA T_INTEGER[D1] T_MINUS T_INTEGER[D2] {
+    // same with a range of days
+    $$ = $S;
+    if (!extendMonthdaySelector($$.monthdaySelector, $D1, $D2)) {
+        delete $$.monthdaySelector;
+        YYABORT;
+    }
+  }
+| MonthdaySelector[S] T_ADDITIONAL_RULE_SEPARATOR T_INTEGER[D1] T_MINUS T_INTEGER[D2] {
+    // same as the above, just with the wrong ", " separator
+    $$ = $S;
+    if (!extendMonthdaySelector($$.monthdaySelector, $D1, $D2)) {
         delete $$.monthdaySelector;
         YYABORT;
     }
