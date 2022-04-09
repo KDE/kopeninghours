@@ -81,7 +81,7 @@ private Q_SLOTS:
         QFETCH(QString, inputFile);
 
         QFile inFile(inputFile);
-        QVERIFY(inFile.open(QFile::ReadOnly));
+        QVERIFY(inFile.open(QFile::ReadOnly | QFile::Text));
 
         const auto expr = inFile.readLine();
         OpeningHours oh(expr);
@@ -107,7 +107,7 @@ private Q_SLOTS:
         const auto refData = inFile.readAll();
         if (refData != b) {
             QFile failFile(inputFile + QLatin1String(".fail"));
-            QVERIFY(failFile.open(QFile::WriteOnly));
+            QVERIFY(failFile.open(QFile::WriteOnly | QFile::Text));
             failFile.write(b);
             failFile.close();
 
