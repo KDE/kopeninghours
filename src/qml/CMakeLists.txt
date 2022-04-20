@@ -11,5 +11,5 @@ target_link_libraries(kopeninghoursqmlplugin
 set_property(TARGET kopeninghoursqmlplugin PROPERTY LIBRARY_OUTPUT_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/org/kde/kopeninghours)
 file(COPY qmldir DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/org/kde/kopeninghours)
 
-install(TARGETS kopeninghoursqmlplugin DESTINATION ${QML_INSTALL_DIR}/org/kde/kopeninghours)
-install(FILES qmldir ${qml_SRC} DESTINATION ${QML_INSTALL_DIR}/org/kde/kopeninghours)
+install(TARGETS kopeninghoursqmlplugin DESTINATION ${KDE_INSTALL_QMLDIR}/org/kde/kopeninghours)
+install(FILES qmldir ${qml_SRC} DESTINATION ${KDE_INSTALL_QMLDIR}/org/kde/kopeninghours)
