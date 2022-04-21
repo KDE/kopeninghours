@@ -168,6 +168,10 @@ Dec\.? { yylval->num = 12; return T_MONTH; }
 "Ноябрь"   { yylval->num = 11; return T_MONTH; }
 "Декабрь"  { yylval->num = 12; return T_MONTH; }
 
+ /* Month abbreviations in Dutch */
+"Mrt" { yylval->num = 3; return T_MONTH; }
+"Mei" { yylval->num = 5; return T_MONTH; }
+"Okt" { yylval->num = 10; return T_MONTH; }
 
  /* different quote types are sometimes mixed and/or used nested, so this is a compromise to catch most of them */
 ["][^"]*["] {
@@ -220,7 +224,6 @@ Feiertage?   { return T_PH; }
 
   /* French, Spanish, Italian */
 Lu { yylval->num = 1; return T_WEEKDAY; }
-Ma { yylval->num = 2; return T_WEEKDAY; }
   /* French, Italian */
 Me { yylval->num = 3; return T_WEEKDAY; }
   /* German, Spanish, Italian */
@@ -234,8 +237,9 @@ Ve { yylval->num = 5; return T_WEEKDAY; }
   /* German */
 So { yylval->num = 7; return T_WEEKDAY; }
 
- /* "Di" conflicts between German and French...
-    "Do" conflicts between German and Spanish+Italian... */
+ /* "Ma" conflicts between Dutch and French+Spanish+Italian...
+    "Di" conflicts between Dutch+German and French...
+    "Do" conflicts between Dutch+German and Spanish+Italian... */
 
   /* French localized day names. */
 Lun(di)?    { yylval->num = 1; return T_WEEKDAY; }
@@ -300,6 +304,15 @@ Minggu  { yylval->num = 7; return T_WEEKDAY; }
 Пятница|Пят|Пя|Пт   { yylval->num = 5; return T_WEEKDAY; }
 Суббота|Суб|Су|Сб   { yylval->num = 6; return T_WEEKDAY; }
 Воскресенье|Вос|Во  { yylval->num = 7; return T_WEEKDAY; }
+
+  /* Dutch localized day names */
+Maandag        { yylval->num = 1; return T_WEEKDAY; }
+Dinsdag        { yylval->num = 2; return T_WEEKDAY; }
+Wo(e(nsdag)?)? { yylval->num = 3; return T_WEEKDAY; }
+Donderdag      { yylval->num = 4; return T_WEEKDAY; }
+Vr(ijdag)?     { yylval->num = 5; return T_WEEKDAY; }
+Za(terdag)?    { yylval->num = 6; return T_WEEKDAY; }
+Zo(ndag)?      { yylval->num = 7; return T_WEEKDAY; }
 
   /* creative rule separators */
 、|and|et|e|y|und|& { return T_ADDITIONAL_RULE_SEPARATOR; }
