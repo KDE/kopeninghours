@@ -18,8 +18,11 @@ include(KDEFrameworkCompilerSettings NO_POLICY_SCOPE)
 include(ECMAddTests)
 include(ECMGenerateHeaders)
 include(ECMQtDeclareLoggingCategory)
-if (ECM_FIND_VERSION VERSION_GREATER_EQUAL 5.91)
+if (ECM_VERSION VERSION_GREATER_EQUAL 5.91)
     include(ECMDeprecationSettings)
+else()
+    # backward compatibility for ECM versions without QtVersionOption.cmake
+    set(QT_MAJOR_VERSION 5)
 endif()
 include(ECMSetupVersion)
 include(FeatureSummary)
@@ -49,14 +52,14 @@ else()
     set(REQUIRED_QT_VERSION 5.14) # 5.14 for QCalendar
 endif()
 
-find_package(Qt5 ${REQUIRED_QT_VERSION} REQUIRED COMPONENTS Core) # 5.14 for QCalendar
-find_package(Qt5 ${REQUIRED_QT_VERSION} CONFIG QUIET OPTIONAL_COMPONENTS Qml)
+find_package(Qt${QT_MAJOR_VERSION} ${REQUIRED_QT_VERSION} REQUIRED COMPONENTS Core) # 5.14 for QCalendar
+find_package(Qt${QT_MAJOR_VERSION} ${REQUIRED_QT_VERSION} CONFIG QUIET OPTIONAL_COMPONENTS Qml)
 if (NOT VALIDATOR_ONLY)
     find_package(KF5 5.77 REQUIRED COMPONENTS Holidays I18n)
 endif()
 
 if (BUILD_TESTING)
-    find_package(Qt5 ${REQUIRED_QT_VERSION} REQUIRED COMPONENTS Test)
+    find_package(Qt${QT_MAJOR_VERSION} ${REQUIRED_QT_VERSION} REQUIRED COMPONENTS Test)
 endif()
 
 find_package(FLEX REQUIRED)

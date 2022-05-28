@@ -53,7 +53,7 @@ set_target_properties(KOpeningHours PROPERTIES
 )
 target_link_libraries(KOpeningHours
     PUBLIC
-        Qt5::Core
+        Qt${QT_MAJOR_VERSION}::Core
 )
 if (VALIDATOR_ONLY)
     target_compile_definitions(KOpeningHours PUBLIC KOPENINGHOURS_VALIDATOR_ONLY)

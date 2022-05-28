@@ -4,6 +4,6 @@
 add_definitions(-DTRANSLATION_DOMAIN=\"kopeninghours\")
 
 add_subdirectory(lib)
-if (TARGET Qt5::Qml AND NOT VALIDATOR_ONLY)
+if (TARGET Qt${QT_MAJOR_VERSION}::Qml AND NOT VALIDATOR_ONLY)
     add_subdirectory(qml)
 endif()
