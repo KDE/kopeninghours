@@ -6,6 +6,7 @@
 
 #include "holidaycache_p.h"
 
+#include "kholidays_version.h"
 #include <KHolidays/HolidayRegion>
 
 #include <QDate>
@@ -70,7 +71,11 @@ KHolidays::Holiday HolidayCache::nextHoliday(const KHolidays::HolidayRegion &reg
         entry.begin = std::min(it.value().begin, entry.begin);
         entry.end = std::max(it.value().end, entry.end);
     }
+#if KHOLIDAYS_VERSION >= QT_VERSION_CHECK(5, 95, 0)
+    entry.holidays = region.rawHolidaysWithAstroSeasons(entry.begin, entry.end);
+#else
     entry.holidays = region.holidays(entry.begin, entry.end);
+#endif
     entry.holidays.erase(std::remove_if(entry.holidays.begin(), entry.holidays.end(), [](const auto &h) {
         return h.dayType() != KHolidays::Holiday::NonWorkday;
     }), entry.holidays.end());
