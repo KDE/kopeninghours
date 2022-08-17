@@ -3,7 +3,7 @@
 
 add_library(kopeninghoursqmlplugin kopeninghoursqmlplugin.cpp)
 target_link_libraries(kopeninghoursqmlplugin
-    Qt${QT_MAJOR_VERSION}::Qml
+    Qt::Qml
     KOpeningHours
 )
 
