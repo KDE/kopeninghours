@@ -12,7 +12,7 @@ project(KOpeningHours VERSION ${RELEASE_SERVICE_VERSION})
 
 # Ubuntu bionic has ECM 5.44
 find_package(ECM 5.44 REQUIRED NO_MODULE)
-set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake ${ECM_MODULE_PATH} ${ECM_KDE_MODULE_DIR})
+set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake ${ECM_MODULE_PATH})
 
 include(KDEFrameworkCompilerSettings NO_POLICY_SCOPE)
 include(ECMAddTests)
