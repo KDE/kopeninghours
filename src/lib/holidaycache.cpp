@@ -9,7 +9,6 @@
 #include <KHolidays/HolidayRegion>
 
 #include <QDate>
-#include <QDebug>
 #include <QHash>
 
 using namespace KOpeningHours;

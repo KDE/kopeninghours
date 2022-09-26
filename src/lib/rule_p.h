@@ -10,7 +10,6 @@
 #include "interval.h"
 #include "selectors_p.h"
 
-#include <QDebug>
 
 #include <memory>
 

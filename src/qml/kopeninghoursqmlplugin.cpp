@@ -10,7 +10,6 @@
 #include <KOpeningHours/OpeningHours>
 
 #include <QCoreApplication>
-#include <QQmlContext>
 #include <QQmlEngine>
 #include <QQmlExtensionPlugin>
 

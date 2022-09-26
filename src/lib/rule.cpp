@@ -8,7 +8,6 @@
 #include "logging.h"
 #include "openinghours_p.h"
 
-#include <QDateTime>
 
 using namespace KOpeningHours;
 
