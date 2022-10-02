@@ -1,0 +1,144 @@
+# Translation of kopeninghours to Norwegian Nynorsk
+#
+# Karl Ove Hufthammer <karl@huftis.org>, 2020, 2021.
+msgid ""
+msgstr ""
+"Project-Id-Version: kopeninghours\n"
+"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
+"POT-Creation-Date: 2020-12-23 02:25+0100\n"
+"PO-Revision-Date: 2021-01-04 21:03+0100\n"
+"Last-Translator: Karl Ove Hufthammer <karl@huftis.org>\n"
+"Language-Team: Norwegian Nynorsk <l10n-no@lister.huftis.org>\n"
+"Language: nn\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Lokalize 20.12.0\n"
+"X-Environment: kde\n"
+"X-Accelerator-Marker: &\n"
+"X-Text-Markup: kde4\n"
+
+#: lib/display.cpp:28
+#, kde-format
+msgid "Open"
+msgstr "Open"
+
+#: lib/display.cpp:28
+#, kde-format
+msgid "Open (%1)"
+msgstr "Open (%1)"
+
+#: lib/display.cpp:30
+#, kde-format
+msgid "Closed"
+msgstr "Stengd"
+
+#: lib/display.cpp:30
+#, kde-format
+msgid "Closed (%1)"
+msgstr "Stengd (%1)"
+
+#: lib/display.cpp:50
+#, kde-format
+msgid "Open for one more minute"
+msgid_plural "Open for %1 more minutes"
+msgstr[0] "Open eitt minutt til"
+msgstr[1] "Open %1 minutt til"
+
+#: lib/display.cpp:51
+#, kde-format
+msgid "Open for one more minute (%2)"
+msgid_plural "Open for %1 more minutes (%2)"
+msgstr[0] "Open eitt minutt til (%2)"
+msgstr[1] "Open %1 minutt til (%2)"
+
+#: lib/display.cpp:54
+#, kde-format
+msgid "Currently closed, opens in one minute"
+msgid_plural "Currently closed, opens in %1 minutes"
+msgstr[0] "Stengd – opnar om eitt minutt"
+msgstr[1] "Stengd – opnar om %1 minutt"
+
+#: lib/display.cpp:55
+#, kde-format
+msgid "Currently closed (%2), opens in one minute"
+msgid_plural "Currently closed (%2), opens in %1 minutes"
+msgstr[0] "Stengd (%2) – opnar om eitt minutt"
+msgstr[1] "Stengd (%2) – opnar om %1 minutt"
+
+#: lib/display.cpp:68
+#, kde-format
+msgid "Open for one more hour"
+msgid_plural "Open for %1 more hours"
+msgstr[0] "Open éin time til"
+msgstr[1] "Open %1 timar til"
+
+#: lib/display.cpp:69
+#, kde-format
+msgid "Open for one more hour (%2)"
+msgid_plural "Open for %1 more hours (%2)"
+msgstr[0] "Open éin time til (%2)"
+msgstr[1] "Open %1 timar til (%2)"
+
+#: lib/display.cpp:72
+#, kde-format
+msgid "Currently closed, opens in one hour"
+msgid_plural "Currently closed, opens in %1 hours"
+msgstr[0] "Stengd – opnar om éin time"
+msgstr[1] "Stengd – opnar om %1 timar"
+
+#: lib/display.cpp:73
+#, kde-format
+msgid "Currently closed (%2), opens in one hour"
+msgid_plural "Currently closed (%2), opens in %1 hours"
+msgstr[0] "Stengd (%2) – opnar om éin time"
+msgstr[1] "Stengd (%2) – opnar om %1 timar"
+
+#: lib/display.cpp:86
+#, kde-format
+msgid "Open for one more day"
+msgid_plural "Open for %1 more days"
+msgstr[0] "Open éin dag til"
+msgstr[1] "Open %1 dagar til"
+
+#: lib/display.cpp:87
+#, kde-format
+msgid "Open for one more day (%2)"
+msgid_plural "Open for %1 more days (%2)"
+msgstr[0] "Open éin dag til (%2)"
+msgstr[1] "Open %1 dagar til (%2)"
+
+#: lib/display.cpp:90
+#, kde-format
+msgid "Currently closed, opens in one day"
+msgid_plural "Currently closed, opens in %1 days"
+msgstr[0] "Stengd – opnar om éin dag"
+msgstr[1] "Stengd – opnar om %1 dagar"
+
+#: lib/display.cpp:91
+#, kde-format
+msgid "Currently closed (%2), opens in one day"
+msgid_plural "Currently closed (%2), opens in %1 days"
+msgstr[0] "Stengd (%2) – opnar om éin dag"
+msgstr[1] "Stengd (%2) – opnar om %1 dagar"
+
+#: lib/display.cpp:102
+#, kde-format
+msgid "Currently open"
+msgstr "Open no"
+
+#: lib/display.cpp:102
+#, kde-format
+msgid "Currently open (%1)"
+msgstr "Open no (%1)"
+
+#: lib/display.cpp:104
+#, kde-format
+msgid "Currently closed"
+msgstr "Stengd no"
+
+#: lib/display.cpp:104
+#, kde-format
+msgid "Currently closed (%1)"
+msgstr "Stengd no (%1)"

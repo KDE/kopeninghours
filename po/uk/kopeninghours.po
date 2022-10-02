@@ -1,0 +1,169 @@
+# Translation of kopeninghours.po to Ukrainian
+# Copyright (C) 2020 This_file_is_part_of_KDE
+# This file is distributed under the license LGPL version 2.1 or
+# version 3 or later versions approved by the membership of KDE e.V.
+#
+# Yuri Chornoivan <yurchor@ukr.net>, 2020.
+msgid ""
+msgstr ""
+"Project-Id-Version: kopeninghours\n"
+"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
+"POT-Creation-Date: 2020-12-23 02:25+0100\n"
+"PO-Revision-Date: 2020-12-23 08:34+0200\n"
+"Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
+"Language-Team: Ukrainian <kde-i18n-uk@kde.org>\n"
+"Language: uk\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=n==1 ? 3 : n%10==1 && n%100!=11 ? 0 : n"
+"%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"X-Generator: Lokalize 20.11.70\n"
+
+#: lib/display.cpp:28
+#, kde-format
+msgid "Open"
+msgstr "Відчинено"
+
+#: lib/display.cpp:28
+#, kde-format
+msgid "Open (%1)"
+msgstr "Відчинено (%1)"
+
+#: lib/display.cpp:30
+#, kde-format
+msgid "Closed"
+msgstr "Зачинено"
+
+#: lib/display.cpp:30
+#, kde-format
+msgid "Closed (%1)"
+msgstr "Зачинено (%1)"
+
+#: lib/display.cpp:50
+#, kde-format
+msgid "Open for one more minute"
+msgid_plural "Open for %1 more minutes"
+msgstr[0] "Буде відчинено ще %1 хвилину"
+msgstr[1] "Буде відчинено ще %1 хвилини"
+msgstr[2] "Буде відчинено ще %1 хвилин"
+msgstr[3] "Буде відчинено ще одну хвилину"
+
+#: lib/display.cpp:51
+#, kde-format
+msgid "Open for one more minute (%2)"
+msgid_plural "Open for %1 more minutes (%2)"
+msgstr[0] "Буде відчинено ще %1 хвилину (%2)"
+msgstr[1] "Буде відчинено ще %1 хвилини (%2)"
+msgstr[2] "Буде відчинено ще %1 хвилин (%2)"
+msgstr[3] "Буде відчинено ще одну хвилину (%2)"
+
+#: lib/display.cpp:54
+#, kde-format
+msgid "Currently closed, opens in one minute"
+msgid_plural "Currently closed, opens in %1 minutes"
+msgstr[0] "Зараз зачинено, буде відчинено за %1 хвилину"
+msgstr[1] "Зараз зачинено, буде відчинено за %1 хвилини"
+msgstr[2] "Зараз зачинено, буде відчинено за %1 хвилин"
+msgstr[3] "Зараз зачинено, буде відчинено за хвилину"
+
+#: lib/display.cpp:55
+#, kde-format
+msgid "Currently closed (%2), opens in one minute"
+msgid_plural "Currently closed (%2), opens in %1 minutes"
+msgstr[0] "Зараз зачинено (%2), буде відчинено за %1 хвилину"
+msgstr[1] "Зараз зачинено (%2), буде відчинено за %1 хвилини"
+msgstr[2] "Зараз зачинено (%2), буде відчинено за %1 хвилин"
+msgstr[3] "Зараз зачинено (%2), буде відчинено за одну хвилину"
+
+#: lib/display.cpp:68
+#, kde-format
+msgid "Open for one more hour"
+msgid_plural "Open for %1 more hours"
+msgstr[0] "Буде відчинено ще %1 годину"
+msgstr[1] "Буде відчинено ще %1 години"
+msgstr[2] "Буде відчинено ще %1 годин"
+msgstr[3] "Буде відчинено ще одну годину"
+
+#: lib/display.cpp:69
+#, kde-format
+msgid "Open for one more hour (%2)"
+msgid_plural "Open for %1 more hours (%2)"
+msgstr[0] "Буде відчинено ще %1 годину (%2)"
+msgstr[1] "Буде відчинено ще %1 години (%2)"
+msgstr[2] "Буде відчинено ще %1 годин (%2)"
+msgstr[3] "Буде відчинено ще одну годину (%2)"
+
+#: lib/display.cpp:72
+#, kde-format
+msgid "Currently closed, opens in one hour"
+msgid_plural "Currently closed, opens in %1 hours"
+msgstr[0] "Зараз зачинено, буде відчинено за %1 годину"
+msgstr[1] "Зараз зачинено, буде відчинено за %1 години"
+msgstr[2] "Зараз зачинено, буде відчинено за %1 годин"
+msgstr[3] "Зараз зачинено, буде відчинено за годину"
+
+#: lib/display.cpp:73
+#, kde-format
+msgid "Currently closed (%2), opens in one hour"
+msgid_plural "Currently closed (%2), opens in %1 hours"
+msgstr[0] "Зараз зачинено (%2), буде відчинено за %1 годину"
+msgstr[1] "Зараз зачинено (%2), буде відчинено за %1 години"
+msgstr[2] "Зараз зачинено (%2), буде відчинено за %1 годин"
+msgstr[3] "Зараз зачинено (%2), буде відчинено за годину"
+
+#: lib/display.cpp:86
+#, kde-format
+msgid "Open for one more day"
+msgid_plural "Open for %1 more days"
+msgstr[0] "Буде відчинено ще %1 день"
+msgstr[1] "Буде відчинено ще %1 дні"
+msgstr[2] "Буде відчинено ще %1 днів"
+msgstr[3] "Буде відчинено ще один день"
+
+#: lib/display.cpp:87
+#, kde-format
+msgid "Open for one more day (%2)"
+msgid_plural "Open for %1 more days (%2)"
+msgstr[0] "Буде відчинено ще %1 день (%2)"
+msgstr[1] "Буде відчинено ще %1 дні (%2)"
+msgstr[2] "Буде відчинено ще %1 днів (%2)"
+msgstr[3] "Буде відчинено ще один день (%2)"
+
+#: lib/display.cpp:90
+#, kde-format
+msgid "Currently closed, opens in one day"
+msgid_plural "Currently closed, opens in %1 days"
+msgstr[0] "Зараз зачинено, буде відчинено за %1 день"
+msgstr[1] "Зараз зачинено, буде відчинено за %1 дні"
+msgstr[2] "Зараз зачинено, буде відчинено за %1 днів"
+msgstr[3] "Зараз зачинено, буде відчинено завтра"
+
+#: lib/display.cpp:91
+#, kde-format
+msgid "Currently closed (%2), opens in one day"
+msgid_plural "Currently closed (%2), opens in %1 days"
+msgstr[0] "Зараз зачинено (%2), буде відчинено за %1 день"
+msgstr[1] "Зараз зачинено (%2), буде відчинено за %1 дні"
+msgstr[2] "Зараз зачинено (%2), буде відчинено за %1 днів"
+msgstr[3] "Зараз зачинено (%2), буде відчинено завтра"
+
+#: lib/display.cpp:102
+#, kde-format
+msgid "Currently open"
+msgstr "Зараз відчинено"
+
+#: lib/display.cpp:102
+#, kde-format
+msgid "Currently open (%1)"
+msgstr "Зараз відчинено (%1)"
+
+#: lib/display.cpp:104
+#, kde-format
+msgid "Currently closed"
+msgstr "Зараз зачинено"
+
+#: lib/display.cpp:104
+#, kde-format
+msgid "Currently closed (%1)"
+msgstr "Зараз зачинено (%1)"
