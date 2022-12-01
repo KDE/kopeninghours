@@ -558,7 +558,7 @@ Interval OpeningHours::interval(const QDateTime &dt) const
         if (rule->state() != Interval::Closed) {
             continue;
         }
-        const auto j = rule->nextInterval(i.begin(), d.data()).interval;
+        const auto j = rule->nextInterval(i.begin().isValid() ? i.begin() : alignedTime, d.data()).interval;
         if (!j.isValid() || !i.intersects(j)) {
             continue;
         }

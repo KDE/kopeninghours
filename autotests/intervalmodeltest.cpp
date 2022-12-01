@@ -93,6 +93,26 @@ private Q_SLOTS:
         QCOMPARE(intervals[1].state(), Interval::Closed);
         QCOMPARE(intervals[2].state(), Interval::Open);
     }
+
+    void testPermanentlyClosed()
+    {
+        IntervalModel model;
+        QAbstractItemModelTester modelTest(&model);
+
+        OpeningHours oh("Mo-Su off");
+        QCOMPARE(oh.error(), OpeningHours::NoError);
+
+        model.setOpeningHours(oh);
+        model.setBeginDate({2022, 12, 1});
+        model.setEndDate({2022, 12, 2});
+
+        QCOMPARE(model.rowCount(), 1);
+        const auto intervals = model.index(0, 0).data(IntervalModel::IntervalsRole).value<std::vector<Interval>>();
+        QCOMPARE(intervals.size(), 1);
+        QCOMPARE(intervals[0].begin(), QDateTime({ 2022, 12, 1 }, {0, 0}));
+        QCOMPARE(intervals[0].end(), QDateTime({ 2022, 12, 2 }, {0, 0}));
+        QCOMPARE(intervals[0].state(), Interval::Closed);
+    }
 };
 
 QTEST_GUILESS_MAIN(IntervalModelTest)
