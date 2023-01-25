@@ -50,12 +50,19 @@ if (VALIDATOR_ONLY)
     set(REQUIRED_QT_VERSION 5.9)
 else()
     set(REQUIRED_QT_VERSION 5.14) # 5.14 for QCalendar
+    if (QT_MAJOR_VERSION STREQUAL "6")
+        set(QT_REQUIRED_VERSION "6.4.0")
+        set(KF_MIN_VERSION "5.240.0")
+        set(KF_MAJOR_VERSION "6")
+    else()
+        set(KF_MAJOR_VERSION "5")
+    endif()
 endif()
 
 find_package(Qt${QT_MAJOR_VERSION} ${REQUIRED_QT_VERSION} REQUIRED COMPONENTS Core) # 5.14 for QCalendar
 find_package(Qt${QT_MAJOR_VERSION} ${REQUIRED_QT_VERSION} CONFIG QUIET OPTIONAL_COMPONENTS Qml)
 if (NOT VALIDATOR_ONLY)
-    find_package(KF5 5.77 REQUIRED COMPONENTS Holidays I18n)
+    find_package(KF${KF_MAJOR_VERSION} 5.77 REQUIRED COMPONENTS Holidays I18n)
 endif()
 
 if (BUILD_TESTING)

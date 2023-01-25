@@ -60,8 +60,8 @@ if (VALIDATOR_ONLY)
 else()
     target_link_libraries(KOpeningHours
         PRIVATE
-            KF5::Holidays
-            KF5::I18n
+            KF${KF_MAJOR_VERSION}::Holidays
+            KF${KF_MAJOR_VERSION}::I18n
     )
 endif()
 
