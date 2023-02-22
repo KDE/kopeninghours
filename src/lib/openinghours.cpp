@@ -355,7 +355,7 @@ void OpeningHours::setExpression(const char *openingHours, std::size_t size, Mod
     // trim trailing spaces
     // the parser would handle most of this by itself, but fails if a trailing space would produce a trailing rule separator
     // so it's easier to just clean this here
-    while (size > 0 && std::isspace(openingHours[size - 1])) {
+    while (size > 0 && std::isspace(static_cast<unsigned char>(openingHours[size - 1]))) {
         --size;
     }
     if (size == 0) {
