@@ -149,6 +149,14 @@ void Interval::setEstimatedEnd(const QDateTime& estimatedEnd)
     d->estimatedEnd = estimatedEnd;
 }
 
+int Interval::dstOffset() const
+{
+    if (d->begin.isValid() && estimatedEnd().isValid()) {
+        return estimatedEnd().offsetFromUtc() - d->begin.offsetFromUtc();
+    }
+    return 0;
+}
+
 QDebug operator<<(QDebug debug, const Interval &interval)
 {
     QDebugStateSaver saver(debug);

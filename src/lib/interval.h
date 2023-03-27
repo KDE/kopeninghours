@@ -32,6 +32,7 @@ class KOPENINGHOURS_EXPORT Interval
     Q_PROPERTY(bool hasOpenEndTime READ hasOpenEndTime)
     Q_PROPERTY(QString comment READ comment)
     Q_PROPERTY(QDateTime estimatedEnd READ estimatedEnd)
+    Q_PROPERTY(int dstOffset READ dstOffset)
 public:
     Interval();
     Interval(const Interval&);
@@ -82,6 +83,12 @@ public:
      */
     QDateTime estimatedEnd() const;
     void setEstimatedEnd(const QDateTime &estimatedEnd);
+
+    /** Returns the UTC offset change between estimatedEnd() and begin().
+     *  This is 0, unless there is a DST transition happening in that interval.
+     *  @since 23.04.0
+     */
+    int dstOffset() const;
 
     /** Check if this interval contains @p dt. */
     bool contains(const QDateTime &dt) const;
