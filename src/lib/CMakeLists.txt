@@ -55,6 +55,7 @@ target_link_libraries(KOpeningHours
     PUBLIC
         Qt::Core
 )
+target_include_directories(KOpeningHours INTERFACE "$<INSTALL_INTERFACE:${KDE_INSTALL_INCLUDEDIR}>")
 if (VALIDATOR_ONLY)
     target_compile_definitions(KOpeningHours PUBLIC KOPENINGHOURS_VALIDATOR_ONLY)
 else()
