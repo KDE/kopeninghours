@@ -20,6 +20,7 @@ private Q_SLOTS:
         QTest::addColumn<QByteArray>("expectedOutput");
         QTest::addColumn<QByteArray>("expectedSimplifiedOutput");
 
+        // clang-format off
 #define T(x) QTest::newRow(x) << QByteArray(x) << QByteArray(x) << QByteArray(x)
 #define T2(x, y) QTest::newRow(x) << QByteArray(x) << QByteArray(y) << QByteArray(y)
 #define T3(x, y, z) QTest::newRow(x) << QByteArray(x) << QByteArray(y ? y : x) << QByteArray(z)
@@ -31,13 +32,23 @@ private Q_SLOTS:
         T("off");
         T("Dec off");
         T("Dec 25 off");
+
+        // Don't repeat the month when it's the same (#446224)
         T("Dec 25-26 off");
         T("Dec 24-26,31 off");
         T2("Jan 1,6 off", "Jan 01,06 off");
         T("Dec 24,25,26");
-        T2("Jan 03,Dec 04,24 off", "Jan 03,Dec 04,24 off");
+        T("Jan 03,Dec 04,24 off");
         T2("Jan 03, Dec 04, 24 off", "Jan 03,Dec 04,24 off");
         T2("07:30-20:00; Jan 03,13,23,Dec 04,14,24 off", "07:30-20:00; Jan 03,13,23,Dec 04,14,24 off");
+
+        // But do repeat the year and the month, when a year is specified
+        T2("2023 Apr 26,28 08:00-09:00; PH off", "2023 Apr 26,2023 Apr 28 08:00-09:00; PH off"); // input was incorrect, the year and month must be repeated
+        T2("2021 Dec 26-28,30-31,2022 Jan 02-03 off", "2021 Dec 26-28,2021 Dec 30-31,2022 Jan 02-03 off");
+        T2("2021 Dec 22, 26-28, 29, 31, 2022 Jan 02-03 off", "2021 Dec 22,2021 Dec 26-28,2021 Dec 29,2021 Dec 31,2022 Jan 02-03 off");
+        T("2021 Dec 26-28, Dec 30-31,2022 Jan 02-03 off"); // note that this means Dec 30-31 every year, not just in 2021 (says https://openingh.openstreetmap.de/evaluation_tool/)
+        T("2023 Apr 26, Apr 28 09:00-10:00; PH off"); // note that this means Apr 28 every year, not just in 2023 (says https://openingh.openstreetmap.de/evaluation_tool/)
+
         T("Dec 08:00");
         T("Dec 08:00-14:00");
         T("easter off");
@@ -188,8 +199,8 @@ private Q_SLOTS:
 
         // from https://github.com/dfaure/DataNovaImportScripts/blob/master/saved_opening_hours
         T3("Mo-Tu,Th-Fr 09:30-12:00; 2020 Dec 28 off; 2020 Dec 22,2020 Dec 29 off; We 15:00-17:00; 2020 Dec 23,2020 Dec 30 off; 2020 Dec 24,2020 Dec 31 off; Sa 10:00-12:00; 2020 Dec 26,2021 Jan 02 off; PH off",
-           "Mo-Tu,Th-Fr 09:30-12:00; 2020 Dec 28 off; 2020 Dec 22,29 off; We 15:00-17:00; 2020 Dec 23,30 off; 2020 Dec 24,31 off; Sa 10:00-12:00; 2020 Dec 26,2021 Jan 02 off; PH off",
-           "Mo,Tu,Th,Fr 09:30-12:00; 2020 Dec 28 off; 2020 Dec 22,29 off; We 15:00-17:00; 2020 Dec 23,30 off; 2020 Dec 24,31 off; Sa 10:00-12:00; 2020 Dec 26,2021 Jan 02 off; PH off");
+           "Mo-Tu,Th-Fr 09:30-12:00; 2020 Dec 28 off; 2020 Dec 22,2020 Dec 29 off; We 15:00-17:00; 2020 Dec 23,2020 Dec 30 off; 2020 Dec 24,2020 Dec 31 off; Sa 10:00-12:00; 2020 Dec 26,2021 Jan 02 off; PH off",
+           "Mo,Tu,Th,Fr 09:30-12:00; 2020 Dec 28 off; 2020 Dec 22,2020 Dec 29 off; We 15:00-17:00; 2020 Dec 23,2020 Dec 30 off; 2020 Dec 24,2020 Dec 31 off; Sa 10:00-12:00; 2020 Dec 26,2021 Jan 02 off; PH off");
 
         // real-world tests from Osmose that we were handling wrongly
         T("Tu-Fr 11:30-14:30 open, 14:30-18:00 open \"pickup only\", 18:00-22:00 open");
@@ -214,11 +225,6 @@ private Q_SLOTS:
         T2("Mo Fr 09:30-12:30, 13:30-18:30 off", "Mo,Fr 09:30-12:30,13:30-18:30 off");
         T2("Mo, We, Fr 06:30-21:30; Tu, Th 09:00-21:30; Sa 09:00-17:00; Su 09:00-14:00", "Mo,We,Fr 06:30-21:30; Tu,Th 09:00-21:30; Sa 09:00-17:00; Su 09:00-14:00");
         T2("Lunes a sábado, 9:30 AM-5:30 PM", "Mo-Sa 09:30-17:30"); // bug 445784
-
-        // lists of specific days
-        T("2021 Dec 26-28,30-31,2022 Jan 02-03 off");
-        T2("2021 Dec 26-28,Dec 30-31,2022 Jan 02-03 off", "2021 Dec 26-28,30-31,2022 Jan 02-03 off");
-        T2("2021 Dec 22, 26-28, 29, 31, 2022 Jan 02-03 off", "2021 Dec 22,26-28,29,31,2022 Jan 02-03 off");
 
         // technically wrong but often found content in OSM for which we have error recovery
         T2("So", "Su");
@@ -396,6 +402,7 @@ private Q_SLOTS:
 #undef T
 #undef T2
 #undef T3
+        // clang-format on
     }
 
     void testSuccess()
