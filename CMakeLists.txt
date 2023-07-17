@@ -98,22 +98,10 @@ if (BUILD_TESTING)
     add_subdirectory(tests)
 endif()
 
-feature_summary(WHAT ALL INCLUDE_QUIET_PACKAGES FATAL_ON_MISSING_REQUIRED_PACKAGES)
+
 
 set(CMAKECONFIG_INSTALL_DIR "${KDE_INSTALL_CMAKEPACKAGEDIR}/KOpeningHours")
-configure_package_config_file(
-    "${CMAKE_CURRENT_SOURCE_DIR}/KOpeningHoursConfig.cmake.in"
-    "${CMAKE_CURRENT_BINARY_DIR}/KOpeningHoursConfig.cmake"
-    INSTALL_DESTINATION "${CMAKECONFIG_INSTALL_DIR}"
-)
 
-install(FILES
-        "${CMAKE_CURRENT_BINARY_DIR}/KOpeningHoursConfig.cmake"
-        "${CMAKE_CURRENT_BINARY_DIR}/KOpeningHoursConfigVersion.cmake"
-    DESTINATION "${CMAKECONFIG_INSTALL_DIR}"
-    COMPONENT Devel
-)
-install(EXPORT KOpeningHoursTargets DESTINATION "${CMAKECONFIG_INSTALL_DIR}" FILE KOpeningHoursTargets.cmake)
 
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/kopeninghours_version.h DESTINATION ${KDE_INSTALL_INCLUDEDIR} COMPONENT Devel)
 if (NOT VALIDATOR_ONLY)
@@ -129,3 +117,19 @@ if (BUILD_QCH)
     )
     set(PACKAGE_INCLUDE_QCHTARGETS "include(\"\${CMAKE_CURRENT_LIST_DIR}/KOpeningHoursQchTargets.cmake\")")
 endif()
+
+configure_package_config_file(
+    "${CMAKE_CURRENT_SOURCE_DIR}/KOpeningHoursConfig.cmake.in"
+    "${CMAKE_CURRENT_BINARY_DIR}/KOpeningHoursConfig.cmake"
+    INSTALL_DESTINATION "${CMAKECONFIG_INSTALL_DIR}"
+)
+
+install(FILES
+        "${CMAKE_CURRENT_BINARY_DIR}/KOpeningHoursConfig.cmake"
+        "${CMAKE_CURRENT_BINARY_DIR}/KOpeningHoursConfigVersion.cmake"
+    DESTINATION "${CMAKECONFIG_INSTALL_DIR}"
+    COMPONENT Devel
+)
+install(EXPORT KOpeningHoursTargets DESTINATION "${CMAKECONFIG_INSTALL_DIR}" FILE KOpeningHoursTargets.cmake)
+
+feature_summary(WHAT ALL INCLUDE_QUIET_PACKAGES FATAL_ON_MISSING_REQUIRED_PACKAGES)

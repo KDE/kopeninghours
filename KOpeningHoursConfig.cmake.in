@@ -7,3 +7,4 @@ include(CMakeFindDependencyMacro)
 find_dependency(Qt@QT_MAJOR_VERSION@Core)
 
 include("${CMAKE_CURRENT_LIST_DIR}/KOpeningHoursTargets.cmake")
+@PACKAGE_INCLUDE_QCHTARGETS@
