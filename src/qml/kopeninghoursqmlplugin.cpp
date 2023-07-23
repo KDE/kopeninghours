@@ -42,8 +42,8 @@ void KOpeningHoursQmlPlugin::registerTypes(const char*)
     qRegisterMetaType<KOpeningHours::OpeningHours>();
     qRegisterMetaType<KOpeningHours::OpeningHours::Modes>();
 
-    qmlRegisterUncreatableType<KOpeningHours::Interval>("org.kde.kopeninghours", 1, 0, "Interval", {});
-    qmlRegisterUncreatableType<KOpeningHours::OpeningHours>("org.kde.kopeninghours", 1, 0, "OpeningHours", {});
+    qmlRegisterUncreatableMetaObject(KOpeningHours::Interval::staticMetaObject, "org.kde.kopeninghours", 1, 0, "Interval", {});
+    qmlRegisterUncreatableMetaObject(KOpeningHours::OpeningHours::staticMetaObject, "org.kde.kopeninghours", 1, 0, "OpeningHours", {});
 
     qmlRegisterType<KOpeningHours::IntervalModel>("org.kde.kopeninghours", 1, 0, "IntervalModel");
 
