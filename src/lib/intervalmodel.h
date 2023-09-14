@@ -33,6 +33,7 @@ class KOPENINGHOURS_EXPORT IntervalModel : public QAbstractListModel
 
     /** Description of the current status as a translated human-readable string.
      *  See Display::currentState.
+     *  @deprecated use Display::currentState directly.
      */
     Q_PROPERTY(QString currentState READ currentState NOTIFY openingHoursChanged)
 
@@ -74,7 +75,7 @@ Q_SIGNALS:
     void endDateChanged();
 
 private:
-    QString currentState() const;
+    [[deprecated("use Display::currentState directly")]] QString currentState() const;
     std::unique_ptr<IntervalModelPrivate> d;
 };
 

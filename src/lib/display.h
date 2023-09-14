@@ -9,6 +9,8 @@
 
 #include "kopeninghours_export.h"
 
+#include <qobjectdefs.h>
+
 class QString;
 
 namespace KOpeningHours {
@@ -16,11 +18,13 @@ namespace KOpeningHours {
 class OpeningHours;
 
 /** Utilities for displaying human-readable/localized opening hours information. */
-namespace Display
+class KOPENINGHOURS_EXPORT Display
 {
+    Q_GADGET
+public:
     /** Localized description of the current opening state, and upcoming transitions. */
-    KOPENINGHOURS_EXPORT QString currentState(const OpeningHours &oh);
-}
+    Q_INVOKABLE static QString currentState(const KOpeningHours::OpeningHours &oh);
+};
 
 }
 

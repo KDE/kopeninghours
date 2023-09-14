@@ -98,7 +98,7 @@ Kirigami.ApplicationWindow {
                 tmp.setLocation(latitude.text, longitude.text);
                 tmp.region = region.currentText;
                 page.oh = tmp;
-                currentState.text = Qt.binding(function() { return intervalModel.currentState; });
+                currentState.text = Qt.binding(function() { return Display.currentState(page.oh); });
             }
 
             ColumnLayout {

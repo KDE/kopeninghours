@@ -4,7 +4,7 @@
     SPDX-License-Identifier: LGPL-2.0-or-later
 */
 
-
+#include <KOpeningHours/Display>
 #include <KOpeningHours/Interval>
 #include <KOpeningHours/IntervalModel>
 #include <KOpeningHours/OpeningHours>
@@ -51,6 +51,9 @@ void KOpeningHoursQmlPlugin::registerTypes(const char*)
     if (QCoreApplication::applicationName() != QLatin1String("qmlplugindump")) {
         qmlRegisterSingletonType("org.kde.kopeninghours", 1, 0, "OpeningHoursParser", [](QQmlEngine*, QJSEngine *engine) -> QJSValue {
             return engine->toScriptValue(KOpeningHours::OpeningHoursFactory());
+        });
+        qmlRegisterSingletonType("org.kde.kopeninghours", 1, 0, "Display", [](QQmlEngine*, QJSEngine *engine) -> QJSValue {
+            return engine->toScriptValue(KOpeningHours::Display());
         });
     }
 }
