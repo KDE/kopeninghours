@@ -1,15 +1,13 @@
 # SPDX-FileCopyrightText: 2020 Volker Krause <vkrause@kde.org>
 # SPDX-License-Identifier: BSD-3-Clause
 
-add_library(kopeninghoursqmlplugin kopeninghoursqmlplugin.cpp)
-target_link_libraries(kopeninghoursqmlplugin
+ecm_add_qml_module(kopeninghoursqmlplugin URI org.kde.kopeninghours)
+
+target_sources(kopeninghoursqmlplugin PRIVATE kopeninghoursqmlplugin.cpp)
+
+target_link_libraries(kopeninghoursqmlplugin PRIVATE
     Qt::Qml
     KOpeningHours
 )
 
-# make examples work without installation
-set_property(TARGET kopeninghoursqmlplugin PROPERTY LIBRARY_OUTPUT_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/org/kde/kopeninghours)
-file(COPY qmldir DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/org/kde/kopeninghours)
-
-install(TARGETS kopeninghoursqmlplugin DESTINATION ${KDE_INSTALL_QMLDIR}/org/kde/kopeninghours)
-install(FILES qmldir ${qml_SRC} DESTINATION ${KDE_INSTALL_QMLDIR}/org/kde/kopeninghours)
+ecm_finalize_qml_module(kopeninghoursqmlplugin DESTINATION ${KDE_INSTALL_QMLDIR})

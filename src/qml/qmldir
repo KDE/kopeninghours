@@ -1,3 +1,0 @@
-module org.kde.kopeninghours
-plugin kopeninghoursqmlplugin
-classname KOpeningHoursQmlPlugin
