@@ -702,3 +702,5 @@ OpeningHours OpeningHours::fromJsonLd(const QJsonObject &obj)
     result.d->validate();
     return result;
 }
+
+#include "moc_openinghours.cpp"

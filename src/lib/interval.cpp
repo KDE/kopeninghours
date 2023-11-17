@@ -163,3 +163,5 @@ QDebug operator<<(QDebug debug, const Interval &interval)
     debug.nospace().noquote() << '[' << interval.begin().toString(QStringLiteral("yyyy-MM-ddThh:mm")) << " - " << interval.end().toString(QStringLiteral("yyyy-MM-ddThh:mm")) << ' ' << interval.state() << " (\"" << interval.comment() << "\")]";
     return debug;
 }
+
+#include "moc_interval.cpp"

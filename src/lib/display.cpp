@@ -110,3 +110,5 @@ QString Display::currentState(const OpeningHours &oh)
 
     return {};
 }
+
+#include "moc_display.cpp"
