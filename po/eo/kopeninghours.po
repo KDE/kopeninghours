@@ -1,0 +1,143 @@
+# translation of kopeninghours.pot to esperanto
+# Copyright (C) 2020 Free Software Foundation, Inc.
+# This file is distributed under the same license as the kopeninghours package.
+# Oliver Kellogg <okellogg@users.sourceforge.net, 2023.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: kopeninghours\n"
+"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
+"POT-Creation-Date: 2020-12-23 02:25+0100\n"
+"PO-Revision-Date: 2023-08-03 21:39+0100\n"
+"Last-Translator: Oliver Kellogg <okellogg@users.sourceforge.net>\n"
+"Language-Team: Esperanto <kde-i18n-eo@kde.org>\n"
+"Language: eo\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: translate-po (https://github.com/zcribe/translate-po)\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+
+#: lib/display.cpp:28
+#, kde-format
+msgid "Open"
+msgstr "Malfermu"
+
+#: lib/display.cpp:28
+#, kde-format
+msgid "Open (%1)"
+msgstr "Malfermu (%1)"
+
+#: lib/display.cpp:30
+#, kde-format
+msgid "Closed"
+msgstr "Fermita"
+
+#: lib/display.cpp:30
+#, kde-format
+msgid "Closed (%1)"
+msgstr "Fermita (%1)"
+
+#: lib/display.cpp:50
+#, kde-format
+msgid "Open for one more minute"
+msgid_plural "Open for %1 more minutes"
+msgstr[0] "Malferma dum unu plia minuto"
+msgstr[1] "Malferma dum %1 pliaj minutoj"
+
+#: lib/display.cpp:51
+#, kde-format
+msgid "Open for one more minute (%2)"
+msgid_plural "Open for %1 more minutes (%2)"
+msgstr[0] "Malferma dum unu plia minuto (%2)"
+msgstr[1] "Malferma dum %1 pliaj minutoj (%2)"
+
+#: lib/display.cpp:54
+#, kde-format
+msgid "Currently closed, opens in one minute"
+msgid_plural "Currently closed, opens in %1 minutes"
+msgstr[0] "Aktuale fermita, malfermiĝas post unu minuto"
+msgstr[1] "Aktuale fermita, malfermiĝas post %1 minutoj"
+
+#: lib/display.cpp:55
+#, kde-format
+msgid "Currently closed (%2), opens in one minute"
+msgid_plural "Currently closed (%2), opens in %1 minutes"
+msgstr[0] "Aktuale fermita (%2), malfermiĝas post unu minuto"
+msgstr[1] "Aktuale fermita (%2), malfermiĝas post %1 minutoj"
+
+#: lib/display.cpp:68
+#, kde-format
+msgid "Open for one more hour"
+msgid_plural "Open for %1 more hours"
+msgstr[0] "Malfermita dum unu plia horo"
+msgstr[1] "Malfermita dum %1 pliaj horoj"
+
+#: lib/display.cpp:69
+#, kde-format
+msgid "Open for one more hour (%2)"
+msgid_plural "Open for %1 more hours (%2)"
+msgstr[0] "Malfermita dum unu plia horo (%2)"
+msgstr[1] "Malfermita dum %1 pliaj horoj (%2)"
+
+#: lib/display.cpp:72
+#, kde-format
+msgid "Currently closed, opens in one hour"
+msgid_plural "Currently closed, opens in %1 hours"
+msgstr[0] "Aktuale fermita, malfermiĝos post unu horo"
+msgstr[1] "Aktuale fermita, malfermiĝos post %1 horoj"
+
+#: lib/display.cpp:73
+#, kde-format
+msgid "Currently closed (%2), opens in one hour"
+msgid_plural "Currently closed (%2), opens in %1 hours"
+msgstr[0] "Aktuale fermita (%2), malfermiĝos post unu horo"
+msgstr[1] "Aktuale fermita (%2), malfermiĝos post %1 horoj"
+
+#: lib/display.cpp:86
+#, kde-format
+msgid "Open for one more day"
+msgid_plural "Open for %1 more days"
+msgstr[0] "Malfermita dum unu plia tago"
+msgstr[1] "Malfermita dum %1 pliaj tagoj"
+
+#: lib/display.cpp:87
+#, kde-format
+msgid "Open for one more day (%2)"
+msgid_plural "Open for %1 more days (%2)"
+msgstr[0] "Malfermita dum unu plia tago (%2)"
+msgstr[1] "Malfermita dum %1 pliaj tagoj (%2)"
+
+#: lib/display.cpp:90
+#, kde-format
+msgid "Currently closed, opens in one day"
+msgid_plural "Currently closed, opens in %1 days"
+msgstr[0] "Aktuale fermita, malfermiĝos post unu tago"
+msgstr[1] "Aktuale fermita, malfermiĝos post %1 tagoj"
+
+#: lib/display.cpp:91
+#, kde-format
+msgid "Currently closed (%2), opens in one day"
+msgid_plural "Currently closed (%2), opens in %1 days"
+msgstr[0] "Aktuale fermita (%2), malfermiĝos post unu tago"
+msgstr[1] "Aktuale fermita (%2), malfermiĝos post %1 tagoj"
+
+#: lib/display.cpp:102
+#, kde-format
+msgid "Currently open"
+msgstr "Nuntempe malfermita"
+
+#: lib/display.cpp:102
+#, kde-format
+msgid "Currently open (%1)"
+msgstr "Nuntempe malfermita (%1)"
+
+#: lib/display.cpp:104
+#, kde-format
+msgid "Currently closed"
+msgstr "Nuntempe fermita"
+
+#: lib/display.cpp:104
+#, kde-format
+msgid "Currently closed (%1)"
+msgstr "Nuntempe fermita (%1)"
