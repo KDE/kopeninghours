@@ -13,7 +13,6 @@ import org.kde.kopeninghours 1.0
 
 Kirigami.ApplicationWindow {
     title: "Opening Hours Demo"
-    reachableModeEnabled: false
 
     width: 640
     height: 480
