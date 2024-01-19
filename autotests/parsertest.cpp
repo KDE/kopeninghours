@@ -112,6 +112,10 @@ private Q_SLOTS:
         T("Mo[1,3,-1]"); // order as desired, -1 means last
         T("Mo[1,3,2]"); // currently not normalized
 
+        // https://bugs.kde.org/show_bug.cgi?id=452236
+        T("2022 Mar 31-2022 Apr 16");
+        T2("2022 Mar 31-Apr 16", "2022 Mar 31-2022 Apr 16");
+
         // from https://wiki.openstreetmap.org/wiki/Key:opening_hours#Simple_examples
         T("Mo-Fr 08:00-17:30");
         T("Mo-Fr 08:00-12:00,13:00-17:30");

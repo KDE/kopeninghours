@@ -348,7 +348,7 @@ QByteArray Date::toExpression(const Date &refDate, const MonthdayRange &prev) co
     };
     switch (variableDate) {
     case FixedDate: {
-        const bool needYear = year && year != refDate.year;
+        const bool needYear = year && (year != refDate.year || day && month && month != refDate.month);
         if (needYear) {
             expr += QByteArray::number(year);
         }
