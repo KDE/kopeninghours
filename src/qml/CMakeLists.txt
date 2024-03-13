@@ -1,6 +1,7 @@
 # SPDX-FileCopyrightText: 2020 Volker Krause <vkrause@kde.org>
 # SPDX-License-Identifier: BSD-3-Clause
 
+include(ECMQmlModule)
 ecm_add_qml_module(kopeninghoursqmlplugin URI org.kde.kopeninghours)
 
 target_sources(kopeninghoursqmlplugin PRIVATE kopeninghoursqmlplugin.cpp)

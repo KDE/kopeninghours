@@ -30,7 +30,6 @@ include(KDEInstallDirs)
 include(KDECMakeSettings)
 include(GenerateExportHeader)
 include(ECMAddQch)
-include(ECMQmlModule)
 
 
 option(BUILD_QCH "Build API documentation in QCH format (for e.g. Qt Assistant, Qt Creator & KDevelop)" OFF)
