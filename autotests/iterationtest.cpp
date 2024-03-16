@@ -7,6 +7,8 @@
 #include <KOpeningHours/Interval>
 #include <KOpeningHours/OpeningHours>
 
+#include <kholidays_version.h>
+
 #include <QDirIterator>
 #include <QFile>
 #include <QLocale>
@@ -72,6 +74,13 @@ private Q_SLOTS:
         QDirIterator it(QStringLiteral(SOURCE_DIR "/data"), {QStringLiteral("*.intervals")}, QDir::Files | QDir::Readable | QDir::NoSymLinks);
         while (it.hasNext()) {
             it.next();
+#if KHOLIDAYS_VERSION < QT_VERSION_CHECK(6, 1, 0)
+            const auto n = it.fileInfo().baseName();
+            if (n == QLatin1String("ph") || n == QLatin1String("and_condition1") || n == QLatin1String("and_condition2")) {
+                qWarning() << "skipping test" << n;
+                continue;
+            }
+#endif
             QTest::newRow(it.fileInfo().fileName().toLatin1().constData()) << it.filePath();
         }
     }
