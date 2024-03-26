@@ -1,0 +1,167 @@
+# Copyright (C) 2024 This file is copyright:
+# This file is distributed under the same license as the kopeninghours package.
+#
+# SPDX-FileCopyrightText: 2024 Yaron Shahrabani <sh.yaron@gmail.com>
+msgid ""
+msgstr ""
+"Project-Id-Version: kopeninghours\n"
+"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
+"POT-Creation-Date: 2023-11-05 12:28+0000\n"
+"PO-Revision-Date: 2024-03-25 09:40+0200\n"
+"Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
+"Language-Team: צוות התרגום של KDE ישראל\n"
+"Language: he\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=(n==1 ? 0 : n==2 ? 1 : n>10 && n%10==0 ? "
+"2 : 3);\n"
+"X-Generator: Lokalize 23.08.5\n"
+
+#: lib/display.cpp:28
+#, kde-format
+msgid "Open"
+msgstr "פתוח"
+
+#: lib/display.cpp:28
+#, kde-format
+msgid "Open (%1)"
+msgstr "פתוח (%1)"
+
+#: lib/display.cpp:30
+#, kde-format
+msgid "Closed"
+msgstr "סגור"
+
+#: lib/display.cpp:30
+#, kde-format
+msgid "Closed (%1)"
+msgstr "סגור (%1)"
+
+#: lib/display.cpp:50
+#, kde-format
+msgid "Open for one more minute"
+msgid_plural "Open for %1 more minutes"
+msgstr[0] "פתוח לעוד דקה"
+msgstr[1] "פתוח לעוד שתי דקות"
+msgstr[2] "פתוח לעוד %1 דקות"
+msgstr[3] "פתוח לעוד %1 דקות"
+
+#: lib/display.cpp:51
+#, kde-format
+msgid "Open for one more minute (%2)"
+msgid_plural "Open for %1 more minutes (%2)"
+msgstr[0] "פתוח לעוד דקה (%2)"
+msgstr[1] "פתוח לעוד שתי דקות (%2)"
+msgstr[2] "פתוח לעוד %1 דקות (%2)"
+msgstr[3] "פתוח לעוד %1 דקות (%2)"
+
+#: lib/display.cpp:54
+#, kde-format
+msgid "Currently closed, opens in one minute"
+msgid_plural "Currently closed, opens in %1 minutes"
+msgstr[0] "סגור כרגע, נפתח בעוד דקה"
+msgstr[1] "סגור כרגע, נפתח בעוד שתי דקות"
+msgstr[2] "סגור כרגע, נפתח בעוד %1 דקות"
+msgstr[3] "סגור כרגע, נפתח בעוד %1 דקות"
+
+#: lib/display.cpp:55
+#, kde-format
+msgid "Currently closed (%2), opens in one minute"
+msgid_plural "Currently closed (%2), opens in %1 minutes"
+msgstr[0] "סגור כרגע (%2), נפתח בעוד דקה"
+msgstr[1] "סגור כרגע (%2), נפתח בעוד שתי דקות"
+msgstr[2] "סגור כרגע (%2), נפתח בעוד %1 דקות"
+msgstr[3] "סגור כרגע (%2), נפתח בעוד %1 דקות"
+
+#: lib/display.cpp:68
+#, kde-format
+msgid "Open for one more hour"
+msgid_plural "Open for %1 more hours"
+msgstr[0] "פתוח לעוד שעה"
+msgstr[1] "פתוח לעוד שעתיים"
+msgstr[2] "פתוח לעוד %1 שעות"
+msgstr[3] "פתוח לעוד %1 שעות"
+
+#: lib/display.cpp:69
+#, kde-format
+msgid "Open for one more hour (%2)"
+msgid_plural "Open for %1 more hours (%2)"
+msgstr[0] "פתוח לעוד שעה (%2)"
+msgstr[1] "פתוח לעוד שעתיים (%2)"
+msgstr[2] "פתוח לעוד %1 שעות (%2)"
+msgstr[3] "פתוח לעוד %1 שעות (%2)"
+
+#: lib/display.cpp:72
+#, kde-format
+msgid "Currently closed, opens in one hour"
+msgid_plural "Currently closed, opens in %1 hours"
+msgstr[0] "סגור כרגע, נפתח בעוד שעה"
+msgstr[1] "סגור כרגע, נפתח בעוד שעתיים"
+msgstr[2] "סגור כרגע, נפתח בעוד %1 שעות"
+msgstr[3] "סגור כרגע, נפתח בעוד %1 שעות"
+
+#: lib/display.cpp:73
+#, kde-format
+msgid "Currently closed (%2), opens in one hour"
+msgid_plural "Currently closed (%2), opens in %1 hours"
+msgstr[0] "סגור כרגע (%2), נפתח בעוד שעה"
+msgstr[1] "סגור כרגע (%2), נפתח בעוד שעתיים"
+msgstr[2] "סגור כרגע (%2), נפתח בעוד %1 שעות"
+msgstr[3] "סגור כרגע (%2), נפתח בעוד %1 שעות"
+
+#: lib/display.cpp:86
+#, kde-format
+msgid "Open for one more day"
+msgid_plural "Open for %1 more days"
+msgstr[0] "פתוח לעוד יום"
+msgstr[1] "פתוח לעוד יומיים"
+msgstr[2] "פתוח לעוד %1 ימים"
+msgstr[3] "פתוח לעוד %1 ימים"
+
+#: lib/display.cpp:87
+#, kde-format
+msgid "Open for one more day (%2)"
+msgid_plural "Open for %1 more days (%2)"
+msgstr[0] "פתוח לעוד יום (%2)"
+msgstr[1] "פתוח לעוד יומיים (%2)"
+msgstr[2] "פתוח לעוד %1 ימים (%2)"
+msgstr[3] "פתוח לעוד %1 ימים (%2)"
+
+#: lib/display.cpp:90
+#, kde-format
+msgid "Currently closed, opens in one day"
+msgid_plural "Currently closed, opens in %1 days"
+msgstr[0] "סגור כרגע, נפתח מחר"
+msgstr[1] "סגור כרגע, נפתח בעוד יומיים"
+msgstr[2] "סגור כרגע, נפתח בעוד %1 ימים"
+msgstr[3] "סגור כרגע, נפתח בעוד %1 ימים"
+
+#: lib/display.cpp:91
+#, kde-format
+msgid "Currently closed (%2), opens in one day"
+msgid_plural "Currently closed (%2), opens in %1 days"
+msgstr[0] "סגור כרגע (%2), נפתח מחר"
+msgstr[1] "סגור כרגע (%2), נפתח בעוד יומיים"
+msgstr[2] "סגור כרגע (%2), נפתח בעוד %1 ימים"
+msgstr[3] "סגור כרגע (%2), נפתח בעוד %1 ימים"
+
+#: lib/display.cpp:102
+#, kde-format
+msgid "Currently open"
+msgstr "פתוח כרגע"
+
+#: lib/display.cpp:102
+#, kde-format
+msgid "Currently open (%1)"
+msgstr "פתוח כרגע (%1)"
+
+#: lib/display.cpp:104
+#, kde-format
+msgid "Currently closed"
+msgstr "סגור כרגע"
+
+#: lib/display.cpp:104
+#, kde-format
+msgid "Currently closed (%1)"
+msgstr "סגור כרגע (%1)"
