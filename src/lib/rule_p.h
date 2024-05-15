@@ -15,7 +15,7 @@
 
 namespace KOpeningHours {
 
-enum class State { // must be in same order as Interval::State
+enum class State { // must be in the same order as Interval::State
     Invalid,
     Open,
     Closed,

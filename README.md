@@ -14,7 +14,7 @@ See:
 
 ## Supported Features
 
-The parser and validator is fairly complete. However the evaluation feature has the following limitations.
+The parser and validator are fairly complete. However, the evaluation feature has the following limitations.
 
 So far only the time interval mode is supported, not the point in time mode.
 
@@ -32,7 +32,7 @@ Still missing features:
 * comment preservation on intersecting close rules
 * wide range selector placeholder comments
 * school holiday selectors
-* open ended month ranges
+* open-ended month ranges
 
 ## Other Formats
 

@@ -287,7 +287,7 @@ SelectorResult MonthdayRange::nextInterval(const Interval &interval, const QDate
     auto endDt = resolveDateEnd(end, dt.date().year());
 
     // note that for any of the following we cannot just do addYears(1), as that will break
-    // for leap years. instead we have to recompute the date again for each year
+    // for leap years. instead, we have to recompute the date again for each year
     if (endDt < beginDt || (endDt <= beginDt && begin != end)) {
         // month range wraps over the year boundary
         endDt = resolveDateEnd(end, dt.date().year() + 1);

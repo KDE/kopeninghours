@@ -59,7 +59,7 @@ void OpeningHoursPrivate::autocorrect()
         const auto curRuleSingleSelector = rule->selectorCount() == 1;
 
         if (rule->m_ruleType == Rule::AdditionalRule) {
-            // the previous rule has no time selector, the current rule only has a weekday selector
+            // the previous rule has no time selector, the current rule only has a weekday selector.
             // so we fold the two rules together
             if (!prevRule->m_timeSelector && prevRule->m_weekdaySelector && rule->m_weekdaySelector && !rule->hasWideRangeSelector()) {
                 auto tmp = std::move(rule->m_weekdaySelector);
@@ -265,9 +265,9 @@ void OpeningHoursPrivate::addRule(Rule *parsedRule)
             }
         }
 
-        // error recovery in the middle of a wide-range selector
+        // error recovery in the middle of a wide-range selector.
         // the likely meaning is that the wide-range selectors should be merged, which we can only do if the first
-        // part is "wider" than the right hand side
+        // part is "wider" than the right-hand side.
         if (m_rules.back()->hasWideRangeSelector() && rule->hasWideRangeSelector()
             && !m_rules.back()->hasSmallRangeSelector() && rule->hasSmallRangeSelector()
             && isWiderThan(rule.get(), m_rules.back().get()))
@@ -275,10 +275,10 @@ void OpeningHoursPrivate::addRule(Rule *parsedRule)
             m_error = OpeningHours::SyntaxError;
         }
 
-        // error recovery in case of a wide range selector followed by two wrongly separated small range selectors
+        // error recovery in case of a wide range selector followed by two wrongly separated small range selectors.
         // the likely meaning here is that the wide range selector should apply to both small range selectors,
-        // but that cannot be modeled without duplicating the wide range selector
-        // therefore we consider such a case invalid, to be on the safe side
+        // but that cannot be modeled without duplicating the wide range selector.
+        // therefore, we consider such a case invalid, to be on the safe side.
         if (m_rules.back()->hasWideRangeSelector() && !rule->hasWideRangeSelector()) {
             m_error = OpeningHours::SyntaxError;
         }
@@ -353,8 +353,8 @@ void OpeningHours::setExpression(const char *openingHours, std::size_t size, Mod
     d->m_ruleSeparatorRecovery = false;
 
     // trim trailing spaces
-    // the parser would handle most of this by itself, but fails if a trailing space would produce a trailing rule separator
-    // so it's easier to just clean this here
+    // the parser would handle most of this by itself, but fails if a trailing space would produce a trailing rule separator.
+    // so it's easier to just clean this here.
     while (size > 0 && std::isspace(static_cast<unsigned char>(openingHours[size - 1]))) {
         --size;
     }
@@ -543,7 +543,7 @@ Interval OpeningHours::interval(const QDateTime &dt) const
             if (!i.isValid()) {
                 i = res.interval;
             } else {
-                // fallback rule intervals needs to be capped to the next occurrence of one of its preceding rules
+                // fallback rule interval needs to be capped to the next occurrence of one of its preceding rules
                 if (rule->m_ruleType == Rule::FallbackRule) {
                     res.interval.setEnd(res.interval.hasOpenEnd() ? i.begin() : std::min(res.interval.end(), i.begin()));
                 }

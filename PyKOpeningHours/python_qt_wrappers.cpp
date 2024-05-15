@@ -39,7 +39,7 @@ struct QByteArray_from_python_str
         handle<> rawBytesHandle{PyUnicode_AsUTF8String(obj_ptr)};
         Q_ASSERT(rawBytesHandle);
 
-        // Grab pointer to memory into which to construct the new QByteArray
+        // Grab a pointer to memory into which to construct the new QByteArray
         void* storage = ((converter::rvalue_from_python_storage<QByteArray>*) data)->storage.bytes;
 
         // in-place construct the new QByteArray using the character data extracted from the python object
