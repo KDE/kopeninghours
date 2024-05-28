@@ -12,3 +12,4 @@ heaptrack.*
 *.qmlc
 *.fail
 /build*
+setup.py

@@ -124,6 +124,8 @@ configure_package_config_file(
     INSTALL_DESTINATION "${CMAKECONFIG_INSTALL_DIR}"
 )
 
+configure_file(setup.py.in ${CMAKE_CURRENT_SOURCE_DIR}/setup.py)
+
 install(FILES
         "${CMAKE_CURRENT_BINARY_DIR}/KOpeningHoursConfig.cmake"
         "${CMAKE_CURRENT_BINARY_DIR}/KOpeningHoursConfigVersion.cmake"
