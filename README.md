@@ -1,6 +1,6 @@
 # KOpeningHours
 
-A library for parsing and evaluating OSM opening hours expressions.
+A python library for parsing and evaluating OSM opening hours expressions.
 
 ## Introduction
 
