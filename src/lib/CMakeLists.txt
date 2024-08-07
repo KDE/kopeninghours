@@ -46,6 +46,10 @@ add_library(KOpeningHours
 
 generate_export_header(KOpeningHours BASE_NAME KOpeningHours)
 
+if (TARGET Qt6::Qml)
+    qt_extract_metatypes(KOpeningHours)
+endif()
+
 set_target_properties(KOpeningHours PROPERTIES
     VERSION ${KOPENINGHOURS_VERSION_STRING}
     SOVERSION ${KOPENINGHOURS_SOVERSION}

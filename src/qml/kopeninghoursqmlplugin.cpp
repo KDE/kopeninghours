@@ -6,7 +6,6 @@
 
 #include <KOpeningHours/Display>
 #include <KOpeningHours/Interval>
-#include <KOpeningHours/IntervalModel>
 #include <KOpeningHours/OpeningHours>
 
 #include <QCoreApplication>
@@ -44,8 +43,6 @@ void KOpeningHoursQmlPlugin::registerTypes(const char*)
 
     qmlRegisterUncreatableMetaObject(KOpeningHours::Interval::staticMetaObject, "org.kde.kopeninghours", 1, 0, "Interval", {});
     qmlRegisterUncreatableMetaObject(KOpeningHours::OpeningHours::staticMetaObject, "org.kde.kopeninghours", 1, 0, "OpeningHours", {});
-
-    qmlRegisterType<KOpeningHours::IntervalModel>("org.kde.kopeninghours", 1, 0, "IntervalModel");
 
     // HACK qmlplugindump chokes on gadget singletons, to the point of breaking ecm_find_qmlmodule()
     if (QCoreApplication::applicationName() != QLatin1String("qmlplugindump")) {
