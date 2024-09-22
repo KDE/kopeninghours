@@ -21,8 +21,8 @@ kde_target_enable_exceptions(PyKOpeningHours PRIVATE)
 target_compile_definitions(PyKOpeningHours PRIVATE KOPENINGHOURS_VALIDATOR_ONLY)
 
 # Set up the libraries and header search paths for this target
-target_link_libraries(PyKOpeningHours PUBLIC ${Boost_LIBRARIES} ${PYTHON_LIBRARIES} KOpeningHours)
-target_include_directories(PyKOpeningHours PRIVATE ${Boost_INCLUDE_DIR} ${PYTHON_INCLUDE_DIRS})
+target_link_libraries(PyKOpeningHours PUBLIC ${Boost_LIBRARIES} Python::Python KOpeningHours)
+target_include_directories(PyKOpeningHours PRIVATE ${Boost_INCLUDE_DIR})
 
 set(_install_dir lib/python${PYTHONLIBS_VERSION_MAJOR}.${PYTHONLIBS_VERSION_MINOR}/site-packages)
 
