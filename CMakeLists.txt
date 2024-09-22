@@ -74,15 +74,10 @@ set_package_properties(FLEX PROPERTIES PURPOSE "Lexer generator for parsing open
 find_package(BISON REQUIRED)
 set_package_properties(BISON PROPERTIES PURPOSE "Grammar generator for parsing opening hours expressions")
 
-find_package(PythonLibs 3.6 MODULE)
-if (PythonLibs_FOUND)
-    # Extract major/minor python version
-    string(REPLACE "." ";" VERSION_LIST ${PYTHONLIBS_VERSION_STRING})
-    list(GET VERSION_LIST 0 PYTHONLIBS_VERSION_MAJOR)
-    list(GET VERSION_LIST 1 PYTHONLIBS_VERSION_MINOR)
-
+find_package(Python COMPONENTS Development)
+if (Python_FOUND)
     # boost-python requires exact version number
-    find_package(Boost COMPONENTS python${PYTHONLIBS_VERSION_MAJOR}${PYTHONLIBS_VERSION_MINOR} MODULE)
+    find_package(Boost COMPONENTS python${Python_VERSION_MAJOR}${Python_VERSION_MINOR} MODULE)
 endif()
 
 add_definitions(-DQT_DISABLE_DEPRECATED_BEFORE=0x050d00)
