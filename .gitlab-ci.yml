@@ -7,7 +7,6 @@ include:
       - /gitlab-templates/reuse-lint.yml
       - /gitlab-templates/linux.yml
       - /gitlab-templates/freebsd.yml
-      - /gitlab-templates/android.yml
       - /gitlab-templates/windows.yml
       - /gitlab-templates/linux-qt6.yml
       - /gitlab-templates/android-qt6.yml
