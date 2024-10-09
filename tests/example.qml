@@ -23,21 +23,26 @@ Kirigami.ApplicationWindow {
         id: openingHoursDelegate
         Item {
             id: delegateRoot
-            property var dayData: model
+
+            required property bool isToday
+            required property string shortDayName
+            required property var intervals
+            required property date dayBegin
+
             implicitHeight: row.implicitHeight
             Row {
                 id: row
                 QQC2.Label {
-                    text: dayData.shortDayName
+                    text: delegateRoot.shortDayName
                     width: delegateRoot.ListView.view.labelWidth + Kirigami.Units.smallSpacing
                     Component.onCompleted: delegateRoot.ListView.view.labelWidth = Math.max(delegateRoot.ListView.view.labelWidth, implicitWidth)
-                    font.italic: dayData.isToday
+                    font.italic: delegateRoot.isToday
                 }
                 Repeater {
-                    model: dayData.intervals
+                    model: delegateRoot.intervals
                     Rectangle {
                         id: intervalBox
-                        property var interval: modelData
+                        property interval interval: modelData
                         color: {
                             switch (interval.state) {
                                 case Interval.Open: return Kirigami.Theme.positiveBackgroundColor;
@@ -70,7 +75,7 @@ Kirigami.ApplicationWindow {
             }
             Rectangle {
                 id: nowMarker
-                property double position: (Date.now() - dayData.dayBegin) / (24 * 60 * 60 * 1000)
+                property double position: (Date.now() - delegateRoot.dayBegin) / (24 * 60 * 60 * 1000)
                 visible: position >= 0.0 && position < 1.0
                 color: Kirigami.Theme.textColor
                 width: 2

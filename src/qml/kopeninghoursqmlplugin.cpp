@@ -37,13 +37,6 @@ OpeningHours OpeningHoursFactory::parse(const QString &expression, int modes) co
 
 void KOpeningHoursQmlPlugin::registerTypes(const char*)
 {
-    qRegisterMetaType<KOpeningHours::Interval>();
-    qRegisterMetaType<KOpeningHours::OpeningHours>();
-    qRegisterMetaType<KOpeningHours::OpeningHours::Modes>();
-
-    qmlRegisterUncreatableMetaObject(KOpeningHours::Interval::staticMetaObject, "org.kde.kopeninghours", 1, 0, "Interval", {});
-    qmlRegisterUncreatableMetaObject(KOpeningHours::OpeningHours::staticMetaObject, "org.kde.kopeninghours", 1, 0, "OpeningHours", {});
-
     // HACK qmlplugindump chokes on gadget singletons, to the point of breaking ecm_find_qmlmodule()
     if (QCoreApplication::applicationName() != QLatin1String("qmlplugindump")) {
         qmlRegisterSingletonType("org.kde.kopeninghours", 1, 0, "OpeningHoursParser", [](QQmlEngine*, QJSEngine *engine) -> QJSValue {
