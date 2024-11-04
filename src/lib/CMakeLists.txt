@@ -6,12 +6,13 @@ flex_target(openinghoursscanner
     openinghourslexer.l
     ${CMAKE_CURRENT_BINARY_DIR}/openinghourslexer.cpp
     DEFINES_FILE ${CMAKE_CURRENT_BINARY_DIR}/openinghoursscanner_p.h
-    COMPILE_FLAGS "--nounistd"
+    COMPILE_FLAGS "--nounistd --noline"
 )
 bison_target(openinghoursparser
     openinghoursparser.y
     ${CMAKE_CURRENT_BINARY_DIR}/openinghoursparser.cpp
     DEFINES_FILE ${CMAKE_CURRENT_BINARY_DIR}/openinghoursparser_p.h
+    COMPILE_FLAGS "--no-lines"
 )
 add_flex_bison_dependency(openinghoursscanner openinghoursparser)
 set_source_files_properties(${BISON_openinghoursparser_OUTPUTS} ${FLEX_openinghoursscanner_OUTPUTS} PROPERTIES SKIP_AUTOMOC ON)
