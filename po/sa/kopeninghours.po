@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: kopeninghours\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-11-05 12:28+0000\n"
-"PO-Revision-Date: 2024-12-13 20:34+0530\n"
+"PO-Revision-Date: 2024-12-20 12:26+0530\n"
 "Last-Translator: kali <skkalwar999@gmail.com>\n"
 "Language-Team: Sanskrit <kde-i18n-doc@kde.org>\n"
 "Language: sa\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n>2);\n"
-"X-Generator: Poedit 3.5\n"
+"X-Generator: Lokalize 24.08.2\n"
 
 #: lib/display.cpp:28
 #, kde-format
@@ -37,7 +37,7 @@ msgstr "निमीलितम्"
 #: lib/display.cpp:30
 #, kde-format
 msgid "Closed (%1)"
-msgstr "बन्द (%1) २."
+msgstr "बन्द (%1)"
 
 #: lib/display.cpp:50
 #, kde-format
