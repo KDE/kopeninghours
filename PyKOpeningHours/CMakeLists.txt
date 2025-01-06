@@ -24,7 +24,7 @@ target_compile_definitions(PyKOpeningHours PRIVATE KOPENINGHOURS_VALIDATOR_ONLY)
 target_link_libraries(PyKOpeningHours PUBLIC ${Boost_LIBRARIES} Python::Python KOpeningHours)
 target_include_directories(PyKOpeningHours PRIVATE ${Boost_INCLUDE_DIR})
 
-set(_install_dir lib/python${PYTHONLIBS_VERSION_MAJOR}.${PYTHONLIBS_VERSION_MINOR}/site-packages)
+set(_install_dir lib/python${Python_VERSION_MAJOR}.${Python_VERSION_MINOR}/site-packages)
 
 install(TARGETS PyKOpeningHours DESTINATION ${_install_dir}/PyKOpeningHours)
 install(FILES PyKOpeningHours.pyi __init__.py DESTINATION ${_install_dir}/PyKOpeningHours)
