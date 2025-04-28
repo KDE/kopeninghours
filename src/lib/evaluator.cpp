@@ -17,9 +17,9 @@
 
 using namespace KOpeningHours;
 
-static int daysInMonth(int month)
+static int daysInMonth(const QDate &date)
 {
-    return QCalendar(QCalendar::System::Gregorian).daysInMonth(month);
+    return date.daysInMonth(QCalendar(QCalendar::System::Gregorian));
 }
 
 static QDateTime resolveTime(Time t, QDate date, OpeningHoursPrivate *context)
@@ -97,7 +97,7 @@ static QDate nthWeekdayInMonth(QDate month, int weekDay, int n)
         const auto day = firstOfMonth.addDays(7 * (n - 1) + delta);
         return day.month() == month.month() ? day : QDate();
     } else {
-        const auto lastOfMonth = QDate{month.year(), month.month(), daysInMonth(month.month())};
+        const auto lastOfMonth = QDate{month.year(), month.month(), daysInMonth(month)};
         const auto delta = (7 + lastOfMonth.dayOfWeek() - weekDay) % 7;
         const auto day = lastOfMonth.addDays(7 * (n + 1) - delta);
         return day.month() == month.month() ? day : QDate();
@@ -159,7 +159,7 @@ SelectorResult WeekdayRange::nextIntervalLocal(const Interval &interval, const Q
                 }
 
                 // skip to next month
-                return dt.secsTo(QDateTime(dt.date().addDays(dt.date().daysTo({dt.date().year(), dt.date().month(), daysInMonth(dt.date().month())}) + 1 + offset) , {0, 0}));
+                return dt.secsTo(QDateTime(dt.date().addDays(dt.date().daysTo({dt.date().year(), dt.date().month(), daysInMonth(dt.date())}) + 1 + offset) , {0, 0}));
             }
 
             if (beginDay <= endDay) {
@@ -274,7 +274,7 @@ static QDate resolveDateEnd(Date d, int year)
         if (!d.day && !d.month) {
             return date.addYears(1);
         } else if (!d.day) {
-            return date.addDays(daysInMonth(d.month));
+            return date.addDays(daysInMonth(date));
         }
     }
     return date.addDays(1);
