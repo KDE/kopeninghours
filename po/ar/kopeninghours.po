@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: kopeninghours\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-11-05 12:28+0000\n"
-"PO-Revision-Date: 2025-05-10 17:55+0400\n"
+"PO-Revision-Date: 2025-05-14 21:50+0400\n"
 "Last-Translator: Zayed Al-Saidi <zayed.alsaidi@gmail.com>\n"
 "Language-Team: ar\n"
 "Language: ar\n"
@@ -86,15 +86,23 @@ msgstr[5] "حاليًا مغلق (%2)، سيفتح بعد %1 دقيقة"
 #, kde-format
 msgid "Open for one more hour"
 msgid_plural "Open for %1 more hours"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "مفتوح لساعة أخرى"
+msgstr[1] "مفتوح لساعة أخرى"
+msgstr[2] "مفتوح لساعتين أخريين"
+msgstr[3] "مفتوح ل%1 ساعات أخرى"
+msgstr[4] "مفتوح ل%1 ساعة أخرى"
+msgstr[5] "مفتوح ل%1 ساعة أخرى"
 
 #: lib/display.cpp:69
 #, kde-format
 msgid "Open for one more hour (%2)"
 msgid_plural "Open for %1 more hours (%2)"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "مفتوح لساعة أخرى (%2)"
+msgstr[1] "مفتوح لساعة أخرى (%2)"
+msgstr[2] "مفتوح لساعتين أخريين (%2)"
+msgstr[3] "مفتوح ل%1 ساعات أخرى (%2)"
+msgstr[4] "مفتوح ل%1 ساعة أخرى (%2)"
+msgstr[5] "مفتوح ل%1 ساعة أخرى (%2)"
 
 #: lib/display.cpp:72
 #, kde-format
