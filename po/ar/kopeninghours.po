@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: kopeninghours\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-11-05 12:28+0000\n"
-"PO-Revision-Date: 2025-05-14 21:50+0400\n"
+"PO-Revision-Date: 2025-05-15 18:24+0400\n"
 "Last-Translator: Zayed Al-Saidi <zayed.alsaidi@gmail.com>\n"
 "Language-Team: ar\n"
 "Language: ar\n"
@@ -108,43 +108,67 @@ msgstr[5] "مفتوح ل%1 ساعة أخرى (%2)"
 #, kde-format
 msgid "Currently closed, opens in one hour"
 msgid_plural "Currently closed, opens in %1 hours"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "مغلق حالياً، يفتح بعد ساعة واحدة"
+msgstr[1] "مغلق حالياً، يفتح بعد ساعة واحدة"
+msgstr[2] "مغلق حالياً، يفتح بعد ساعتين"
+msgstr[3] "مغلق حالياً، يفتح بعد %1 ساعات"
+msgstr[4] "مغلق حالياً، يفتح بعد %1 ساعة"
+msgstr[5] "مغلق حالياً، يفتح بعد %1 ساعة"
 
 #: lib/display.cpp:73
 #, kde-format
 msgid "Currently closed (%2), opens in one hour"
 msgid_plural "Currently closed (%2), opens in %1 hours"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "مغلق حالياً (%2)، يفتح بعد ساعة واحدة"
+msgstr[1] "مغلق حالياً (%2)، يفتح بعد ساعة واحدة"
+msgstr[2] "مغلق حالياً (%2)، يفتح بعد ساعتين"
+msgstr[3] "مغلق حالياً (%2)، يفتح بعد %1 ساعات"
+msgstr[4] "مغلق حالياً (%2)، يفتح بعد %1 ساعة"
+msgstr[5] "مغلق حالياً (%2)، يفتح بعد %1 ساعة"
 
 #: lib/display.cpp:86
 #, kde-format
 msgid "Open for one more day"
 msgid_plural "Open for %1 more days"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "مفتوح ليوم واحد آخر"
+msgstr[1] "مفتوح ليوم واحد آخر"
+msgstr[2] "مفتوح ليومين آخرين"
+msgstr[3] "مفتوح %1 أيام أخرى"
+msgstr[4] "مفتوح %1 يومًا أخرا"
+msgstr[5] "مفتوح %1 يوم أخر"
 
 #: lib/display.cpp:87
 #, kde-format
 msgid "Open for one more day (%2)"
 msgid_plural "Open for %1 more days (%2)"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "مفتوح ليوم واحد آخر (%2)"
+msgstr[1] "مفتوح ليوم واحد آخر (%2)"
+msgstr[2] "مفتوح ليومين آخرين (%2)"
+msgstr[3] "مفتوح %1 أيام أخرى (%2)"
+msgstr[4] "مفتوح %1 يومًا أخرا (%2)"
+msgstr[5] "مفتوح %1 يوم أخر (%2)"
 
 #: lib/display.cpp:90
 #, kde-format
 msgid "Currently closed, opens in one day"
 msgid_plural "Currently closed, opens in %1 days"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "مغلق حالياً، يفتح بعد يوم واحدة"
+msgstr[1] "مغلق حالياً، يفتح بعد يوم واحدة"
+msgstr[2] "مغلق حالياً، يفتح بعد يومين"
+msgstr[3] "مغلق حالياً، يفتح بعد %1 أيام"
+msgstr[4] "مغلق حالياً، يفتح بعد %1 يومًا"
+msgstr[5] "مغلق حالياً، يفتح بعد %1 يوم"
 
 #: lib/display.cpp:91
 #, kde-format
 msgid "Currently closed (%2), opens in one day"
 msgid_plural "Currently closed (%2), opens in %1 days"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "مغلق حالياً (%2)، يفتح بعد يوم واحدة"
+msgstr[1] "مغلق حالياً (%2)، يفتح بعد يوم واحدة"
+msgstr[2] "مغلق حالياً (%2)، يفتح بعد يومين"
+msgstr[3] "مغلق حالياً (%2)، يفتح بعد %1 أيام"
+msgstr[4] "مغلق حالياً (%2)، يفتح بعد %1 يومًا"
+msgstr[5] "مغلق حالياً (%2)، يفتح بعد %1 يوم"
 
 #: lib/display.cpp:102
 #, kde-format
