@@ -126,6 +126,9 @@ private Q_SLOTS:
             QVERIFY(proc.waitForFinished());
         }
 
+#if KHOLIDAYS_VERSION < QT_VERSION_CHECK(6, 15, 0)
+        QEXPECT_FAIL("sunrise.intervals", "sunrise computation changed in KF::Holidays >= 6.15", Continue);
+#endif
         QCOMPARE(refData, b);
     }
 };
