@@ -12,3 +12,4 @@ heaptrack.*
 *.qmlc
 *.fail
 /build*
+compile_commands.json
