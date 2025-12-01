@@ -4,12 +4,12 @@
     SPDX-License-Identifier: LGPL-2.0-or-later
 */
 
-import QtQuick 2.14
-import QtQuick.Layouts 1.1
-import QtQuick.Controls 2.1 as QQC2
-import org.kde.kirigami 2.0 as Kirigami
-import org.kde.kholidays 1.0 as KHolidays
-import org.kde.kopeninghours 1.0
+import QtQuick
+import QtQuick.Layouts
+import QtQuick.Controls as QQC2
+import org.kde.kirigami as Kirigami
+import org.kde.kholidays as KHolidays
+import org.kde.kopeninghours
 
 Kirigami.ApplicationWindow {
     title: "Opening Hours Demo"
