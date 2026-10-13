@@ -3,6 +3,7 @@
 
 include(ECMQmlModule)
 ecm_add_qml_module(kopeninghoursqmlplugin
+    CLASS_NAME KOpeningHoursQmlPlugin
     URI "org.kde.kopeninghours"
     VERSION 1.0
     NO_GENERATE_PLUGIN_SOURCE
