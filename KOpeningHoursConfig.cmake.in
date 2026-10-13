@@ -6,5 +6,10 @@
 include(CMakeFindDependencyMacro)
 find_dependency(Qt@QT_MAJOR_VERSION@Core)
 
+if (NOT @BUILD_SHARED_LIBS@ AND NOT @VALIDATOR_ONLY@)
+    find_dependency(KF@KF_MAJOR_VERSION@Holidays)
+    find_dependency(KF@KF_MAJOR_VERSION@I18n)
+endif()
+
 include("${CMAKE_CURRENT_LIST_DIR}/KOpeningHoursTargets.cmake")
 @PACKAGE_INCLUDE_QCHTARGETS@
