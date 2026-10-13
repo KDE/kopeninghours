@@ -15,6 +15,7 @@
 %option warn nodefault
 /* technically the case of all tokens is clearly defined, but reality ignores that in parts, so we do the same */
 %option caseless
+%option prefix="koh"
 %option reentrant
 %option noyywrap
 %option nounput

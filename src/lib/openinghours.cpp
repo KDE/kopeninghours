@@ -366,15 +366,15 @@ void OpeningHours::setExpression(const char *openingHours, std::size_t size, Mod
     int offset = 0;
     do {
         yyscan_t scanner;
-        if (yylex_init(&scanner)) {
+        if (kohlex_init(&scanner)) {
             qCWarning(Log) << "Failed to initialize scanner?!";
             d->m_error = SyntaxError;
             return;
         }
-        const std::unique_ptr<void, decltype(&yylex_destroy)> lexerCleanup(scanner, &yylex_destroy);
+        const std::unique_ptr<void, decltype(&kohlex_destroy)> lexerCleanup(scanner, &kohlex_destroy);
 
         YY_BUFFER_STATE state;
-        state = yy_scan_bytes(openingHours + offset, size - offset, scanner);
+        state = koh_scan_bytes(openingHours + offset, size - offset, scanner);
         if (yyparse(d.data(), scanner)) {
             if (d->m_restartPosition > 1 && d->m_restartPosition + offset < (int)size) {
                 offset += d->m_restartPosition - 1;
@@ -393,7 +393,7 @@ void OpeningHours::setExpression(const char *openingHours, std::size_t size, Mod
             offset = -1;
         }
 
-        yy_delete_buffer(state, scanner);
+        koh_delete_buffer(state, scanner);
     } while (offset > 0);
 
     d->autocorrect();

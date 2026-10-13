@@ -89,6 +89,8 @@ struct Selectors {
 typedef void* yyscan_t;
 #endif
 
+#define yylex kohlex
+
 }
 
 %define api.pure
